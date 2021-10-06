@@ -1,0 +1,18 @@
+[
+    {
+        "PluginId": "1fa8ff9c-8702-46fc-a863-18ca6c2cc4d1",
+        "Name": "Grade Objects Log",
+        "Description": "The grade objects log data set is a log of all changes to grades for each applicable user in the organization.",
+        "CreatedDate": "2021-05-18T19:50:19.176Z",
+        "DownloadLink": "https://learn.petersons.com/d2l/api/lp/1.30/dataexport/bds/download/1fa8ff9c-8702-46fc-a863-18ca6c2cc4d1",
+        "DownloadSize": 28709805.0
+    },
+    {
+        "PluginId": "df537dc9-8358-4c28-9ab9-ddb8d364a9fc",
+        "Name": "Rubric Object Criteria",
+        "Description": "The rubric object criteria data set returns the basic details for all rubric object criteria.",
+        "CreatedDate": "2021-05-18T19:50:19.476Z",
+        "DownloadLink": "https://learn.petersons.com/d2l/api/lp/1.30/dataexport/bds/download/df537dc9-8358-4c28-9ab9-ddb8d364a9fc",
+        "DownloadSize": 288.0
+    }
+]

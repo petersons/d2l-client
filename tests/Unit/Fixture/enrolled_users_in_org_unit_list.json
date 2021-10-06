@@ -1,0 +1,38 @@
+{
+    "PagingInfo": {
+        "Bookmark": "85497",
+        "HasMoreItems": false
+    },
+    "Items": [
+        {
+            "User": {
+                "Identifier": "177",
+                "DisplayName": "Jason Varcoe",
+                "EmailAddress": "jason.varcoe@petersons.com",
+                "OrgDefinedId": "",
+                "ProfileBadgeUrl": null,
+                "ProfileIdentifier": "iC0BbxoH6e"
+            },
+            "Role": {
+                "Id": 105,
+                "Code": null,
+                "Name": "Super Admin (C)"
+            }
+        },
+        {
+            "User": {
+                "Identifier": "85497",
+                "DisplayName": "jennifer lagemann",
+                "EmailAddress": "jennifer.lagemann@petersons.com",
+                "OrgDefinedId": null,
+                "ProfileBadgeUrl": null,
+                "ProfileIdentifier": "tv3s6NpAIW"
+            },
+            "Role": {
+                "Id": 106,
+                "Code": null,
+                "Name": "Administrator (C)"
+            }
+        }
+    ]
+}

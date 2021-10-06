@@ -1,0 +1,141 @@
+{
+    "Objects": [
+        {
+            "QuizId": 41575,
+            "Name": "Diagnostic Test - Arithmetic Reasoning",
+            "AutoExportToGrades": true,
+            "IsActive": true,
+            "GradeItemId": 44372,
+            "IsAutoSetGraded": true,
+            "Instructions": {
+                "Text": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "IsDisplayed": false
+            },
+            "Description": {
+                "Text": {
+                    "Text": "\r\nDiagnostic Section 2: Arithmetic Reasoning\r\nTime: 36 Minutes—30 Questions\r\nDirections:\r\nThis test section has 30 questions about arithmetic. Each question is followed by four possible answers. Select the best answer for each question before the time runs out.  Use scratch paper to do any figuring. \r\nYou only have one attempt to complete each section of the diagnostic in the time allotted. Be sure you are able to finish the section before starting.\r\n\r\n",
+                    "Html": "<hr style=\"width: 100%;height: auto;color: #ffffff;border: 1px solid #cccccc;\"/>\r\n<h2 dir=\"ltr\">Diagnostic&#160;Section 2: Arithmetic Reasoning</h2>\r\n<p dir=\"ltr\"><strong>Time:</strong> 36 Minutes—30 Questions</p>\r\n<h3 dir=\"ltr\"><strong>Directions:</strong></h3>\r\n<p dir=\"ltr\">This test section has 30 questions about arithmetic. Each question is followed by four possible answers. Select the best answer for each question before the time runs out.&#160; Use scratch paper to do any figuring.&#160;</p>\r\n<p dir=\"ltr\">You only have one attempt to complete each section of the diagnostic in the time allotted. Be sure you are able to finish the section before starting.</p>\r\n<hr style=\"width: 100%;height: auto;color: #ffffff;border: 1px solid #cccccc;\"/>\r\n<p dir=\"ltr\"></p>"
+                },
+                "IsDisplayed": true
+            },
+            "Header": {
+                "Text": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "IsDisplayed": true
+            },
+            "Footer": {
+                "Text": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "IsDisplayed": true
+            },
+            "StartDate": null,
+            "EndDate": null,
+            "DueDate": null,
+            "DisplayInCalendar": false,
+            "SortOrder": 2,
+            "SubmissionTimeLimit": {
+                "IsEnforced": true,
+                "ShowClock": true,
+                "TimeLimitValue": 36
+            },
+            "SubmissionGracePeriod": 1,
+            "LateSubmissionInfo": {
+                "LateSubmissionOption": 2,
+                "LateLimitMinutes": 1
+            },
+            "AttemptsAllowed": {
+                "IsUnlimited": false,
+                "NumberOfAttemptsAllowed": 1
+            },
+            "Password": null,
+            "AllowHints": false,
+            "DisableRightClick": false,
+            "DisablePagerAndAlerts": true,
+            "RestrictIPAddressRange": [],
+            "NotificationEmail": null,
+            "CalcTypeId": 4,
+            "CategoryId": 376,
+            "PreventMovingBackwards": false,
+            "Shuffle": false,
+            "ActivityId": "https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14513",
+            "AllowOnlyUsersWithSpecialAccess": false,
+            "IsRetakeIncorrectOnly": false
+        },
+        {
+            "QuizId": 41576,
+            "Name": "Diagnostic Test - Word Knowledge",
+            "AutoExportToGrades": true,
+            "IsActive": true,
+            "GradeItemId": 44375,
+            "IsAutoSetGraded": true,
+            "Instructions": {
+                "Text": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "IsDisplayed": false
+            },
+            "Description": {
+                "Text": {
+                    "Text": "\r\nDiagnostic Section 3: Word Knowledge\r\nTime: 11 Minutes—35 Questions\r\nDirections:\r\nThis test section has 35 questions about the meanings of words. Each question has an underlined word. You are to select which one of the four words in the choices most nearly means the same as the underlined word. \r\nYou only have one attempt to complete each section of the diagnostic in the time allotted. Be sure you are able to finish the section before starting.\r\n\r\n",
+                    "Html": "<hr style=\"width: 100%;height: auto;color: #ffffff;border: 1px solid #cccccc;\"/>\r\n<h2 dir=\"ltr\">Diagnostic&#160;Section 3: Word Knowledge</h2>\r\n<p dir=\"ltr\"><strong>Time:</strong> 11 Minutes—35 Questions</p>\r\n<h3 dir=\"ltr\"><strong>Directions:</strong></h3>\r\n<p dir=\"ltr\">This test section has 35 questions about the meanings of words. Each question has an underlined word. You are to select which one of the four words in the choices most nearly means the same as the underlined word.&#160;</p>\r\n<p dir=\"ltr\">You only have one attempt to complete each section of the diagnostic in the time allotted. Be sure you are able to finish the section before starting.</p>\r\n<hr style=\"width: 100%;height: auto;color: #ffffff;border: 1px solid #cccccc;\"/>\r\n<p dir=\"ltr\"></p>"
+                },
+                "IsDisplayed": true
+            },
+            "Header": {
+                "Text": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "IsDisplayed": true
+            },
+            "Footer": {
+                "Text": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "IsDisplayed": true
+            },
+            "StartDate": null,
+            "EndDate": null,
+            "DueDate": null,
+            "DisplayInCalendar": false,
+            "SortOrder": 3,
+            "SubmissionTimeLimit": {
+                "IsEnforced": true,
+                "ShowClock": true,
+                "TimeLimitValue": 11
+            },
+            "SubmissionGracePeriod": 1,
+            "LateSubmissionInfo": {
+                "LateSubmissionOption": 2,
+                "LateLimitMinutes": 1
+            },
+            "AttemptsAllowed": {
+                "IsUnlimited": false,
+                "NumberOfAttemptsAllowed": 1
+            },
+            "Password": null,
+            "AllowHints": false,
+            "DisableRightClick": false,
+            "DisablePagerAndAlerts": true,
+            "RestrictIPAddressRange": [],
+            "NotificationEmail": null,
+            "CalcTypeId": 4,
+            "CategoryId": 376,
+            "PreventMovingBackwards": false,
+            "Shuffle": false,
+            "ActivityId": "https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14514",
+            "AllowOnlyUsersWithSpecialAccess": false,
+            "IsRetakeIncorrectOnly": false
+        }
+    ],
+    "Next": "https://learn.petersons.com/d2l/api/le/1.53/513982/quizzes/?bookmark=41594_21"
+}

@@ -1,0 +1,42 @@
+[
+    {
+        "DataSetId": "ff842aae-84d0-4e39-9db4-3ae51d36bb0e",
+        "Name": "Final Grades",
+        "Description": "The Final Grades dataset returns final grades for all learners in course offerings.",
+        "Category": "AdvancedDataSets",
+        "Filters": [
+            {
+                "Name": "startDate",
+                "Type": 1,
+                "Description": null,
+                "DefaultValue": null
+            },
+            {
+                "Name": "endDate",
+                "Type": 1,
+                "Description": null,
+                "DefaultValue": null
+            }
+        ]
+    },
+    {
+        "DataSetId": "c1bf7603-669f-4bef-8cf4-651b914c4678",
+        "Name": "Enrollments and Withdrawals",
+        "Description": "An Enrollments and Withdrawals dataset consisting of Org Unit, User and Role attributes, along with enrollment status for a given date range.",
+        "Category": "AdvancedDataSets",
+        "Filters": [
+            {
+                "Name": "startDate",
+                "Type": 1,
+                "Description": null,
+                "DefaultValue": null
+            },
+            {
+                "Name": "endDate",
+                "Type": 1,
+                "Description": null,
+                "DefaultValue": null
+            }
+        ]
+    }
+]

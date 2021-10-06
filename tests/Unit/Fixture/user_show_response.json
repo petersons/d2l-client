@@ -1,0 +1,18 @@
+[
+    {
+        "OrgId": 6606,
+        "UserId": 3163,
+        "FirstName": "Roy",
+        "MiddleName": null,
+        "LastName": "Burnap",
+        "UserName": "Roy.Burnap.2.1456",
+        "ExternalEmail": "petersons_1296_0@email.fake",
+        "OrgDefinedId": "2.1296",
+        "UniqueIdentifier": "Roy.Burnap.2.1456",
+        "Activation": {
+            "IsActive": true
+        },
+        "DisplayName": "Roy Burnap",
+        "LastAccessedDate": "2020-10-09T20:07:47.017Z"
+    }
+]

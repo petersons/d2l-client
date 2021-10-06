@@ -1,0 +1,28 @@
+{
+    "PagingInfo": {
+        "Bookmark": "6606_8069",
+        "HasMoreItems": true
+    },
+    "Items": [
+        {
+            "Identifier": "6614",
+            "Name": "Brightspace Bulk tools container",
+            "Code": "ct_bulktools_d2l",
+            "Type": {
+                "Id": 2,
+                "Code": "Course Template",
+                "Name": "Course Template"
+            }
+        },
+        {
+            "Identifier": "8069",
+            "Name": "CLEP Introductory Sociology Exam Prep",
+            "Code": "Master_539",
+            "Type": {
+                "Id": 3,
+                "Code": "Course Offering",
+                "Name": "Course Offering"
+            }
+        }
+    ]
+}

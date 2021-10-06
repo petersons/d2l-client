@@ -1,0 +1,128 @@
+[
+    {
+        "Id": 44371,
+        "Grades": [
+            {
+                "MaxPoints": 10,
+                "CanExceedMaxPoints": false,
+                "IsBonus": false,
+                "ExcludeFromFinalGradeCalculation": true,
+                "GradeSchemeId": null,
+                "GradeSchemeUrl": "/d2l/api/le/1.53/513982/grades/schemes/0",
+                "Id": 44372,
+                "Name": "Diagnostic Test - Arithmetic Reasoning",
+                "ShortName": "HSMV-DTS2-AR",
+                "GradeType": "Numeric",
+                "CategoryId": 44371,
+                "Description": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "Weight": 10,
+                "AssociatedTool": {
+                    "ToolId": 51000,
+                    "ToolItemId": 41575
+                },
+                "IsHidden": false
+            },
+            {
+                "MaxPoints": 10,
+                "CanExceedMaxPoints": false,
+                "IsBonus": false,
+                "ExcludeFromFinalGradeCalculation": true,
+                "GradeSchemeId": null,
+                "GradeSchemeUrl": "/d2l/api/le/1.53/513982/grades/schemes/0",
+                "Id": 44373,
+                "Name": "Diagnostic Test - Mathematics Knowledge",
+                "ShortName": "HSMV-DTS5-MK",
+                "GradeType": "Numeric",
+                "CategoryId": 44371,
+                "Description": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "Weight": 10,
+                "AssociatedTool": {
+                    "ToolId": 51000,
+                    "ToolItemId": 41578
+                },
+                "IsHidden": false
+            }
+        ],
+        "Name": "Diagnostic Test",
+        "ShortName": "",
+        "CanExceedMax": false,
+        "ExcludeFromFinalGrade": true,
+        "StartDate": null,
+        "EndDate": null,
+        "Weight": null,
+        "MaxPoints": 10,
+        "AutoPoints": false,
+        "WeightDistributionType": null,
+        "NumberOfHighestToDrop": 0,
+        "NumberOfLowestToDrop": 0
+    },
+    {
+        "Id": 44376,
+        "Grades": [
+            {
+                "MaxPoints": 10,
+                "CanExceedMaxPoints": false,
+                "IsBonus": false,
+                "ExcludeFromFinalGradeCalculation": true,
+                "GradeSchemeId": null,
+                "GradeSchemeUrl": "/d2l/api/le/1.53/513982/grades/schemes/0",
+                "Id": 44377,
+                "Name": "Post Assessment - Arithmetic Reasoning",
+                "ShortName": "HSMV_PostTest_ArithmeticReasoning",
+                "GradeType": "Numeric",
+                "CategoryId": 44376,
+                "Description": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "Weight": 10,
+                "AssociatedTool": {
+                    "ToolId": 51000,
+                    "ToolItemId": 41610
+                },
+                "IsHidden": false
+            },
+            {
+                "MaxPoints": 10,
+                "CanExceedMaxPoints": false,
+                "IsBonus": false,
+                "ExcludeFromFinalGradeCalculation": true,
+                "GradeSchemeId": null,
+                "GradeSchemeUrl": "/d2l/api/le/1.53/513982/grades/schemes/0",
+                "Id": 44378,
+                "Name": "Post Assessment - Mathematics Knowledge",
+                "ShortName": "HSMV_PostTest_MathematicsKnowledge",
+                "GradeType": "Numeric",
+                "CategoryId": 44376,
+                "Description": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "Weight": 10,
+                "AssociatedTool": {
+                    "ToolId": 51000,
+                    "ToolItemId": 41612
+                },
+                "IsHidden": false
+            }
+        ],
+        "Name": "Post Assessment",
+        "ShortName": "",
+        "CanExceedMax": false,
+        "ExcludeFromFinalGrade": true,
+        "StartDate": null,
+        "EndDate": null,
+        "Weight": null,
+        "MaxPoints": 10,
+        "AutoPoints": false,
+        "WeightDistributionType": null,
+        "NumberOfHighestToDrop": 0,
+        "NumberOfLowestToDrop": 0
+    }
+]

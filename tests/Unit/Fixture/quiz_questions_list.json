@@ -1,0 +1,159 @@
+{
+    "Objects": [
+        {
+            "QuestionId": 3076999,
+            "QuestionTypeId": 1,
+            "Name": "ASVAB-D1-AR-Q1",
+            "QuestionText": {
+                "Text": "A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?",
+                "Html": "A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?"
+            },
+            "Points": 1.000000000,
+            "Difficulty": 1,
+            "Bonus": false,
+            "Mandatory": false,
+            "Hint": null,
+            "Feedback": {
+                "Text": "The correct answer is B. 50 shares x $30 = $1500. 6% payable stock => it means 6% of the total value of 50 shares => 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.",
+                "Html": "<p><strong>The correct answer is B. </strong>50 shares x $30 = $1500. 6% payable stock =&gt; it means 6% of the total value of 50 shares =&gt; 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.</p>"
+            },
+            "LastModifiedBy": null,
+            "LastModified": "2021-04-12T22:09:47.623Z",
+            "SectionId": 0,
+            "QuestionTemplateId": 71207,
+            "QuestionTemplateVersionId": 71218,
+            "QuestionInfo": {
+                "Answers": [
+                    {
+                        "PartId": 307387,
+                        "Answer": {
+                            "Text": "47 shares",
+                            "Html": "47 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    },
+                    {
+                        "PartId": 307388,
+                        "Answer": {
+                            "Text": "53 shares",
+                            "Html": "53 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 100
+                    },
+                    {
+                        "PartId": 307389,
+                        "Answer": {
+                            "Text": "56 shares",
+                            "Html": "56 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    },
+                    {
+                        "PartId": 307390,
+                        "Answer": {
+                            "Text": "62 shares",
+                            "Html": "62 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    }
+                ],
+                "Randomize": false,
+                "Enumeration": 4
+            }
+        },
+        {
+            "QuestionId": 3077000,
+            "QuestionTypeId": 1,
+            "Name": "ASVAB-D1-AR-Q21",
+            "QuestionText": {
+                "Text": "A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?",
+                "Html": "A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?"
+            },
+            "Points": 1.000000000,
+            "Difficulty": 1,
+            "Bonus": false,
+            "Mandatory": false,
+            "Hint": null,
+            "Feedback": {
+                "Text": "The correct answer is D. $29.62 × 5 = $148.10 ",
+                "Html": "<p><strong>The correct answer is D. $29.62 &#215; 5 = $148.10&#160;</strong></p>"
+            },
+            "LastModifiedBy": null,
+            "LastModified": "2021-04-12T22:09:47.623Z",
+            "SectionId": 0,
+            "QuestionTemplateId": 71227,
+            "QuestionTemplateVersionId": 110378,
+            "QuestionInfo": {
+                "Answers": [
+                    {
+                        "PartId": 473242,
+                        "Answer": {
+                            "Text": "$90.10",
+                            "Html": "$90.10"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    },
+                    {
+                        "PartId": 473243,
+                        "Answer": {
+                            "Text": "$100.10",
+                            "Html": "$100.10"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    },
+                    {
+                        "PartId": 473244,
+                        "Answer": {
+                            "Text": "$126.10",
+                            "Html": "$126.10"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    },
+                    {
+                        "PartId": 473245,
+                        "Answer": {
+                            "Text": "$148.10",
+                            "Html": "$148.10"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 100
+                    }
+                ],
+                "Randomize": false,
+                "Enumeration": 4
+            }
+        }
+    ],
+    "Next": "https://learn.petersons.com/d2l/api/le/1.53/513982/quizzes/41575/questions/?bookmark=3077018"
+}

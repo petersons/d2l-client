@@ -1,0 +1,82 @@
+{
+    "Objects": [
+        {
+            "QuestionId": 3076999,
+            "QuestionTypeId": 1,
+            "Name": "ASVAB-D1-AR-Q1",
+            "QuestionText": {
+                "Text": "A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?",
+                "Html": "A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?"
+            },
+            "Points": 1.000000000,
+            "Difficulty": 1,
+            "Bonus": false,
+            "Mandatory": false,
+            "Hint": null,
+            "Feedback": {
+                "Text": "The correct answer is B. 50 shares x $30 = $1500. 6% payable stock => it means 6% of the total value of 50 shares => 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.",
+                "Html": "<p><strong>The correct answer is B. </strong>50 shares x $30 = $1500. 6% payable stock =&gt; it means 6% of the total value of 50 shares =&gt; 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.</p>"
+            },
+            "LastModifiedBy": null,
+            "LastModified": "2021-04-12T22:09:47.623Z",
+            "SectionId": 0,
+            "QuestionTemplateId": 71207,
+            "QuestionTemplateVersionId": 71218,
+            "QuestionInfo": {
+                "Answers": [
+                    {
+                        "PartId": 307387,
+                        "Answer": {
+                            "Text": "47 shares",
+                            "Html": "47 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    },
+                    {
+                        "PartId": 307388,
+                        "Answer": {
+                            "Text": "53 shares",
+                            "Html": "53 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 100
+                    },
+                    {
+                        "PartId": 307389,
+                        "Answer": {
+                            "Text": "56 shares",
+                            "Html": "56 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    },
+                    {
+                        "PartId": 307390,
+                        "Answer": {
+                            "Text": "62 shares",
+                            "Html": "62 shares"
+                        },
+                        "AnswerFeedback": {
+                            "Text": "",
+                            "Html": ""
+                        },
+                        "Weight": 0
+                    }
+                ],
+                "Randomize": false,
+                "Enumeration": 4
+            }
+        }
+    ],
+    "Next": null
+}

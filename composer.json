@@ -1,0 +1,55 @@
+{
+    "name": "petersons/d2l-client",
+    "description": "Client implementation for connecting to Brightspace/D2L APIs.",
+    "keywords": [
+        "D2L",
+        "Brightspace"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Antonio Pauletich",
+            "email": "antonio.pauletich95@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-curl": "*",
+        "ext-simplexml": "*",
+        "illuminate/contracts": "^8.0",
+        "illuminate/support": "^8.0",
+        "nesbot/carbon": "^2.53.1",
+        "symfony/http-client": "^5.3"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.2",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Petersons\\D2L\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix",
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Petersons\\D2L\\Laravel\\ServiceProvider"
+            ]
+        }
+    }
+}

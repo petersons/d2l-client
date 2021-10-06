@@ -1,0 +1,30 @@
+{
+    "PagingInfo": {
+        "Bookmark": "6645",
+        "HasMoreItems": true
+    },
+    "Items": [
+        {
+            "Identifier": "6606",
+            "Path": "/content/",
+            "Name": "Petersons LLC",
+            "Code": "PETERSONSLLC",
+            "Type": {
+                "Id": 1,
+                "Code": "Organization",
+                "Name": "Organization"
+            }
+        },
+        {
+            "Identifier": "6645",
+            "Path": "/content/enforced/6645-Lessons_sb/",
+            "Name": "Latest Content Experience Sample ",
+            "Code": "Lessons_sb_d2l-Sample",
+            "Type": {
+                "Id": 3,
+                "Code": "Course Offering",
+                "Name": "Course Offering"
+            }
+        }
+    ]
+}
