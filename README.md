@@ -67,6 +67,11 @@ Docker dependencies for local development:
     git clone git@gitlab.com:petersons/d2l-client.git
     ```
 
+0. Build the Docker image
+    ```bash
+    dev/bin/docker-compose build --build-arg PHP_VERSION=8.0 php
+    ```
+
 0. Install library dependencies
     ```bash
     dev/bin/php composer update
