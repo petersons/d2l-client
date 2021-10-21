@@ -7,6 +7,13 @@
 
 This package is currently in active development.
 
+## Installation
+1. Require the package using Composer:
+
+```sh
+composer require petersons/d2l-client
+```
+
 ## Features
 
 * Provides a PHP HTTP client to communicate with D2L APIs
