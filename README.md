@@ -1,5 +1,6 @@
 # Petersons D2L API client
---------------------------
+
+[![codecov](https://codecov.io/gh/petersons/d2l-client/branch/main/graph/badge.svg?token=CVOQ23H1GE)](https://codecov.io/gh/petersons/d2l-client)
 
 ## Status
 
