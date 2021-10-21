@@ -16,14 +16,15 @@
         "php": "^8.0",
         "ext-curl": "*",
         "ext-simplexml": "*",
-        "illuminate/contracts": "^8.0",
         "illuminate/collections": "^8.56",
+        "illuminate/contracts": "^8.0",
         "illuminate/support": "^8.0",
         "nesbot/carbon": "^2.53.1",
         "symfony/http-client": "^5.3"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.2",
+        "illuminate/container": "^8.0",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {
