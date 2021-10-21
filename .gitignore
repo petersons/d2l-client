@@ -5,3 +5,4 @@
 /.vscode
 /vendor
 composer.lock
+coverage.xml
