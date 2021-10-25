@@ -73,7 +73,7 @@ Docker dependencies for local development:
 
 0. Clone project
     ```bash
-    git clone git@gitlab.com:petersons/d2l-client.git
+    git clone git@github.com:petersons/d2l-client.git
     ```
 
 0. Build the Docker image
