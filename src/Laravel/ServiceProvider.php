@@ -10,6 +10,7 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 use Petersons\D2L\AuthenticatedUriFactory;
 use Petersons\D2L\Contracts\ClientInterface;
+use Petersons\D2L\CourseUrlGenerator;
 use Petersons\D2L\SymfonyHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\ScopingHttpClient;
@@ -57,6 +58,14 @@ final class ServiceProvider extends LaravelServiceProvider implements Deferrable
                 $d2lConfig['lms_user_key'],
             );
         });
+
+        $this->app->bind(CourseUrlGenerator::class, static function (Container $container): CourseUrlGenerator {
+            /** @var Repository $config */
+            $config = $container->get(Repository::class);
+            $d2lConfig = $config->get('d2l');
+
+            return new CourseUrlGenerator($d2lConfig['host'], $d2lConfig['guid_login_uri']);
+        });
     }
 
     public function boot(): void
@@ -70,6 +79,6 @@ final class ServiceProvider extends LaravelServiceProvider implements Deferrable
 
     public function provides(): array
     {
-        return [ClientInterface::class, AuthenticatedUriFactory::class];
+        return [ClientInterface::class, AuthenticatedUriFactory::class, CourseUrlGenerator::class];
     }
 }
