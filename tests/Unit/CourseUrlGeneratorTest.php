@@ -32,12 +32,12 @@ final class CourseUrlGeneratorTest extends TestCase
             $orgDefinedId
         );
 
-        $courseUrl = $courseUrlGenerator->generate($guid, $user, $lmsCourseId);
+        $courseUrl = $courseUrlGenerator->generateCourseUrl($guid, $user, $lmsCourseId);
 
         $this->assertSame($expectedUrl, $courseUrl);
     }
 
-    public function testItThrowsUserOrgDefinedIdMissingExceptionWhenTheGivenUserDoesNotHaveOrgDefinedId(): void
+    public function testCourseUrlGenerationThrowsUserOrgDefinedIdMissingExceptionWhenTheGivenUserDoesNotHaveOrgDefinedId(): void
     {
         $guid = new Guid(bin2hex(random_bytes(10)));
         $user = $this->getUser(null);
@@ -50,7 +50,49 @@ final class CourseUrlGeneratorTest extends TestCase
 
         $this->expectExceptionObject(new UserOrgDefinedIdMissingException($user));
 
-        $courseUrlGenerator->generate($guid, $user, $lmsCourseId);
+        $courseUrlGenerator->generateCourseUrl($guid, $user, $lmsCourseId);
+    }
+
+    public function testCourseGradesUrlGeneration(): void
+    {
+        $guid = new Guid(bin2hex(random_bytes(10)));
+        $user = $this->getUser($orgDefinedId = bin2hex(random_bytes(10)));
+        $lmsCourseId = random_int(1, 10000);
+
+        $courseUrlGenerator = new CourseUrlGenerator(
+            $d2lHost = 'https://petersonstest.brightspace.com',
+            $d2lGuidLoginUri = '/d2l/lp/auth/login/ssoLogin.d2l',
+        );
+
+        $expectedUrl = sprintf(
+            '%s%s?guid=%s&orgId=%d&orgDefinedId=%s&target=%s',
+            $d2lHost,
+            $d2lGuidLoginUri,
+            $guid->getValue(),
+            $lmsCourseId,
+            $orgDefinedId,
+            urlencode(sprintf('%s/d2l/lms/grades/my_grades/main.d2l?ou=%d', $d2lHost, $lmsCourseId)),
+        );
+
+        $courseGradesUrl = $courseUrlGenerator->generateCourseGradesUrl($guid, $user, $lmsCourseId);
+
+        $this->assertSame($expectedUrl, $courseGradesUrl);
+    }
+
+    public function testCourseGradesUrlGenerationThrowsUserOrgDefinedIdMissingExceptionWhenTheGivenUserDoesNotHaveOrgDefinedId(): void
+    {
+        $guid = new Guid(bin2hex(random_bytes(10)));
+        $user = $this->getUser(null);
+        $lmsCourseId = random_int(1, 10000);
+
+        $courseUrlGenerator = new CourseUrlGenerator(
+            'https://petersonstest.brightspace.com',
+            '/d2l/lp/auth/login/ssoLogin.d2l',
+        );
+
+        $this->expectExceptionObject(new UserOrgDefinedIdMissingException($user));
+
+        $courseUrlGenerator->generateCourseGradesUrl($guid, $user, $lmsCourseId);
     }
 
     private function getUser(?string $orgDefinedId): UserData

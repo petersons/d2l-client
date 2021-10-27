@@ -16,11 +16,12 @@ final class CourseUrlGenerator
     ) {
     }
 
-    public function generate(Guid $guid, UserData $user, int $lmsCourseId): string
+    /**
+     * @throws UserOrgDefinedIdMissingException
+     */
+    public function generateCourseUrl(Guid $guid, UserData $user, int $lmsCourseId): string
     {
-        if (null === $user->getOrgDefinedId()) {
-            throw new UserOrgDefinedIdMissingException($user);
-        }
+        $this->checkIfUserHasOrgDefinedIdDefined($user);
 
         $queryString = http_build_query(
             [
@@ -31,5 +32,34 @@ final class CourseUrlGenerator
         );
 
         return sprintf('%s%s?%s', $this->d2lHost, $this->d2lGuidLoginUri, $queryString);
+    }
+
+    /**
+     * @throws UserOrgDefinedIdMissingException
+     */
+    public function generateCourseGradesUrl(Guid $guid, UserData $user, int $lmsCourseId): string
+    {
+        $this->checkIfUserHasOrgDefinedIdDefined($user);
+
+        $queryString = http_build_query(
+            [
+                'guid' => $guid->getValue(),
+                'orgId' => $lmsCourseId,
+                'orgDefinedId' => $user->getOrgDefinedId(),
+                'target' => sprintf('%s/d2l/lms/grades/my_grades/main.d2l?ou=%d', $this->d2lHost, $lmsCourseId),
+            ]
+        );
+
+        return sprintf('%s%s?%s', $this->d2lHost, $this->d2lGuidLoginUri, $queryString);
+    }
+
+    /**
+     * @throws UserOrgDefinedIdMissingException
+     */
+    private function checkIfUserHasOrgDefinedIdDefined(UserData $user): void
+    {
+        if (null === $user->getOrgDefinedId()) {
+            throw new UserOrgDefinedIdMissingException($user);
+        }
     }
 }
