@@ -366,6 +366,7 @@ final class SymfonyHttpClient implements ClientInterface
                 $item['QuizId'],
                 $item['Name'],
                 $item['IsActive'],
+                $item['GradeItemId'],
             );
         }));
     }

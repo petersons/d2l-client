@@ -14,7 +14,8 @@ final class Quiz implements Arrayable
     public function __construct(
         private int $id,
         private string $name,
-        private bool $isActive
+        private bool $isActive,
+        private ?int $gradeItemId
     ) {
     }
 
@@ -33,12 +34,18 @@ final class Quiz implements Arrayable
         return $this->isActive;
     }
 
+    public function getGradeItemId(): ?int
+    {
+        return $this->gradeItemId;
+    }
+
     public function toArray(): array
     {
         return [
             'QuizId' => $this->id,
             'Name' => $this->name,
             'IsActive' => $this->isActive,
+            'GradeItemId' => $this->gradeItemId,
         ];
     }
 }

@@ -1081,10 +1081,12 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(41575, $quizzes[0]->getId());
         $this->assertSame('Diagnostic Test - Arithmetic Reasoning', $quizzes[0]->getName());
         $this->assertTrue($quizzes[0]->isActive());
+        $this->assertSame(44372, $quizzes[0]->getGradeItemId());
 
         $this->assertSame(41576, $quizzes[1]->getId());
         $this->assertSame('Diagnostic Test - Word Knowledge', $quizzes[1]->getName());
         $this->assertTrue($quizzes[1]->isActive());
+        $this->assertSame(44375, $quizzes[1]->getGradeItemId());
     }
 
     public function testQuizzesListWithBookmark(): void
@@ -1118,10 +1120,12 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(41575, $quizzes[0]->getId());
         $this->assertSame('Diagnostic Test - Arithmetic Reasoning', $quizzes[0]->getName());
         $this->assertTrue($quizzes[0]->isActive());
+        $this->assertSame(44372, $quizzes[0]->getGradeItemId());
 
         $this->assertSame(41576, $quizzes[1]->getId());
         $this->assertSame('Diagnostic Test - Word Knowledge', $quizzes[1]->getName());
         $this->assertTrue($quizzes[1]->isActive());
+        $this->assertSame(44375, $quizzes[1]->getGradeItemId());
     }
 
     public function testGetQuizzesForAnOrganizationUnit(): void
@@ -1135,7 +1139,7 @@ final class SymfonyHttpClientTest extends TestCase
             }
 
             if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/quizzes/?x_a=baz&x_b=foo&x_c=UtDgaa6gsOZvsTtjqMFdV91XFGy-DjoCVcn1ZSYOjVY&x_d=z8jqC7KwlcEPSuv247ZiwTeiEd97tYXSUr9JUc9fibk&x_t=1615390200&bookmark=41594_21' === $url) {
-                return new MockResponse(json_encode(['Next' => null, 'Objects' => [['QuizId' => 123, 'Name' => 'foo', 'IsActive' => false]]]));
+                return new MockResponse(json_encode(['Next' => null, 'Objects' => [['QuizId' => 123, 'Name' => 'foo', 'IsActive' => false, 'GradeItemId' => null]]]));
             }
 
             $this->fail('This should not have happened.');
@@ -1152,14 +1156,17 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(41575, $quizzes[0]->getId());
         $this->assertSame('Diagnostic Test - Arithmetic Reasoning', $quizzes[0]->getName());
         $this->assertTrue($quizzes[0]->isActive());
+        $this->assertSame(44372, $quizzes[0]->getGradeItemId());
 
         $this->assertSame(41576, $quizzes[1]->getId());
         $this->assertSame('Diagnostic Test - Word Knowledge', $quizzes[1]->getName());
         $this->assertTrue($quizzes[1]->isActive());
+        $this->assertSame(44375, $quizzes[1]->getGradeItemId());
 
         $this->assertSame(123, $quizzes[2]->getId());
         $this->assertSame('foo', $quizzes[2]->getName());
         $this->assertFalse($quizzes[2]->isActive());
+        $this->assertNull($quizzes[2]->getGradeItemId());
     }
 
     public function testQuizQuestionsListWithoutBookmark(): void
