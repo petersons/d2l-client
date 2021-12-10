@@ -19,13 +19,13 @@
         "illuminate/collections": "^8.56",
         "illuminate/contracts": "^8.0",
         "illuminate/support": "^8.0",
-        "nesbot/carbon": "^2.53.1",
-        "symfony/http-client": "^5.3"
+        "nesbot/carbon": "^2.55",
+        "symfony/http-client": "^5.4 || ^6.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.2",
-        "illuminate/container": "^8.0",
-        "phpunit/phpunit": "^9.5"
+        "illuminate/container": "^8.62",
+        "phpunit/phpunit": "^9.5.5"
     },
     "autoload": {
         "psr-4": {
