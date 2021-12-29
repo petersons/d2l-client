@@ -10,6 +10,8 @@ use Petersons\D2L\Contracts\ClientInterface;
 use Petersons\D2L\DTO\BrightspaceDataSet\BrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
+use Petersons\D2L\DTO\ContentObject\Module;
+use Petersons\D2L\DTO\ContentObject\Structure;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\DataSetData;
 use Petersons\D2L\DTO\DataExport\DataSetFilter;
@@ -37,6 +39,7 @@ use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\DTO\User\User;
 use Petersons\D2L\DTO\User\UserData;
+use Petersons\D2L\Enum\ContentObject\Type;
 use Petersons\D2L\Enum\DataExport\ExportFilterType;
 use Petersons\D2L\Enum\DataExport\ExportJobStatus;
 use Petersons\D2L\Exceptions\ApiException;
@@ -759,6 +762,69 @@ final class SymfonyHttpClient implements ClientInterface
             new ExportJobStatus($decodedResponse['Status']),
             $decodedResponse['Category']
         );
+    }
+
+    public function getRootModulesForAnOrganizationUnit(int $orgUnitId): Collection
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/le/%s/%d/content/root/',
+            $this->apiLeVersion,
+            $orgUnitId,
+        );
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $collection = new Collection();
+
+        foreach ($decodedResponse as $item) {
+            $structure = new Collection();
+
+            foreach ($item['Structure'] as $structureItem) {
+                $structure->add(
+                    new Structure(
+                        $structureItem['Id'],
+                        $structureItem['Title'],
+                        $structureItem['ShortTitle'],
+                        Type::make($structureItem['Type']),
+                        null !== $structureItem['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $structureItem['LastModifiedDate']) : null,
+                    )
+                );
+            }
+
+            $collection->add(
+                new Module(
+                    $item['Id'],
+                    $structure,
+                    null !== $item['ModuleStartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleStartDate']) : null,
+                    null !== $item['ModuleEndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleEndDate']) : null,
+                    null !== $item['ModuleDueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleDueDate']) : null,
+                    $item['IsHidden'],
+                    $item['IsLocked'],
+                    $item['Title'],
+                    $item['ShortTitle'],
+                    null !== $item['Description'] ? new RichText($item['Description']['Text'], $item['Description']['Html']) : null,
+                    $item['ParentModuleId'],
+                    null !== $item['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['LastModifiedDate']) : null,
+                )
+            );
+        }
+
+        return $collection;
     }
 
     public function generateExpiringGuid(string $orgDefinedId): Guid

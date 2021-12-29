@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use Carbon\CarbonImmutable;
 use Petersons\D2L\AuthenticatedUriFactory;
+use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\ExportJobFilter;
 use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
@@ -1755,6 +1756,102 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('2021-05-24T16:30:42+00:00', $exportJobData->getSubmitDate()->toAtomString());
         $this->assertSame(0, $exportJobData->getStatus()->getStatus());
         $this->assertSame('AdvancedDataSets', $exportJobData->getCategory());
+    }
+
+    public function testGetRootModulesForAnOrganizationUnit(): void
+    {
+        $this->freezeTime();
+
+        $rootModulesListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'root_modules_list.json');
+        $callback = function (string $method, string $url, array $options) use ($rootModulesListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/content/root/?x_a=baz&x_b=foo&x_c=sd87uCDudUE851NdLXKGaBjMKdKDel70YRrPZnITszQ&x_d=5c20ppHATy57XledQl1-STfyAAz7gGCtEj8IUC7SJ3U&x_t=1615390200' === $url) {
+                return new MockResponse($rootModulesListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        /** @var Module[] $rootModules */
+        $rootModules = $client->getRootModulesForAnOrganizationUnit(513982);
+
+        $this->assertCount(2, $rootModules);
+
+        $this->assertInstanceOf(Module::class, $rootModules[0]);
+        $this->assertSame(861, $rootModules[0]->getId());
+        $this->assertSame('Getting Started', $rootModules[0]->getTitle());
+        $this->assertSame('', $rootModules[0]->getShortTitle());
+        $structure = $rootModules[0]->getStructure();
+        $this->assertCount(1, $structure);
+        $this->assertSame(862, $structure[0]->getId());
+        $this->assertSame('Getting Started', $structure[0]->getTitle());
+        $this->assertSame('', $structure[0]->getShortTitle());
+        $this->assertSame(1, $structure[0]->getType()->getType());
+        $this->assertSame('2020-07-29 18:09:33', $structure[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertNull($rootModules[0]->getStartDate());
+        $this->assertNull($rootModules[0]->getEndDate());
+        $this->assertNull($rootModules[0]->getDueDate());
+        $this->assertFalse($rootModules[0]->isHidden());
+        $this->assertFalse($rootModules[0]->isLocked());
+        $this->assertSame('', $rootModules[0]->getDescription()->getText());
+        $this->assertSame('', $rootModules[0]->getDescription()->getHtml());
+        $this->assertNull($rootModules[0]->getParentModuleId());
+        $this->assertSame('2017-11-04 17:45:48', $rootModules[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+
+        $this->assertInstanceOf(Module::class, $rootModules[1]);
+        $this->assertSame(863, $rootModules[1]->getId());
+        $this->assertSame('Learner Essentials', $rootModules[1]->getTitle());
+        $this->assertSame('', $rootModules[1]->getShortTitle());
+        $structure = $rootModules[1]->getStructure();
+        $this->assertCount(2, $structure);
+        $this->assertSame(864, $structure[0]->getId());
+        $this->assertSame('Quick Tips for Getting Started', $structure[0]->getTitle());
+        $this->assertSame('', $structure[0]->getShortTitle());
+        $this->assertSame(1, $structure[0]->getType()->getType());
+        $this->assertSame('2017-11-04 17:45:50', $structure[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertSame(865, $structure[1]->getId());
+        $this->assertSame('Using ePortfolio', $structure[1]->getTitle());
+        $this->assertSame('', $structure[1]->getShortTitle());
+        $this->assertSame(1, $structure[1]->getType()->getType());
+        $this->assertSame('2017-11-04 17:45:50', $structure[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertNull($rootModules[1]->getStartDate());
+        $this->assertNull($rootModules[1]->getEndDate());
+        $this->assertNull($rootModules[1]->getDueDate());
+        $this->assertFalse($rootModules[1]->isHidden());
+        $this->assertFalse($rootModules[1]->isLocked());
+        $this->assertStringContainsString('This module contains video playlists', $rootModules[1]->getDescription()->getText());
+        $this->assertStringContainsString('<p>This module contains video playlists', $rootModules[1]->getDescription()->getHtml());
+        $this->assertNull($rootModules[1]->getParentModuleId());
+        $this->assertSame('2020-07-29 17:58:22', $rootModules[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+    }
+
+    public function testGetRootModulesForAnOrganizationUnitWhenD2LReturnsForbiddenResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/content/root/?x_a=baz&x_b=foo&x_c=sd87uCDudUE851NdLXKGaBjMKdKDel70YRrPZnITszQ&x_d=5c20ppHATy57XledQl1-STfyAAz7gGCtEj8IUC7SJ3U&x_t=1615390200' === $url) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/content/root/?x_a=baz&x_b=foo&x_c=sd87uCDudUE851NdLXKGaBjMKdKDel70YRrPZnITszQ&x_d=5c20ppHATy57XledQl1-STfyAAz7gGCtEj8IUC7SJ3U&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->getRootModulesForAnOrganizationUnit(513982);
     }
 
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient
