@@ -6,7 +6,9 @@ namespace Tests\Unit;
 
 use Carbon\CarbonImmutable;
 use Petersons\D2L\AuthenticatedUriFactory;
+use Petersons\D2L\DTO\ContentObject\ContentObject;
 use Petersons\D2L\DTO\ContentObject\Module;
+use Petersons\D2L\DTO\ContentObject\Topic;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\ExportJobFilter;
 use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
@@ -1852,6 +1854,173 @@ final class SymfonyHttpClientTest extends TestCase
         );
 
         $client->getRootModulesForAnOrganizationUnit(513982);
+    }
+
+    public function testGetModuleStructureForAnOrganizationUnitWithModuleInResponse(): void
+    {
+        $this->freezeTime();
+
+        $moduleStructureListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'module_structure_list_with_module_record.json');
+        $callback = function (string $method, string $url, array $options) use ($moduleStructureListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200' === $url) {
+                return new MockResponse($moduleStructureListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        /** @var ContentObject[] $contentObjects */
+        $contentObjects = $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
+
+        $this->assertCount(1, $contentObjects);
+
+        $this->assertInstanceOf(Module::class, $contentObjects[0]);
+        $this->assertSame(321606, $contentObjects[0]->getId());
+        $this->assertSame('Suffix Elements 1 - 20', $contentObjects[0]->getTitle());
+        $this->assertSame('', $contentObjects[0]->getShortTitle());
+        $structure = $contentObjects[0]->getStructure();
+        $this->assertCount(2, $structure);
+        $this->assertSame(321666, $structure[0]->getId());
+        $this->assertSame('Suffix Elements 1-5', $structure[0]->getTitle());
+        $this->assertSame('', $structure[0]->getShortTitle());
+        $this->assertSame(1, $structure[0]->getType()->getType());
+        $this->assertSame('2021-12-23 15:46:22', $structure[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertSame(321667, $structure[1]->getId());
+        $this->assertSame('Suffix Elements 6-10', $structure[1]->getTitle());
+        $this->assertSame('', $structure[1]->getShortTitle());
+        $this->assertSame(1, $structure[1]->getType()->getType());
+        $this->assertSame('2021-12-23 15:46:22', $structure[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertNull($contentObjects[0]->getStartDate());
+        $this->assertNull($contentObjects[0]->getEndDate());
+        $this->assertNull($contentObjects[0]->getDueDate());
+        $this->assertFalse($contentObjects[0]->isHidden());
+        $this->assertFalse($contentObjects[0]->isLocked());
+        $this->assertSame("\n\n\n\n\n\n\n", $contentObjects[0]->getDescription()->getText());
+        $this->assertSame("\n\n\n\n\n\n\n", $contentObjects[0]->getDescription()->getHtml());
+        $this->assertSame(321584, $contentObjects[0]->getParentModuleId());
+        $this->assertSame('2020-08-03 19:12:47', $contentObjects[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+    }
+
+    public function testGetModuleStructureForAnOrganizationUnitWithTopicsInResponse(): void
+    {
+        $this->freezeTime();
+
+        $moduleStructureListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'module_structure_list_with_topic_records.json');
+        $callback = function (string $method, string $url, array $options) use ($moduleStructureListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200' === $url) {
+                return new MockResponse($moduleStructureListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        /** @var Topic[] $contentObjects */
+        $contentObjects = $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
+
+        $this->assertCount(3, $contentObjects);
+
+        $this->assertInstanceOf(Topic::class, $contentObjects[0]);
+        $this->assertSame(321655, $contentObjects[0]->getId());
+        $this->assertSame(3, $contentObjects[0]->getTopicType()->getType());
+        $this->assertSame('Introduction to the Dean Vaughn Total Retention System®', $contentObjects[0]->getTitle());
+        $this->assertSame('', $contentObjects[0]->getShortTitle());
+        $this->assertSame('https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=200', $contentObjects[0]->getUrl());
+        $this->assertNull($contentObjects[0]->getStartDate());
+        $this->assertNull($contentObjects[0]->getEndDate());
+        $this->assertNull($contentObjects[0]->getDueDate());
+        $this->assertFalse($contentObjects[0]->isHidden());
+        $this->assertFalse($contentObjects[0]->isLocked());
+        $this->assertFalse($contentObjects[0]->isExempt());
+        $this->assertFalse($contentObjects[0]->getOpenAsExternalResource());
+        $this->assertSame('', $contentObjects[0]->getDescription()->getText());
+        $this->assertSame('', $contentObjects[0]->getDescription()->getHtml());
+        $this->assertSame(321600, $contentObjects[0]->getParentModuleId());
+        $this->assertNull($contentObjects[0]->getActivityId());
+        $this->assertSame(2, $contentObjects[0]->getActivityType()->getType());
+        $this->assertNull($contentObjects[0]->getToolId());
+        $this->assertNull($contentObjects[0]->getToolItemId());
+        $this->assertNull($contentObjects[0]->getGradeItemId());
+        $this->assertSame('2021-12-23 15:46:21', $contentObjects[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+
+        $this->assertInstanceOf(Topic::class, $contentObjects[1]);
+        $this->assertSame(321656, $contentObjects[1]->getId());
+        $this->assertSame(3, $contentObjects[1]->getTopicType()->getType());
+        $this->assertSame('The Dean Vaughn Total Retention System™- Part 1', $contentObjects[1]->getTitle());
+        $this->assertSame('', $contentObjects[1]->getShortTitle());
+        $this->assertSame('https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=201', $contentObjects[1]->getUrl());
+        $this->assertNull($contentObjects[1]->getStartDate());
+        $this->assertNull($contentObjects[1]->getEndDate());
+        $this->assertNull($contentObjects[1]->getDueDate());
+        $this->assertFalse($contentObjects[1]->isHidden());
+        $this->assertFalse($contentObjects[1]->isLocked());
+        $this->assertFalse($contentObjects[1]->isExempt());
+        $this->assertFalse($contentObjects[1]->getOpenAsExternalResource());
+        $this->assertSame('', $contentObjects[1]->getDescription()->getText());
+        $this->assertSame('', $contentObjects[1]->getDescription()->getHtml());
+        $this->assertSame(321600, $contentObjects[1]->getParentModuleId());
+        $this->assertNull($contentObjects[1]->getActivityId());
+        $this->assertSame(2, $contentObjects[1]->getActivityType()->getType());
+        $this->assertNull($contentObjects[1]->getToolId());
+        $this->assertNull($contentObjects[1]->getToolItemId());
+        $this->assertNull($contentObjects[1]->getGradeItemId());
+        $this->assertSame('2021-12-23 15:46:21', $contentObjects[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+
+        $this->assertInstanceOf(Topic::class, $contentObjects[2]);
+        $this->assertSame(321657, $contentObjects[2]->getId());
+        $this->assertSame(3, $contentObjects[2]->getTopicType()->getType());
+        $this->assertSame('The Dean Vaughn Total Retention System™- Part 2', $contentObjects[2]->getTitle());
+        $this->assertSame('', $contentObjects[2]->getShortTitle());
+        $this->assertSame('https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=202', $contentObjects[2]->getUrl());
+        $this->assertNull($contentObjects[2]->getStartDate());
+        $this->assertNull($contentObjects[2]->getEndDate());
+        $this->assertNull($contentObjects[2]->getDueDate());
+        $this->assertFalse($contentObjects[2]->isHidden());
+        $this->assertFalse($contentObjects[2]->isLocked());
+        $this->assertFalse($contentObjects[2]->isExempt());
+        $this->assertFalse($contentObjects[2]->getOpenAsExternalResource());
+        $this->assertSame('', $contentObjects[2]->getDescription()->getText());
+        $this->assertSame('', $contentObjects[2]->getDescription()->getHtml());
+        $this->assertSame(321600, $contentObjects[2]->getParentModuleId());
+        $this->assertNull($contentObjects[2]->getActivityId());
+        $this->assertSame(2, $contentObjects[2]->getActivityType()->getType());
+        $this->assertNull($contentObjects[2]->getToolId());
+        $this->assertNull($contentObjects[2]->getToolItemId());
+        $this->assertNull($contentObjects[2]->getGradeItemId());
+        $this->assertSame('2021-12-23 15:46:21', $contentObjects[2]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+    }
+
+    public function testGetModuleStructureForAnOrganizationUnitWhenD2LReturnsForbiddenResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200' === $url) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
     }
 
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient

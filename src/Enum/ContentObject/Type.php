@@ -23,6 +23,26 @@ final class Type
         };
     }
 
+    public static function module(): self
+    {
+        return new self(self::MODULE_TYPE);
+    }
+
+    public static function topic(): self
+    {
+        return new self(self::TOPIC_TYPE);
+    }
+
+    public function isModule(): bool
+    {
+        return self::MODULE_TYPE === $this->type;
+    }
+
+    public function isTopic(): bool
+    {
+        return self::TOPIC_TYPE === $this->type;
+    }
+
     public function getType(): int
     {
         return $this->type;

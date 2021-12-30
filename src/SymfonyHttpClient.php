@@ -12,6 +12,7 @@ use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\ContentObject\Structure;
+use Petersons\D2L\DTO\ContentObject\Topic;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\DataSetData;
 use Petersons\D2L\DTO\DataExport\DataSetFilter;
@@ -39,6 +40,8 @@ use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\DTO\User\User;
 use Petersons\D2L\DTO\User\UserData;
+use Petersons\D2L\Enum\ContentObject\ActivityType;
+use Petersons\D2L\Enum\ContentObject\TopicType;
 use Petersons\D2L\Enum\ContentObject\Type;
 use Petersons\D2L\Enum\DataExport\ExportFilterType;
 use Petersons\D2L\Enum\DataExport\ExportJobStatus;
@@ -792,36 +795,46 @@ final class SymfonyHttpClient implements ClientInterface
         $collection = new Collection();
 
         foreach ($decodedResponse as $item) {
-            $structure = new Collection();
+            $collection->add($this->parseModuleItem($item));
+        }
 
-            foreach ($item['Structure'] as $structureItem) {
-                $structure->add(
-                    new Structure(
-                        $structureItem['Id'],
-                        $structureItem['Title'],
-                        $structureItem['ShortTitle'],
-                        Type::make($structureItem['Type']),
-                        null !== $structureItem['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $structureItem['LastModifiedDate']) : null,
-                    )
-                );
+        return $collection;
+    }
+
+    public function getModuleStructureForAnOrganizationUnit(int $orgUnitId, int $moduleId): Collection
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/le/%s/%d/content/modules/%d/structure/',
+            $this->apiLeVersion,
+            $orgUnitId,
+            $moduleId,
+        );
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $collection = new Collection();
+
+        foreach ($decodedResponse as $item) {
+            if (Type::make($item['Type'])->isModule()) {
+                $collection->add($this->parseModuleItem($item));
+            } else {
+                $collection->add($this->parseTopicItem($item));
             }
-
-            $collection->add(
-                new Module(
-                    $item['Id'],
-                    $structure,
-                    null !== $item['ModuleStartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleStartDate']) : null,
-                    null !== $item['ModuleEndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleEndDate']) : null,
-                    null !== $item['ModuleDueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleDueDate']) : null,
-                    $item['IsHidden'],
-                    $item['IsLocked'],
-                    $item['Title'],
-                    $item['ShortTitle'],
-                    null !== $item['Description'] ? new RichText($item['Description']['Text'], $item['Description']['Html']) : null,
-                    $item['ParentModuleId'],
-                    null !== $item['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['LastModifiedDate']) : null,
-                )
-            );
         }
 
         return $collection;
@@ -947,5 +960,65 @@ final class SymfonyHttpClient implements ClientInterface
         }
 
         return new Collection($previousDatasets);
+    }
+
+    private function parseModuleItem(array $item): Module
+    {
+        $structure = new Collection();
+
+        foreach ($item['Structure'] as $structureItem) {
+            $structure->add(
+                new Structure(
+                    $structureItem['Id'],
+                    $structureItem['Title'],
+                    $structureItem['ShortTitle'],
+                    Type::make($structureItem['Type']),
+                    null !== $structureItem['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $structureItem['LastModifiedDate']) : null,
+                )
+            );
+        }
+
+        return new Module(
+            $item['Id'],
+            $structure,
+            null !== $item['ModuleStartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleStartDate']) : null,
+            null !== $item['ModuleEndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleEndDate']) : null,
+            null !== $item['ModuleDueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleDueDate']) : null,
+            $item['IsHidden'],
+            $item['IsLocked'],
+            $item['Title'],
+            $item['ShortTitle'],
+            null !== $item['Description'] ? new RichText($item['Description']['Text'], $item['Description']['Html']) : null,
+            $item['ParentModuleId'],
+            null !== $item['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['LastModifiedDate']) : null,
+        );
+    }
+
+    private function parseTopicItem(array $item): Topic
+    {
+        $structure = new Collection();
+
+        return new Topic(
+            $item['Id'],
+            TopicType::make($item['TopicType']),
+            $item['Url'],
+            null !== $item['StartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['StartDate']) : null,
+            null !== $item['EndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['EndDate']) : null,
+            null !== $item['DueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['DueDate']) : null,
+            $item['IsHidden'],
+            $item['IsLocked'],
+            $item['OpenAsExternalResource'],
+            $item['Title'],
+            $item['ShortTitle'],
+            null !== $item['Description'] ? new RichText($item['Description']['Text'], $item['Description']['Html']) : null,
+            $item['ParentModuleId'],
+            $item['ActivityId'],
+            $item['IsExempt'],
+            $item['ToolId'],
+            $item['ToolItemId'],
+            ActivityType::make($item['ActivityType']),
+            $item['GradeItemId'],
+            null !== $item['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['LastModifiedDate']) : null,
+        );
     }
 }

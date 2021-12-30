@@ -1,0 +1,35 @@
+[
+  {
+    "Description": {
+      "Text": "\n\n\n\n\n\n\n",
+      "Html": "\n\n\n\n\n\n\n"
+    },
+    "ParentModuleId": 321584,
+    "ModuleDueDate": null,
+    "Structure": [
+      {
+        "Id": 321666,
+        "Title": "Suffix Elements 1-5",
+        "ShortTitle": "",
+        "Type": 1,
+        "LastModifiedDate": "2021-12-23T15:46:22.120Z"
+      },
+      {
+        "Id": 321667,
+        "Title": "Suffix Elements 6-10",
+        "ShortTitle": "",
+        "Type": 1,
+        "LastModifiedDate": "2021-12-23T15:46:22.183Z"
+      }
+    ],
+    "ModuleStartDate": null,
+    "ModuleEndDate": null,
+    "IsHidden": false,
+    "IsLocked": false,
+    "Id": 321606,
+    "Title": "Suffix Elements 1 - 20",
+    "ShortTitle": "",
+    "Type": 0,
+    "LastModifiedDate": "2020-08-03T19:12:47.607Z"
+  }
+]
