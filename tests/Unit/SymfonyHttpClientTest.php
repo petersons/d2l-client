@@ -31,6 +31,67 @@ final class SymfonyHttpClientTest extends TestCase
         parent::tearDown();
     }
 
+    public function testFetchingUserById(): void
+    {
+        $this->freezeTime();
+
+        $userJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'user_fetch_by_id_response.json');
+        $callback = function (string $method, string $url, array $options) use ($userJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=FpMfkzXcBy3gqB2smJhHzyQv6m8JlMVURMpFbtn5j0U&x_d=kZdNU7pg3RQR7GQ319kNTDCMJfybaa5KtjbqziiR9SM&x_t=1615390200' === $url) {
+                return new MockResponse($userJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $user = $client->getUserById(3163);
+
+        $this->assertSame(6606, $user->getOrgId());
+        $this->assertSame(3163, $user->getUserId());
+        $this->assertSame('Nicholas', $user->getFirstName());
+        $this->assertNull($user->getMiddleName());
+        $this->assertSame('Test', $user->getLastName());
+        $this->assertSame('Nicholas.Test.2.1356', $user->getUsername());
+        $this->assertSame('petersons_508833_0@email.fake', $user->getExternalEmail());
+        $this->assertSame('2.508833', $user->getOrgDefinedId());
+        $this->assertSame('Nicholas.Holland.2.1356', $user->getUniqueIdentifier());
+        $this->assertTrue($user->isActive());
+        $this->assertSame(
+            CarbonImmutable::createFromFormat("Y-m-d\TH:i:s.v\Z", '2020-07-22T03:05:09.700Z')->toAtomString(),
+            $user->getLastAccessedAt()->toAtomString()
+        );
+    }
+
+    public function testFetchingUserByIdWhenD2LReturnsNotFoundResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=FpMfkzXcBy3gqB2smJhHzyQv6m8JlMVURMpFbtn5j0U&x_d=kZdNU7pg3RQR7GQ319kNTDCMJfybaa5KtjbqziiR9SM&x_t=1615390200' === $url) {
+                return new MockResponse('', ['http_code' => 404]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=FpMfkzXcBy3gqB2smJhHzyQv6m8JlMVURMpFbtn5j0U&x_d=kZdNU7pg3RQR7GQ319kNTDCMJfybaa5KtjbqziiR9SM&x_t=1615390200".',
+                404
+            )
+        );
+
+        $client->getUserById(3163);
+    }
+
     public function testFetchingUserByOrgDefinedId(): void
     {
         $this->freezeTime();

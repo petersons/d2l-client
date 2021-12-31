@@ -64,6 +64,30 @@ final class SymfonyHttpClient implements ClientInterface
     ) {
     }
 
+    public function getUserById(int $userId): UserData
+    {
+        $method = 'GET';
+        $path = sprintf('/d2l/api/lp/%s/users/%d', $this->apiLpVersion, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        return $this->getUserDtoFromUserArrayResponse($decodedResponse);
+    }
+
     public function getUserByOrgDefinedId(string $orgDefinedId): UserData
     {
         $method = 'GET';

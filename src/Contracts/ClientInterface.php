@@ -44,6 +44,12 @@ interface ClientInterface
     public const GUID_NO_DB_CONNECTION = 'NO_DB_CONNECTION';
 
     /**
+     * @link https://docs.valence.desire2learn.com/res/user.html#get--d2l-api-lp-(version)-users-(userId)
+     * @throws ApiException
+     */
+    public function getUserById(int $userId): UserData;
+
+    /**
      * @link https://docs.valence.desire2learn.com/res/user.html#get--d2l-api-lp-(version)-users-
      * @throws ApiException
      */

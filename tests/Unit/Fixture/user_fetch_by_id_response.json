@@ -1,0 +1,17 @@
+{
+  "OrgId": 6606,
+  "UserId": 3163,
+  "FirstName": "Nicholas",
+  "MiddleName": null,
+  "LastName": "Test",
+  "UserName": "Nicholas.Test.2.1356",
+  "ExternalEmail": "petersons_508833_0@email.fake",
+  "OrgDefinedId": "2.508833",
+  "UniqueIdentifier": "Nicholas.Holland.2.1356",
+  "Activation": {
+    "IsActive": true
+  },
+  "DisplayName": "Nicholas Test",
+  "LastAccessedDate": "2020-07-22T03:05:09.700Z",
+  "Pronouns": null
+}
