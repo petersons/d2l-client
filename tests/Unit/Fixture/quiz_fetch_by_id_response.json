@@ -1,0 +1,68 @@
+{
+  "QuizId": 46673,
+  "Name": "Module 4 Prefixes Quiz",
+  "AutoExportToGrades": true,
+  "IsActive": true,
+  "GradeItemId": 50354,
+  "IsAutoSetGraded": true,
+  "Instructions": {
+    "Text": {
+      "Text": "",
+      "Html": ""
+    },
+    "IsDisplayed": false
+  },
+  "Description": {
+    "Text": {
+      "Text": "",
+      "Html": ""
+    },
+    "IsDisplayed": false
+  },
+  "Header": {
+    "Text": {
+      "Text": "",
+      "Html": ""
+    },
+    "IsDisplayed": false
+  },
+  "Footer": {
+    "Text": {
+      "Text": "",
+      "Html": ""
+    },
+    "IsDisplayed": false
+  },
+  "StartDate": "2021-10-14T14:00:00.000Z",
+  "EndDate": "2021-11-04T22:00:00.000Z",
+  "DueDate": "2021-10-15T22:00:00.000Z",
+  "DisplayInCalendar": false,
+  "SortOrder": 5,
+  "SubmissionTimeLimit": {
+    "IsEnforced": false,
+    "ShowClock": false,
+    "TimeLimitValue": 120
+  },
+  "SubmissionGracePeriod": 5,
+  "LateSubmissionInfo": {
+    "LateSubmissionOption": 0,
+    "LateLimitMinutes": null
+  },
+  "AttemptsAllowed": {
+    "IsUnlimited": true,
+    "NumberOfAttemptsAllowed": null
+  },
+  "Password": null,
+  "AllowHints": false,
+  "DisableRightClick": false,
+  "DisablePagerAndAlerts": false,
+  "RestrictIPAddressRange": [],
+  "NotificationEmail": null,
+  "CalcTypeId": 1,
+  "CategoryId": null,
+  "PreventMovingBackwards": false,
+  "Shuffle": false,
+  "ActivityId": "https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-77531",
+  "AllowOnlyUsersWithSpecialAccess": false,
+  "IsRetakeIncorrectOnly": false
+}

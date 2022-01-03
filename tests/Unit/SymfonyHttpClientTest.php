@@ -1114,6 +1114,74 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($client->findBrightspaceDataExportItemByName('Rubric Object Criteria 1'));
     }
 
+    public function testGetQuizById(): void
+    {
+        $this->freezeTime();
+
+        $quizJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_fetch_by_id_response.json');
+        $callback = function (string $method, string $url, array $options) use ($quizJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/514893/quizzes/46673?x_a=baz&x_b=foo&x_c=zDeDx7bLby5mVCJ7AovrXKqvZq-pVtEysBW3exY-gzk&x_d=JuXn5lEot0_ON-AupXnHK8K5l2agmJxyv_P0l7TIxkY&x_t=1615390200' === $url) {
+                return new MockResponse($quizJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quiz = $client->getQuizById(514893, 46673);
+
+        $this->assertSame(46673, $quiz->getId());
+        $this->assertSame('Module 4 Prefixes Quiz', $quiz->getName());
+        $this->assertTrue($quiz->isActive());
+        $this->assertSame(5, $quiz->getSortOrder());
+        $this->assertTrue($quiz->getAutoExportToGrades());
+        $this->assertSame(50354, $quiz->getGradeItemId());
+        $this->assertTrue($quiz->isAutoSetGraded());
+        $this->assertSame('', $quiz->getInstructions()->getText()->getText());
+        $this->assertSame('', $quiz->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quiz->getInstructions()->isDisplayed());
+        $this->assertSame('', $quiz->getDescription()->getText()->getText());
+        $this->assertSame('', $quiz->getDescription()->getText()->getHtml());
+        $this->assertFalse($quiz->getDescription()->isDisplayed());
+        $this->assertSame('2021-10-14 14:00:00', $quiz->getStartDate()->format('Y-m-d H:i:s'));
+        $this->assertSame('2021-11-04 22:00:00', $quiz->getEndDate()->format('Y-m-d H:i:s'));
+        $this->assertSame('2021-10-15 22:00:00', $quiz->getDueDate()->format('Y-m-d H:i:s'));
+        $this->assertFalse($quiz->displayInCalendar());
+        $this->assertTrue($quiz->getAttemptsAllowed()->isUnlimited());
+        $this->assertNull($quiz->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(0, $quiz->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertNull($quiz->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertFalse($quiz->getSubmissionTimeLimit()->isEnforced());
+        $this->assertFalse($quiz->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(120, $quiz->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(5, $quiz->getSubmissionGracePeriod());
+        $this->assertNull($quiz->getPassword());
+        $this->assertSame('', $quiz->getHeader()->getText()->getText());
+        $this->assertSame('', $quiz->getHeader()->getText()->getHtml());
+        $this->assertFalse($quiz->getHeader()->isDisplayed());
+        $this->assertSame('', $quiz->getFooter()->getText()->getText());
+        $this->assertSame('', $quiz->getFooter()->getText()->getHtml());
+        $this->assertFalse($quiz->getFooter()->isDisplayed());
+        $this->assertFalse($quiz->allowHints());
+        $this->assertFalse($quiz->disableRightClick());
+        $this->assertFalse($quiz->disablePagerAndAlerts());
+        $this->assertNull($quiz->getNotificationEmail());
+        $this->assertSame(1, $quiz->getCalcTypeId()->getOption());
+        $this->assertTrue($quiz->getRestrictIPAddressRange()->isEmpty());
+        $this->assertNull($quiz->getCategoryId());
+        $this->assertFalse($quiz->preventMovingBackwards());
+        $this->assertFalse($quiz->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-77531',
+            $quiz->getActivityId()
+        );
+        $this->assertFalse($quiz->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quiz->isRetakeIncorrectOnly());
+    }
+
     public function testQuizzesListWithoutBookmark(): void
     {
         $this->freezeTime();
@@ -1145,12 +1213,98 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(41575, $quizzes[0]->getId());
         $this->assertSame('Diagnostic Test - Arithmetic Reasoning', $quizzes[0]->getName());
         $this->assertTrue($quizzes[0]->isActive());
+        $this->assertSame(2, $quizzes[0]->getSortOrder());
+        $this->assertTrue($quizzes[0]->getAutoExportToGrades());
         $this->assertSame(44372, $quizzes[0]->getGradeItemId());
+        $this->assertTrue($quizzes[0]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[0]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[0]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[0]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[0]->getStartDate());
+        $this->assertNull($quizzes[0]->getEndDate());
+        $this->assertNull($quizzes[0]->getDueDate());
+        $this->assertFalse($quizzes[0]->displayInCalendar());
+        $this->assertFalse($quizzes[0]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[0]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[0]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[0]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(36, $quizzes[0]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[0]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[0]->getPassword());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[0]->allowHints());
+        $this->assertFalse($quizzes[0]->disableRightClick());
+        $this->assertTrue($quizzes[0]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[0]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[0]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[0]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[0]->getCategoryId());
+        $this->assertFalse($quizzes[0]->preventMovingBackwards());
+        $this->assertFalse($quizzes[0]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14513',
+            $quizzes[0]->getActivityId()
+        );
+        $this->assertFalse($quizzes[0]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[0]->isRetakeIncorrectOnly());
 
         $this->assertSame(41576, $quizzes[1]->getId());
         $this->assertSame('Diagnostic Test - Word Knowledge', $quizzes[1]->getName());
         $this->assertTrue($quizzes[1]->isActive());
+        $this->assertSame(3, $quizzes[1]->getSortOrder());
+        $this->assertTrue($quizzes[1]->getAutoExportToGrades());
         $this->assertSame(44375, $quizzes[1]->getGradeItemId());
+        $this->assertTrue($quizzes[1]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[1]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[1]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[1]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[1]->getStartDate());
+        $this->assertNull($quizzes[1]->getEndDate());
+        $this->assertNull($quizzes[1]->getDueDate());
+        $this->assertFalse($quizzes[1]->displayInCalendar());
+        $this->assertFalse($quizzes[1]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[1]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[1]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[1]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(11, $quizzes[1]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[1]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[1]->getPassword());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[1]->allowHints());
+        $this->assertFalse($quizzes[1]->disableRightClick());
+        $this->assertTrue($quizzes[1]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[1]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[1]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[1]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[1]->getCategoryId());
+        $this->assertFalse($quizzes[1]->preventMovingBackwards());
+        $this->assertFalse($quizzes[1]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14514',
+            $quizzes[1]->getActivityId()
+        );
+        $this->assertFalse($quizzes[1]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[1]->isRetakeIncorrectOnly());
     }
 
     public function testQuizzesListWithBookmark(): void
@@ -1184,12 +1338,98 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(41575, $quizzes[0]->getId());
         $this->assertSame('Diagnostic Test - Arithmetic Reasoning', $quizzes[0]->getName());
         $this->assertTrue($quizzes[0]->isActive());
+        $this->assertSame(2, $quizzes[0]->getSortOrder());
+        $this->assertTrue($quizzes[0]->getAutoExportToGrades());
         $this->assertSame(44372, $quizzes[0]->getGradeItemId());
+        $this->assertTrue($quizzes[0]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[0]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[0]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[0]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[0]->getStartDate());
+        $this->assertNull($quizzes[0]->getEndDate());
+        $this->assertNull($quizzes[0]->getDueDate());
+        $this->assertFalse($quizzes[0]->displayInCalendar());
+        $this->assertFalse($quizzes[0]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[0]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[0]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[0]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(36, $quizzes[0]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[0]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[0]->getPassword());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[0]->allowHints());
+        $this->assertFalse($quizzes[0]->disableRightClick());
+        $this->assertTrue($quizzes[0]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[0]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[0]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[0]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[0]->getCategoryId());
+        $this->assertFalse($quizzes[0]->preventMovingBackwards());
+        $this->assertFalse($quizzes[0]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14513',
+            $quizzes[0]->getActivityId()
+        );
+        $this->assertFalse($quizzes[0]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[0]->isRetakeIncorrectOnly());
 
         $this->assertSame(41576, $quizzes[1]->getId());
         $this->assertSame('Diagnostic Test - Word Knowledge', $quizzes[1]->getName());
         $this->assertTrue($quizzes[1]->isActive());
+        $this->assertSame(3, $quizzes[1]->getSortOrder());
+        $this->assertTrue($quizzes[1]->getAutoExportToGrades());
         $this->assertSame(44375, $quizzes[1]->getGradeItemId());
+        $this->assertTrue($quizzes[1]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[1]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[1]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[1]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[1]->getStartDate());
+        $this->assertNull($quizzes[1]->getEndDate());
+        $this->assertNull($quizzes[1]->getDueDate());
+        $this->assertFalse($quizzes[1]->displayInCalendar());
+        $this->assertFalse($quizzes[1]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[1]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[1]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[1]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(11, $quizzes[1]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[1]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[1]->getPassword());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[1]->allowHints());
+        $this->assertFalse($quizzes[1]->disableRightClick());
+        $this->assertTrue($quizzes[1]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[1]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[1]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[1]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[1]->getCategoryId());
+        $this->assertFalse($quizzes[1]->preventMovingBackwards());
+        $this->assertFalse($quizzes[1]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14514',
+            $quizzes[1]->getActivityId()
+        );
+        $this->assertFalse($quizzes[1]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[1]->isRetakeIncorrectOnly());
     }
 
     public function testGetQuizzesForAnOrganizationUnit(): void
@@ -1203,7 +1443,80 @@ final class SymfonyHttpClientTest extends TestCase
             }
 
             if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/quizzes/?x_a=baz&x_b=foo&x_c=UtDgaa6gsOZvsTtjqMFdV91XFGy-DjoCVcn1ZSYOjVY&x_d=z8jqC7KwlcEPSuv247ZiwTeiEd97tYXSUr9JUc9fibk&x_t=1615390200&bookmark=41594_21' === $url) {
-                return new MockResponse(json_encode(['Next' => null, 'Objects' => [['QuizId' => 123, 'Name' => 'foo', 'IsActive' => false, 'GradeItemId' => null]]]));
+                return new MockResponse(json_encode([
+                    'Next' => null,
+                    'Objects' => [
+                        [
+                            'QuizId' => 123,
+                            'Name' => 'foo',
+                            'AutoExportToGrades' => true,
+                            'IsActive' => false,
+                            'GradeItemId' => null,
+                            'IsAutoSetGraded' => true,
+                            'Instructions' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'Description' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'Header' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'Footer' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'StartDate' => '2021-10-14T14:00:00.000Z',
+                            'EndDate' => '2021-11-04T22:00:00.000Z',
+                            'DueDate' => '2021-10-15T22:00:00.000Z',
+                            'DisplayInCalendar' => false,
+                            'SortOrder' => 5,
+                            'SubmissionTimeLimit' => [
+                                'IsEnforced' => false,
+                                'ShowClock' => false,
+                                'TimeLimitValue' => 120,
+                            ],
+                            'SubmissionGracePeriod' => 5,
+                            'LateSubmissionInfo' => [
+                                'LateSubmissionOption' => 0,
+                                'LateLimitMinutes' => null,
+                            ],
+                            'AttemptsAllowed' => [
+                                'IsUnlimited' => true,
+                                'NumberOfAttemptsAllowed' => null,
+                            ],
+                            'Password' => null,
+                            'AllowHints' => false,
+                            'DisableRightClick' => false,
+                            'DisablePagerAndAlerts' => false,
+                            'RestrictIPAddressRange' => [
+                            ],
+                            'NotificationEmail' => null,
+                            'CalcTypeId' => 1,
+                            'CategoryId' => null,
+                            'PreventMovingBackwards' => false,
+                            'Shuffle' => false,
+                            'ActivityId' => 'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-77531',
+                            'AllowOnlyUsersWithSpecialAccess' => false,
+                            'IsRetakeIncorrectOnly' => false,
+                        ]
+                    ]
+                ]));
             }
 
             $this->fail('This should not have happened.');

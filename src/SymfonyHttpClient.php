@@ -30,11 +30,19 @@ use Petersons\D2L\DTO\Organization\OrganizationInfo;
 use Petersons\D2L\DTO\Organization\OrganizationUnitTypeInfo;
 use Petersons\D2L\DTO\Organization\OrgUnit;
 use Petersons\D2L\DTO\Organization\OrgUnitProperties;
+use Petersons\D2L\DTO\Quiz\AttemptsAllowed;
+use Petersons\D2L\DTO\Quiz\Description;
+use Petersons\D2L\DTO\Quiz\Footer;
+use Petersons\D2L\DTO\Quiz\Header;
+use Petersons\D2L\DTO\Quiz\Instructions;
+use Petersons\D2L\DTO\Quiz\LateSubmissionInfo;
 use Petersons\D2L\DTO\Quiz\Quiz;
 use Petersons\D2L\DTO\Quiz\QuizListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestion;
 use Petersons\D2L\DTO\Quiz\QuizQuestionListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestionType;
+use Petersons\D2L\DTO\Quiz\RestrictIPAddressRange;
+use Petersons\D2L\DTO\Quiz\SubmissionTimeLimit;
 use Petersons\D2L\DTO\RichText;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
@@ -45,6 +53,8 @@ use Petersons\D2L\Enum\ContentObject\TopicType;
 use Petersons\D2L\Enum\ContentObject\Type;
 use Petersons\D2L\Enum\DataExport\ExportFilterType;
 use Petersons\D2L\Enum\DataExport\ExportJobStatus;
+use Petersons\D2L\Enum\Quiz\LateSubmissionOption;
+use Petersons\D2L\Enum\Quiz\OverallGradeCalculationOption;
 use Petersons\D2L\Exceptions\ApiException;
 use SimpleXMLElement;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -361,6 +371,35 @@ final class SymfonyHttpClient implements ClientInterface
         });
     }
 
+    public function getQuizById(int $orgUnitId, int $quizId): Quiz
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/le/%s/%d/quizzes/%d',
+            $this->apiLeVersion,
+            $orgUnitId,
+            $quizId,
+        );
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        return $this->getQuizDtoFromQuizArrayResponse($decodedResponse);
+    }
+
     public function quizzesList(int $orgUnitId, ?string $bookmark = null): QuizListPage
     {
         $method = 'GET';
@@ -392,12 +431,7 @@ final class SymfonyHttpClient implements ClientInterface
         $decodedResponse = json_decode($body, true);
 
         return new QuizListPage($decodedResponse['Next'], Collection::make($decodedResponse['Objects'] ?? [])->map(function (array $item): Quiz {
-            return new Quiz(
-                $item['QuizId'],
-                $item['Name'],
-                $item['IsActive'],
-                $item['GradeItemId'],
-            );
+            return $this->getQuizDtoFromQuizArrayResponse($item);
         }));
     }
 
@@ -1020,8 +1054,6 @@ final class SymfonyHttpClient implements ClientInterface
 
     private function parseTopicItem(array $item): Topic
     {
-        $structure = new Collection();
-
         return new Topic(
             $item['Id'],
             TopicType::make($item['TopicType']),
@@ -1043,6 +1075,50 @@ final class SymfonyHttpClient implements ClientInterface
             ActivityType::make($item['ActivityType']),
             $item['GradeItemId'],
             null !== $item['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['LastModifiedDate']) : null,
+        );
+    }
+
+    private function getQuizDtoFromQuizArrayResponse(array $decodedResponse): Quiz
+    {
+        $restrictIPAddressRangeCollection = new Collection();
+
+        foreach ($decodedResponse['RestrictIPAddressRange'] as $restrictIPAddressRangeItem) {
+            $restrictIPAddressRangeCollection->add(new RestrictIPAddressRange($restrictIPAddressRangeItem['IPRangeStart'], $restrictIPAddressRangeItem['IPRangeEnd']));
+        }
+
+        return new Quiz(
+            $decodedResponse['QuizId'],
+            $decodedResponse['Name'],
+            $decodedResponse['IsActive'],
+            $decodedResponse['SortOrder'],
+            $decodedResponse['AutoExportToGrades'],
+            $decodedResponse['GradeItemId'],
+            $decodedResponse['IsAutoSetGraded'],
+            new Instructions(new RichText($decodedResponse['Instructions']['Text']['Text'], $decodedResponse['Instructions']['Text']['Html']), $decodedResponse['Instructions']['IsDisplayed']),
+            new Description(new RichText($decodedResponse['Description']['Text']['Text'], $decodedResponse['Description']['Text']['Html']), $decodedResponse['Description']['IsDisplayed']),
+            null !== $decodedResponse['StartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['StartDate']) : null,
+            null !== $decodedResponse['EndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['EndDate']) : null,
+            null !== $decodedResponse['DueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['DueDate']) : null,
+            $decodedResponse['DisplayInCalendar'],
+            new AttemptsAllowed($decodedResponse['AttemptsAllowed']['IsUnlimited'], $decodedResponse['AttemptsAllowed']['NumberOfAttemptsAllowed']),
+            new LateSubmissionInfo(LateSubmissionOption::make($decodedResponse['LateSubmissionInfo']['LateSubmissionOption']), $decodedResponse['LateSubmissionInfo']['LateLimitMinutes']),
+            new SubmissionTimeLimit($decodedResponse['SubmissionTimeLimit']['IsEnforced'], $decodedResponse['SubmissionTimeLimit']['ShowClock'], $decodedResponse['SubmissionTimeLimit']['TimeLimitValue']),
+            $decodedResponse['SubmissionGracePeriod'],
+            $decodedResponse['Password'],
+            new Header(new RichText($decodedResponse['Header']['Text']['Text'], $decodedResponse['Header']['Text']['Html']), $decodedResponse['Header']['IsDisplayed']),
+            new Footer(new RichText($decodedResponse['Footer']['Text']['Text'], $decodedResponse['Footer']['Text']['Html']), $decodedResponse['Footer']['IsDisplayed']),
+            $decodedResponse['AllowHints'],
+            $decodedResponse['DisableRightClick'],
+            $decodedResponse['DisablePagerAndAlerts'],
+            $decodedResponse['NotificationEmail'],
+            OverallGradeCalculationOption::make($decodedResponse['CalcTypeId']),
+            $restrictIPAddressRangeCollection,
+            $decodedResponse['CategoryId'],
+            $decodedResponse['PreventMovingBackwards'],
+            $decodedResponse['Shuffle'],
+            $decodedResponse['ActivityId'],
+            $decodedResponse['AllowOnlyUsersWithSpecialAccess'],
+            $decodedResponse['IsRetakeIncorrectOnly'],
         );
     }
 }

@@ -117,6 +117,12 @@ interface ClientInterface
     public function findBrightspaceDataExportItemByName(string $name): ?BrightspaceDataSetReportInfo;
 
     /**
+     * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)
+     * @throws ApiException
+     */
+    public function getQuizById(int $orgUnitId, int $quizId): Quiz;
+
+    /**
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-
      * @throws ApiException
      */
