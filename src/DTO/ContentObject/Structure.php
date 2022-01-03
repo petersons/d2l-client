@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Petersons\D2L\DTO\ContentObject;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Contracts\Support\Arrayable;
+use Petersons\D2L\Contracts\ClientInterface;
 use Petersons\D2L\Enum\ContentObject\Type;
 
-final class Structure
+final class Structure implements Arrayable
 {
     public function __construct(
         private int $id,
@@ -41,5 +43,16 @@ final class Structure
     public function getLastModifiedDate(): ?CarbonImmutable
     {
         return $this->lastModifiedDate;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'Id' => $this->id,
+            'Title' => $this->title,
+            'ShortTitle' => $this->shortTitle,
+            'Type' => $this->type->getType(),
+            'LastModifiedDate' => $this->lastModifiedDate?->format(ClientInterface::D2L_DATETIME_FORMAT),
+        ];
     }
 }

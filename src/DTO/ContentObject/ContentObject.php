@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Petersons\D2L\DTO\ContentObject;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Contracts\Support\Arrayable;
 use Petersons\D2L\DTO\RichText;
 use Petersons\D2L\Enum\ContentObject\Type;
 
-abstract class ContentObject
+abstract class ContentObject implements Arrayable
 {
     public function __construct(
         private int $id,
