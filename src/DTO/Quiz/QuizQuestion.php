@@ -28,7 +28,8 @@ final class QuizQuestion implements Arrayable
         private ?int $lastModifiedBy,
         private int $sectionId,
         private int $templateId,
-        private int $templateVersionId
+        private int $templateVersionId,
+        private ?QuestionInfo $questionInfo,
     ) {
     }
 
@@ -107,6 +108,11 @@ final class QuizQuestion implements Arrayable
         return $this->templateVersionId;
     }
 
+    public function getQuestionInfo(): ?QuestionInfo
+    {
+        return $this->questionInfo;
+    }
+
     public function toArray(): array
     {
         return [
@@ -125,6 +131,7 @@ final class QuizQuestion implements Arrayable
             'SectionId' => $this->sectionId,
             'QuestionTemplateId' => $this->templateId,
             'QuestionTemplateVersionId' => $this->templateVersionId,
+            'QuestionInfo' => $this->questionInfo?->toArray(),
         ];
     }
 }

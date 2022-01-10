@@ -15,6 +15,7 @@ use Petersons\D2L\DTO\DataExport\ExportJobFilter;
 use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
 use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Guid;
+use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\Exceptions\ApiException;
@@ -1605,6 +1606,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(71207, $questions[0]->getTemplateId());
         $this->assertSame(71218, $questions[0]->getTemplateVersionId());
 
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(307387, $answers[0]->getPartId());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getText());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[0]->getWeight());
+
+        $this->assertSame(307388, $answers[1]->getPartId());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getText());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100, $answers[1]->getWeight());
+
+        $this->assertSame(307389, $answers[2]->getPartId());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getText());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[2]->getWeight());
+
+        $this->assertSame(307390, $answers[3]->getPartId());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getText());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
+
         $this->assertSame(3077000, $questions[1]->getId());
         $this->assertSame(1, $questions[1]->getType()->type());
         $this->assertSame('ASVAB-D1-AR-Q21', $questions[1]->getName());
@@ -1634,6 +1673,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[1]->getSectionId());
         $this->assertSame(71227, $questions[1]->getTemplateId());
         $this->assertSame(110378, $questions[1]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[1]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(473242, $answers[0]->getPartId());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getText());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[0]->getWeight());
+
+        $this->assertSame(473243, $answers[1]->getPartId());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getText());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[1]->getWeight());
+
+        $this->assertSame(473244, $answers[2]->getPartId());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getText());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[2]->getWeight());
+
+        $this->assertSame(473245, $answers[3]->getPartId());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getText());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
     }
 
     public function testQuizQuestionsListWithBookmark(): void
@@ -1694,6 +1771,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(71207, $questions[0]->getTemplateId());
         $this->assertSame(71218, $questions[0]->getTemplateVersionId());
 
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(307387, $answers[0]->getPartId());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getText());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[0]->getWeight());
+
+        $this->assertSame(307388, $answers[1]->getPartId());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getText());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100, $answers[1]->getWeight());
+
+        $this->assertSame(307389, $answers[2]->getPartId());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getText());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[2]->getWeight());
+
+        $this->assertSame(307390, $answers[3]->getPartId());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getText());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
+
         $this->assertSame(3077000, $questions[1]->getId());
         $this->assertSame(1, $questions[1]->getType()->type());
         $this->assertSame('ASVAB-D1-AR-Q21', $questions[1]->getName());
@@ -1723,6 +1838,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[1]->getSectionId());
         $this->assertSame(71227, $questions[1]->getTemplateId());
         $this->assertSame(110378, $questions[1]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[1]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(473242, $answers[0]->getPartId());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getText());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[0]->getWeight());
+
+        $this->assertSame(473243, $answers[1]->getPartId());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getText());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[1]->getWeight());
+
+        $this->assertSame(473244, $answers[2]->getPartId());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getText());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[2]->getWeight());
+
+        $this->assertSame(473245, $answers[3]->getPartId());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getText());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
     }
 
     public function testGetQuizQuestionsForAQuiz(): void
@@ -1780,6 +1933,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[0]->getSectionId());
         $this->assertSame(71207, $questions[0]->getTemplateId());
         $this->assertSame(71218, $questions[0]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(307387, $answers[0]->getPartId());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getText());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[0]->getWeight());
+
+        $this->assertSame(307388, $answers[1]->getPartId());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getText());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100, $answers[1]->getWeight());
+
+        $this->assertSame(307389, $answers[2]->getPartId());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getText());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[2]->getWeight());
+
+        $this->assertSame(307390, $answers[3]->getPartId());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getText());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
 
         $this->assertSame(3077000, $questions[1]->getId());
         $this->assertSame(1, $questions[1]->getType()->type());
@@ -1840,6 +2031,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[2]->getSectionId());
         $this->assertSame(71207, $questions[2]->getTemplateId());
         $this->assertSame(71218, $questions[2]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[1]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(473242, $answers[0]->getPartId());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getText());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[0]->getWeight());
+
+        $this->assertSame(473243, $answers[1]->getPartId());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getText());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[1]->getWeight());
+
+        $this->assertSame(473244, $answers[2]->getPartId());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getText());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0, $answers[2]->getWeight());
+
+        $this->assertSame(473245, $answers[3]->getPartId());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getText());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
     }
 
     public function testGetEnrolledUsersForAnOrganizationUnit(): void

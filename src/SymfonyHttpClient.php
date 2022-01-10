@@ -33,17 +33,34 @@ use Petersons\D2L\DTO\Organization\OrgUnit;
 use Petersons\D2L\DTO\Organization\OrgUnitProperties;
 use Petersons\D2L\DTO\Quiz\AttemptsAllowed;
 use Petersons\D2L\DTO\Quiz\Description;
+use Petersons\D2L\DTO\Quiz\FillInTheBlank;
+use Petersons\D2L\DTO\Quiz\FillInTheBlankAnswer;
+use Petersons\D2L\DTO\Quiz\FillInTheBlankBlank;
+use Petersons\D2L\DTO\Quiz\FillInTheBlankText;
 use Petersons\D2L\DTO\Quiz\Footer;
 use Petersons\D2L\DTO\Quiz\Header;
 use Petersons\D2L\DTO\Quiz\Instructions;
 use Petersons\D2L\DTO\Quiz\LateSubmissionInfo;
+use Petersons\D2L\DTO\Quiz\Likert;
+use Petersons\D2L\DTO\Quiz\LikertStatement;
+use Petersons\D2L\DTO\Quiz\LongAnswer;
+use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswer;
+use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
+use Petersons\D2L\DTO\Quiz\MultipleShortAnswer;
+use Petersons\D2L\DTO\Quiz\MultipleShortAnswers;
+use Petersons\D2L\DTO\Quiz\MultiSelectAnswer;
+use Petersons\D2L\DTO\Quiz\MultiSelectAnswers;
 use Petersons\D2L\DTO\Quiz\Quiz;
 use Petersons\D2L\DTO\Quiz\QuizListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestion;
 use Petersons\D2L\DTO\Quiz\QuizQuestionListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestionType;
 use Petersons\D2L\DTO\Quiz\RestrictIPAddressRange;
+use Petersons\D2L\DTO\Quiz\ShortAnswerBlank;
+use Petersons\D2L\DTO\Quiz\ShortAnswerBlankAnswer;
+use Petersons\D2L\DTO\Quiz\ShortAnswers;
 use Petersons\D2L\DTO\Quiz\SubmissionTimeLimit;
+use Petersons\D2L\DTO\Quiz\TrueFalse;
 use Petersons\D2L\DTO\RichText;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
@@ -54,8 +71,13 @@ use Petersons\D2L\Enum\ContentObject\TopicType;
 use Petersons\D2L\Enum\ContentObject\Type;
 use Petersons\D2L\Enum\DataExport\ExportFilterType;
 use Petersons\D2L\Enum\DataExport\ExportJobStatus;
+use Petersons\D2L\Enum\Quiz\EnumerationType;
+use Petersons\D2L\Enum\Quiz\EvaluationType;
 use Petersons\D2L\Enum\Quiz\LateSubmissionOption;
 use Petersons\D2L\Enum\Quiz\OverallGradeCalculationOption;
+use Petersons\D2L\Enum\Quiz\QuestionGradingRule;
+use Petersons\D2L\Enum\Quiz\QuestionScaleOption;
+use Petersons\D2L\Enum\Quiz\QuestionStyle;
 use Petersons\D2L\Exceptions\ApiException;
 use SimpleXMLElement;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -494,9 +516,23 @@ final class SymfonyHttpClient implements ClientInterface
         $decodedResponse = json_decode($body, true);
 
         return new QuizQuestionListPage($decodedResponse['Next'], Collection::make($decodedResponse['Objects'] ?? [])->map(function (array $item): QuizQuestion {
+            $quizQuestionType = QuizQuestionType::make($item['QuestionTypeId']);
+
+            $questionInfo = match ($quizQuestionType->type()) {
+                QuizQuestionType::MULTIPLE_CHOICE => $this->createMultipleChoiceQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::TRUE_FALSE => $this->createTrueFalseQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::FILL_IN_THE_BLANK => $this->createFillInTheBlankQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::MULTI_SELECT => $this->createMultiSelectAnswerQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::LONG_ANSWER => $this->createLongAnswerQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::SHORT_ANSWER => $this->createShortAnswerQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::LIKERT => $this->createLikertQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::MULTI_SHORT_ANSWER => $this->createMultipleShortAnswerQuestionInfo($item['QuestionInfo']),
+                default => null,
+            };
+
             return new QuizQuestion(
                 $item['QuestionId'],
-                QuizQuestionType::make($item['QuestionTypeId']),
+                $quizQuestionType,
                 $item['Name'],
                 new RichText($item['QuestionText']['Text'], $item['QuestionText']['Html']),
                 $item['Points'],
@@ -510,6 +546,7 @@ final class SymfonyHttpClient implements ClientInterface
                 $item['SectionId'],
                 $item['QuestionTemplateId'],
                 $item['QuestionTemplateVersionId'],
+                $questionInfo,
             );
         }));
     }
@@ -1141,6 +1178,194 @@ final class SymfonyHttpClient implements ClientInterface
             $decodedResponse['ActivityId'],
             $decodedResponse['AllowOnlyUsersWithSpecialAccess'],
             $decodedResponse['IsRetakeIncorrectOnly'],
+        );
+    }
+
+    private function createMultipleChoiceQuestionInfo(array $questionInfo): MultipleChoiceAnswers
+    {
+        $answers = new Collection();
+
+        foreach ($questionInfo['Answers'] as $answer) {
+            $answers->add(
+                new MultipleChoiceAnswer(
+                    $answer['PartId'],
+                    new RichText($answer['Answer']['Text'], $answer['Answer']['Html']),
+                    new RichText($answer['AnswerFeedback']['Text'], $answer['AnswerFeedback']['Html']),
+                    $answer['Weight'],
+                )
+            );
+        }
+
+        return new MultipleChoiceAnswers(
+            $answers,
+            $questionInfo['Randomize'],
+            EnumerationType::make($questionInfo['Enumeration']),
+        );
+    }
+
+    private function createTrueFalseQuestionInfo(array $questionInfo): TrueFalse
+    {
+        return new TrueFalse(
+            $questionInfo['TruePartId'],
+            $questionInfo['TrueWeight'],
+            new RichText($questionInfo['TrueFeedback']['Text'], $questionInfo['TrueFeedback']['Html']),
+            $questionInfo['FalsePartId'],
+            $questionInfo['FalseWeight'],
+            new RichText($questionInfo['FalseFeedback']['Text'], $questionInfo['FalseFeedback']['Html']),
+            EnumerationType::make($questionInfo['Enumeration']),
+        );
+    }
+
+    private function createFillInTheBlankQuestionInfo(array $questionInfo): FillInTheBlank
+    {
+        $texts = new Collection();
+
+        foreach ($questionInfo['Texts'] as $text) {
+            $texts->add(
+                new FillInTheBlankText(
+                    new RichText($text['Text']['Text'], $questionInfo['Text']['Html']),
+                )
+            );
+        }
+
+        $blanks = new Collection();
+
+        foreach ($questionInfo['Blanks'] as $blank) {
+            $answers = new Collection();
+
+            foreach ($blank['Answers'] as $answer) {
+                $answers->add(
+                    new FillInTheBlankAnswer(
+                        $answer['TextAnswer'],
+                        $answer['Weight'],
+                        EvaluationType::make($answer['EvaluationType']),
+                    )
+                );
+            }
+
+            $blanks->add(
+                new FillInTheBlankBlank(
+                    $blank['PartId'],
+                    $blank['Size'],
+                    $answers,
+                )
+            );
+        }
+
+        return new FillInTheBlank(
+            $texts,
+            $blanks,
+        );
+    }
+
+    private function createMultiSelectAnswerQuestionInfo(array $questionInfo): MultiSelectAnswers
+    {
+        $answers = new Collection();
+
+        foreach ($questionInfo['Answers'] as $answer) {
+            $answers->add(
+                new MultiSelectAnswer(
+                    $answer['PartId'],
+                    new RichText($answer['Answer']['Text'], $answer['Answer']['Html']),
+                    new RichText($answer['AnswerFeedback']['Text'], $answer['AnswerFeedback']['Html']),
+                    $answer['IsCorrect'],
+                )
+            );
+        }
+
+        return new MultiSelectAnswers(
+            $answers,
+            $questionInfo['Randomize'],
+            EnumerationType::make($questionInfo['Enumeration']),
+            QuestionStyle::make($questionInfo['Style']),
+            QuestionGradingRule::make($questionInfo['GradingType']),
+        );
+    }
+
+    private function createLongAnswerQuestionInfo(array $questionInfo): LongAnswer
+    {
+        return new LongAnswer(
+            $questionInfo['PartId'],
+            $questionInfo['EnableStudentEditor'],
+            new RichText($questionInfo['InitialText']['Text'], $questionInfo['InitialText']['Html']),
+            new RichText($questionInfo['AnswerKey']['Text'], $questionInfo['AnswerKey']['Html']),
+            $questionInfo['EnableAttachments'],
+        );
+    }
+
+    private function createShortAnswerQuestionInfo(array $questionInfo): ShortAnswers
+    {
+        $blanks = new Collection();
+
+        foreach ($questionInfo['Blanks'] as $blank) {
+            $shortAnswerBlankAnswers = new Collection();
+
+            foreach ($blank['Answers'] as $answer) {
+                $shortAnswerBlankAnswers->add(
+                    new ShortAnswerBlankAnswer(
+                        $answer['Text'],
+                        $answer['Weight'],
+                    )
+                );
+            }
+
+            $blanks->add(
+                new ShortAnswerBlank(
+                    $blank['PartId'],
+                    $shortAnswerBlankAnswers,
+                    EvaluationType::make($blank['EvaluationType']),
+                )
+            );
+        }
+
+        return new ShortAnswers(
+            $blanks,
+            QuestionGradingRule::make($questionInfo['GradingType']),
+        );
+    }
+
+    private function createLikertQuestionInfo(array $questionInfo): Likert
+    {
+        $statements = new Collection();
+
+        foreach ($questionInfo['Statements'] as $statement) {
+            $statements->add(
+                new LikertStatement(
+                    $statement['PartId'],
+                    new RichText($statement['Statement']['Text'], $statement['Statement']['Html']),
+                )
+            );
+        }
+
+        return new Likert(
+            QuestionScaleOption::make($questionInfo['Scale']),
+            $questionInfo['NaOption'],
+            $statements,
+        );
+    }
+
+    private function createMultipleShortAnswerQuestionInfo(array $questionInfo): MultipleShortAnswers
+    {
+        $partIds = Collection::make($questionInfo['PartIds']);
+
+        $answers = new Collection();
+
+        foreach ($questionInfo['Answers'] as $answer) {
+            $answers->add(
+                new MultipleShortAnswer(
+                    $answer['AnswerText'],
+                    $answer['Weight'],
+                    EvaluationType::make($answer['EvaluationType']),
+                )
+            );
+        }
+
+        return new MultipleShortAnswers(
+            $partIds,
+            $questionInfo['Boxes'],
+            $questionInfo['Rows'],
+            $questionInfo['Columns'],
+            $answers,
         );
     }
 }
