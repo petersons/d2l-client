@@ -10,6 +10,7 @@ use Petersons\D2L\Contracts\ClientInterface;
 use Petersons\D2L\DTO\BrightspaceDataSet\BrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
+use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
 use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\ContentObject\Structure;
 use Petersons\D2L\DTO\ContentObject\Topic;
@@ -896,6 +897,27 @@ final class SymfonyHttpClient implements ClientInterface
         }
 
         return $collection;
+    }
+
+    public function updateContentTopicCompletion(ContentTopicCompletionUpdate $updateContentTopicCompletion, int $orgUnitId, int $topicId, int $userId): void
+    {
+        $method = 'PUT';
+        $path = sprintf('/d2l/api/le/%s/%d/content/topics/%d/completions/users/%d', $this->apiLeVersion, $orgUnitId, $topicId, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+                'json' => $updateContentTopicCompletion->toArray(),
+            ]
+        );
+
+        try {
+            $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
     }
 
     public function generateExpiringGuid(string $orgDefinedId): Guid

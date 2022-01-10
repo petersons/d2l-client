@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Petersons\D2L\DTO\BrightspaceDataSet\BrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
+use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
 use Petersons\D2L\DTO\ContentObject\ContentObject;
 use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
@@ -206,4 +207,10 @@ interface ClientInterface
      * @return Collection|ContentObject[]
      */
     public function getModuleStructureForAnOrganizationUnit(int $orgUnitId, int $moduleId): Collection;
+
+    /**
+     * @link https://docs.valence.desire2learn.com/res/content.html#put--d2l-api-le-(version)-(orgUnitId)-content-topics-(topicId)-completions-users-(userId)
+     * @throws ApiException
+     */
+    public function updateContentTopicCompletion(ContentTopicCompletionUpdate $updateContentTopicCompletion, int $orgUnitId, int $topicId, int $userId): void;
 }

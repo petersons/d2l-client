@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use Carbon\CarbonImmutable;
 use Petersons\D2L\AuthenticatedUriFactory;
+use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
 use Petersons\D2L\DTO\ContentObject\ContentObject;
 use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\ContentObject\Topic;
@@ -2395,6 +2396,71 @@ final class SymfonyHttpClientTest extends TestCase
         );
 
         $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
+    }
+
+    public function testUpdateContentTopicCompletionDoesNotThrowExceptionOnSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $time = CarbonImmutable::now();
+
+        $contentTopicCompletionUpdate = new ContentTopicCompletionUpdate($time);
+
+        $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
+                && $options['body'] === json_encode($contentTopicCompletionUpdate->toArray())
+            ) {
+                return new MockResponse('');
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testUpdateContentTopicCompletionThrowsExceptionOnNonSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $time = CarbonImmutable::now();
+
+        $contentTopicCompletionUpdate = new ContentTopicCompletionUpdate($time);
+
+        $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
+                && $options['body'] === json_encode($contentTopicCompletionUpdate->toArray())
+            ) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);
     }
 
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient
