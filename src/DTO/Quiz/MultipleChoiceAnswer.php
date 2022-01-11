@@ -16,7 +16,7 @@ final class MultipleChoiceAnswer implements Arrayable
         private int $partId,
         private RichText $answer,
         private RichText $answerFeedback,
-        private int $weight,
+        private float $weight,
     ) {
     }
 
@@ -35,7 +35,7 @@ final class MultipleChoiceAnswer implements Arrayable
         return $this->answerFeedback;
     }
 
-    public function getWeight(): int
+    public function getWeight(): float
     {
         return $this->weight;
     }
