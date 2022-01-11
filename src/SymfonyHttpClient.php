@@ -26,6 +26,7 @@ use Petersons\D2L\DTO\Enrollment\RoleInfo;
 use Petersons\D2L\DTO\Grade\GradeObject;
 use Petersons\D2L\DTO\Grade\GradeObjectCategory;
 use Petersons\D2L\DTO\Grade\GradeObjectCategoryData;
+use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Organization\OrganizationInfo;
 use Petersons\D2L\DTO\Organization\OrganizationUnitTypeInfo;
@@ -619,6 +620,28 @@ final class SymfonyHttpClient implements ClientInterface
         }
 
         return $collection;
+    }
+
+    public function updateGradeValueForUser(IncomingGradeValue $incomingGradeValue, int $orgUnitId, int $gradeObjectId, int $userId, string $bearerToken): void
+    {
+        $method = 'PUT';
+        $path = sprintf('/d2l/api/le/%s/%d/grades/%d/values/%d', $this->apiLeVersion, $orgUnitId, $gradeObjectId, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+                'json' => $incomingGradeValue->toArray(),
+                'auth_bearer' => $bearerToken,
+            ]
+        );
+
+        try {
+            $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
     }
 
     public function getOrganizationInfo(): OrganizationInfo

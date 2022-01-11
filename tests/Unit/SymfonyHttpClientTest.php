@@ -14,8 +14,10 @@ use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\ExportJobFilter;
 use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
 use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
+use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
+use Petersons\D2L\DTO\RichText;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\Exceptions\ApiException;
@@ -2113,6 +2115,81 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(106, $enrolledUsers[1]->getRoleInfo()->getId());
         $this->assertNull($enrolledUsers[1]->getRoleInfo()->getCode());
         $this->assertSame('Administrator (C)', $enrolledUsers[1]->getRoleInfo()->getName());
+    }
+
+    public function testUpdateGradeValueForUserDoesNotThrowExceptionOnSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $incomingGradeValue = IncomingGradeValue::numeric(
+            new RichText('', ''),
+            new RichText('', ''),
+            3.0,
+        );
+
+        $callback = function (string $method, string $url, array $options) use ($incomingGradeValue): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
+                &&
+                $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
+                &&
+                $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer foo'
+            ) {
+                return new MockResponse('');
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $client->updateGradeValueForUser($incomingGradeValue, 1, 2, 3, 'foo');
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testUpdateGradeValueForUserThrowsExceptionOnNonSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $incomingGradeValue = IncomingGradeValue::numeric(
+            new RichText('', ''),
+            new RichText('', ''),
+            3.0,
+        );
+
+        $callback = function (string $method, string $url, array $options) use ($incomingGradeValue): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
+                &&
+                $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
+                &&
+                $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer bar'
+            ) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->updateGradeValueForUser($incomingGradeValue, 1, 2, 3, 'bar');
     }
 
     public function testGetOrganizationInfo(): void

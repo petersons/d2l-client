@@ -19,6 +19,7 @@ use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Enrollment\Enrollment;
 use Petersons\D2L\DTO\Enrollment\OrganizationUnitUser;
 use Petersons\D2L\DTO\Grade\GradeObjectCategory;
+use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Organization\OrganizationInfo;
 use Petersons\D2L\DTO\Organization\OrgUnit;
@@ -153,6 +154,12 @@ interface ClientInterface
      * @return Collection|OrganizationUnitUser[]
      */
     public function getEnrolledUsersForAnOrganizationUnit(int $orgUnitId): Collection;
+
+    /**
+     * @link https://docs.valence.desire2learn.com/res/grade.html#put--d2l-api-le-(version)-(orgUnitId)-grades-(gradeObjectId)-values-(userId)
+     * @throws ApiException
+     */
+    public function updateGradeValueForUser(IncomingGradeValue $incomingGradeValue, int $orgUnitId, int $gradeObjectId, int $userId, string $bearerToken): void;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/orgunit.html#get--d2l-api-lp-(version)-organization-info
