@@ -14,12 +14,12 @@ final class IncomingGradeValueTest extends TestCase
     {
         $data = [
             'Comments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'PrivateComments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'GradeObjectType' => 1,
             'PointsNumerator' => 5.0,
@@ -34,12 +34,12 @@ final class IncomingGradeValueTest extends TestCase
     {
         $data = [
             'Comments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'PrivateComments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Html',
             ],
             'GradeObjectType' => 2,
             'Pass' => true,
@@ -54,12 +54,12 @@ final class IncomingGradeValueTest extends TestCase
     {
         $data = [
             'Comments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'PrivateComments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'GradeObjectType' => 3,
             'Value' => 'foo',
@@ -74,12 +74,12 @@ final class IncomingGradeValueTest extends TestCase
     {
         $data = [
             'Comments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'PrivateComments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'GradeObjectType' => 4,
             'Text' => 'foo',
@@ -94,12 +94,12 @@ final class IncomingGradeValueTest extends TestCase
     {
         $data = [
             'Comments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'PrivateComments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'Text' => 'foo',
         ];
@@ -113,12 +113,12 @@ final class IncomingGradeValueTest extends TestCase
     {
         $data = [
             'Comments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'PrivateComments' => [
-                'Text' => '',
-                'Html' => '',
+                'Content' => '',
+                'Type' => 'Text',
             ],
             'GradeObjectType' => 5,
             'Text' => 'foo',

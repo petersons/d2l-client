@@ -17,9 +17,10 @@ use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
-use Petersons\D2L\DTO\RichText;
+use Petersons\D2L\DTO\RichTextInput;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
+use Petersons\D2L\Enum\RichTextInputType;
 use Petersons\D2L\Exceptions\ApiException;
 use Petersons\D2L\SymfonyHttpClient;
 use PHPUnit\Framework\TestCase;
@@ -2122,8 +2123,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->freezeTime();
 
         $incomingGradeValue = IncomingGradeValue::numeric(
-            new RichText('', ''),
-            new RichText('', ''),
+            new RichTextInput('', RichTextInputType::make('Text')),
+            new RichTextInput('', RichTextInputType::make('Text')),
             3.0,
         );
 
@@ -2157,8 +2158,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->freezeTime();
 
         $incomingGradeValue = IncomingGradeValue::numeric(
-            new RichText('', ''),
-            new RichText('', ''),
+            new RichTextInput('', RichTextInputType::make('Text')),
+            new RichTextInput('', RichTextInputType::make('Text')),
             3.0,
         );
 

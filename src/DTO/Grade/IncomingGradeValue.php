@@ -6,15 +6,16 @@ namespace Petersons\D2L\DTO\Grade;
 
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
-use Petersons\D2L\DTO\RichText;
+use Petersons\D2L\DTO\RichTextInput;
 use Petersons\D2L\Enum\Grade\GradeObjectType;
+use Petersons\D2L\Enum\RichTextInputType;
 
 /**
  * @link https://docs.valence.desire2learn.com/res/grade.html#Grade.IncomingGradeValue
  */
 final class IncomingGradeValue implements Arrayable
 {
-    public static function numeric(RichText $comments, RichText $privateComments, float $pointsNumerator): self
+    public static function numeric(RichTextInput $comments, RichTextInput $privateComments, float $pointsNumerator): self
     {
         return new self(
             $comments,
@@ -24,7 +25,7 @@ final class IncomingGradeValue implements Arrayable
         );
     }
 
-    public static function passFail(RichText $comments, RichText $privateComments, bool $pass): self
+    public static function passFail(RichTextInput $comments, RichTextInput $privateComments, bool $pass): self
     {
         return new self(
             $comments,
@@ -35,7 +36,7 @@ final class IncomingGradeValue implements Arrayable
         );
     }
 
-    public static function selectBox(RichText $comments, RichText $privateComments, string $value): self
+    public static function selectBox(RichTextInput $comments, RichTextInput $privateComments, string $value): self
     {
         return new self(
             $comments,
@@ -47,7 +48,7 @@ final class IncomingGradeValue implements Arrayable
         );
     }
 
-    public static function text(RichText $comments, RichText $privateComments, string $text): self
+    public static function text(RichTextInput $comments, RichTextInput $privateComments, string $text): self
     {
         return new self(
             $comments,
@@ -81,31 +82,31 @@ final class IncomingGradeValue implements Arrayable
 
         if ($gradeObjectType->isNumbers()) {
             return self::numeric(
-                new RichText($data['Comments']['Text'], $data['Comments']['Html']),
-                new RichText($data['PrivateComments']['Text'], $data['PrivateComments']['Html']),
+                new RichTextInput($data['Comments']['Content'], RichTextInputType::make($data['Comments']['Type'])),
+                new RichTextInput($data['PrivateComments']['Content'], RichTextInputType::make($data['PrivateComments']['Type'])),
                 $data['PointsNumerator'],
             );
         }
 
         if ($gradeObjectType->isPassFail()) {
             return self::passFail(
-                new RichText($data['Comments']['Text'], $data['Comments']['Html']),
-                new RichText($data['PrivateComments']['Text'], $data['PrivateComments']['Html']),
+                new RichTextInput($data['Comments']['Content'], RichTextInputType::make($data['Comments']['Type'])),
+                new RichTextInput($data['PrivateComments']['Content'], RichTextInputType::make($data['PrivateComments']['Type'])),
                 $data['Pass'],
             );
         }
 
         if ($gradeObjectType->isSelectBox()) {
             return self::selectBox(
-                new RichText($data['Comments']['Text'], $data['Comments']['Html']),
-                new RichText($data['PrivateComments']['Text'], $data['PrivateComments']['Html']),
+                new RichTextInput($data['Comments']['Content'], RichTextInputType::make($data['Comments']['Type'])),
+                new RichTextInput($data['PrivateComments']['Content'], RichTextInputType::make($data['PrivateComments']['Type'])),
                 $data['Value'],
             );
         }
 
         return self::text(
-            new RichText($data['Comments']['Text'], $data['Comments']['Html']),
-            new RichText($data['PrivateComments']['Text'], $data['PrivateComments']['Html']),
+            new RichTextInput($data['Comments']['Content'], RichTextInputType::make($data['Comments']['Type'])),
+            new RichTextInput($data['PrivateComments']['Content'], RichTextInputType::make($data['PrivateComments']['Type'])),
             $data['Text'],
         );
     }
@@ -142,8 +143,8 @@ final class IncomingGradeValue implements Arrayable
     }
 
     private function __construct(
-        private RichText $comments,
-        private RichText $privateComments,
+        private RichTextInput $comments,
+        private RichTextInput $privateComments,
         private GradeObjectType $gradeObjectType,
         private ?float $pointsNumerator = null,
         private ?bool $pass = null,
