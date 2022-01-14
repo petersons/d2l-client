@@ -16,7 +16,9 @@ use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
 use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
+use Petersons\D2L\DTO\Quiz\LongAnswer;
 use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
+use Petersons\D2L\DTO\Quiz\ShortAnswers;
 use Petersons\D2L\DTO\RichTextInput;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
@@ -1714,6 +1716,150 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertFalse($questionInfo->isRandomize());
         $this->assertSame(4, $questionInfo->getEnumeration()->type());
+    }
+
+    public function testQuizQuestionsListWithLongAnswerType(): void
+    {
+        $this->freezeTime();
+
+        $quizQuestionsListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_questions_list_with_long_answer_type.json');
+        $callback = function (string $method, string $url, array $options) use ($quizQuestionsListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12396/quizzes/40412/questions/?x_a=baz&x_b=foo&x_c=i8cvgucGOeXc4ecjBVbhj-1Hbui7j9dQ7XU3YN0MnRY&x_d=3g2mBt2EZ7we-3wIUEoCivMVo0_6el4DmcB_ilp2qjs&x_t=1615390200&bookmark=' === $url) {
+                return new MockResponse($quizQuestionsListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizQuestionListPage = $client->quizQuestionsList(12396, 40412);
+
+        $this->assertNull($quizQuestionListPage->getNextUrl());
+
+        $questions = $quizQuestionListPage->getObjects();
+
+        $this->assertCount(1, $questions);
+
+        $this->assertSame(3005481, $questions[0]->getId());
+        $this->assertSame(7, $questions[0]->getType()->type());
+        $this->assertSame('CLEP-CollegeComposition-PT1-S2-Q1', $questions[0]->getName());
+        $this->assertStringContainsString(
+            'Directions: Write an essay',
+            $questions[0]->getText()->getText()
+        );
+        $this->assertStringContainsString(
+            'Write an essay in which you discuss',
+            $questions[0]->getText()->getHtml()
+        );
+        $this->assertSame(1.0, $questions[0]->getPoints());
+        $this->assertSame(1, $questions[0]->getDifficulty());
+        $this->assertFalse($questions[0]->isBonus());
+        $this->assertFalse($questions[0]->isMandatory());
+        $this->assertNull($questions[0]->getHint());
+        $this->assertStringContainsString(
+            'Sample Essay A: This essay is scored a 6',
+            $questions[0]->getFeedback()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p><strong>Sample Essay A:</strong> This essay is scored a 6',
+            $questions[0]->getFeedback()->getHtml()
+        );
+        $this->assertSame('2021-03-30T22:42:46+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
+        $this->assertNull($questions[0]->getLastModifiedBy());
+        $this->assertSame(0, $questions[0]->getSectionId());
+        $this->assertSame(143538, $questions[0]->getTemplateId());
+        $this->assertSame(185743, $questions[0]->getTemplateVersionId());
+
+        /** @var LongAnswer $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(LongAnswer::class, $questionInfo);
+
+        $this->assertSame(785986, $questionInfo->getPartId());
+        $this->assertFalse($questionInfo->studentEditorEnabled());
+        $this->assertSame('', $questionInfo->getInitialText()->getText());
+        $this->assertSame('', $questionInfo->getInitialText()->getHtml());
+        $this->assertSame('', $questionInfo->getAnswerKey()->getText());
+        $this->assertSame('', $questionInfo->getAnswerKey()->getHtml());
+        $this->assertFalse($questionInfo->attachmentsEnabled());
+    }
+
+    public function testQuizQuestionsListWithShortAnswerType(): void
+    {
+        $this->freezeTime();
+
+        $quizQuestionsListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_questions_list_with_short_answer_type.json');
+        $callback = function (string $method, string $url, array $options) use ($quizQuestionsListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12408/quizzes/16532/questions/?x_a=baz&x_b=foo&x_c=lohTujGj5AEQNxtIk317SG3wzXCiewwn0oigBQSrnNA&x_d=Djf5WWfF8DXyplxpB00OLCGnE43FfHtc4kj2wHZariI&x_t=1615390200&bookmark=' === $url) {
+                return new MockResponse($quizQuestionsListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizQuestionListPage = $client->quizQuestionsList(12408, 16532);
+
+        $this->assertSame(
+            'https://learn.petersons.com/d2l/api/le/1.60/12408/quizzes/16532/questions/?bookmark=1492746',
+            $quizQuestionListPage->getNextUrl()
+        );
+
+        $questions = $quizQuestionListPage->getObjects();
+
+        $this->assertCount(1, $questions);
+
+        $this->assertSame(1492746, $questions[0]->getId());
+        $this->assertSame(8, $questions[0]->getType()->type());
+        $this->assertSame('CLEP-PT1-S2-Q8', $questions[0]->getName());
+        $this->assertStringContainsString(
+            'A car starts at point A and drives 30 miles due east',
+            $questions[0]->getText()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p>A car starts at point A and drives 30 miles due east',
+            $questions[0]->getText()->getHtml()
+        );
+        $this->assertSame(1.0, $questions[0]->getPoints());
+        $this->assertSame(1, $questions[0]->getDifficulty());
+        $this->assertFalse($questions[0]->isBonus());
+        $this->assertFalse($questions[0]->isMandatory());
+        $this->assertNull($questions[0]->getHint());
+        $this->assertStringContainsString(
+            'The correct answer is 34.6.',
+            $questions[0]->getFeedback()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p><strong>The correct answer is 34.6.',
+            $questions[0]->getFeedback()->getHtml()
+        );
+        $this->assertSame('2021-06-07T18:11:28+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
+        $this->assertSame(4966, $questions[0]->getLastModifiedBy());
+        $this->assertSame(0, $questions[0]->getSectionId());
+        $this->assertSame(93628, $questions[0]->getTemplateId());
+        $this->assertSame(207910, $questions[0]->getTemplateVersionId());
+
+        /** @var ShortAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(ShortAnswers::class, $questionInfo);
+
+        $blanks = $questionInfo->getBlanks();
+        $this->assertCount(1, $blanks);
+
+        $this->assertSame(879853, $blanks[0]->getPartId());
+
+        $answers = $blanks[0]->getAnswers();
+
+        $this->assertSame('34.6', $answers[0]->getText());
+        $this->assertSame(100, $answers[0]->getWeight());
+
+        $this->assertSame(0, $blanks[0]->getEvaluationType()->type());
+        $this->assertSame(0, $questionInfo->getGradingType()->rule());
     }
 
     public function testQuizQuestionsListWithBookmark(): void

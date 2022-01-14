@@ -1,0 +1,43 @@
+{
+    "Objects": [
+        {
+            "QuestionId": 1492746,
+            "QuestionTypeId": 8,
+            "Name": "CLEP-PT1-S2-Q8",
+            "QuestionText": {
+                "Text": "A car starts at point A and drives 30 miles due east to point B, then turns 150° counterclockwise and drives to point C, which is due north of point A. How far is point B from point C? Write your answer to the nearest tenth of a mile.",
+                "Html": "<p>A car starts at point A and drives 30 miles due east to point B, then turns 150&#176; counterclockwise and drives to point C, which is due north of point A. How far is point B from point C? Write your answer to the nearest tenth of a mile.</p>"
+            },
+            "Points": 1,
+            "Difficulty": 1,
+            "Bonus": false,
+            "Mandatory": false,
+            "Hint": null,
+            "Feedback": {
+                "Text": "The correct answer is 34.6. First draw a diagram illustrating the situation:\n\nUse the identity cos(θ)=adjacenthypotenuse:\ncos30°=30x\n32=30x\n3x=60\nx=603\n≈ 34.6",
+                "Html": "<p><strong>The correct answer is 34.6.</strong>&#160;First draw a diagram illustrating the situation:</p>\n<p><img style=\"max-width: 100%;\" src=\"/content/enforced/12408-PCOM_541/PastedImage_wlsz1c51ccxgq6sbv67fwb7xvu43yo8s002.png\"/></p>\n<p>Use the identity <math title=\"\" xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"inline\"><semantics><mstyle><mi>cos</mi><mo>(</mo><mi>θ</mi><mo>)</mo><mo>=</mo><mfrac><mtext>adjacent</mtext><mtext>hypotenuse</mtext></mfrac></mstyle><annotation encoding=\"wiris\">{&quot;version&quot;:&quot;1.1&quot;,&quot;math&quot;:&quot;&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;cos&lt;/mi&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mi&gt;&amp;#x3B8;&lt;/mi&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mfrac&gt;&lt;mtext&gt;adjacent&lt;/mtext&gt;&lt;mtext&gt;hypotenuse&lt;/mtext&gt;&lt;/mfrac&gt;&lt;/math&gt;&quot;}</annotation></semantics></math>:</p>\n<p><math title=\"\" xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"inline\"><semantics><mstyle><mi>cos</mi><mfenced><mrow><mn>30</mn><mo>&#176;</mo></mrow></mfenced><mo>=</mo><mfrac><mn>30</mn><mi>x</mi></mfrac></mstyle><annotation encoding=\"wiris\">{&quot;version&quot;:&quot;1.1&quot;,&quot;math&quot;:&quot;&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;cos&lt;/mi&gt;&lt;mfenced&gt;&lt;mrow&gt;&lt;mn&gt;30&lt;/mn&gt;&lt;mo&gt;&amp;#xB0;&lt;/mo&gt;&lt;/mrow&gt;&lt;/mfenced&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mfrac&gt;&lt;mn&gt;30&lt;/mn&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/mfrac&gt;&lt;/math&gt;&quot;}</annotation></semantics></math></p>\n<p><math title=\"\" xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"inline\"><semantics><mstyle><mfrac><msqrt><mn>3</mn></msqrt><mn>2</mn></mfrac><mo>=</mo><mfrac><mn>30</mn><mi>x</mi></mfrac></mstyle><annotation encoding=\"wiris\">{&quot;version&quot;:&quot;1.1&quot;,&quot;math&quot;:&quot;&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mfrac&gt;&lt;msqrt&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/msqrt&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/mfrac&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mfrac&gt;&lt;mn&gt;30&lt;/mn&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/mfrac&gt;&lt;/math&gt;&quot;}</annotation></semantics></math></p>\n<p><math title=\"\" xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"inline\"><semantics><mstyle><msqrt><mn>3</mn></msqrt><mi>x</mi><mo>=</mo><mn>60</mn></mstyle><annotation encoding=\"wiris\">{&quot;version&quot;:&quot;1.1&quot;,&quot;math&quot;:&quot;&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msqrt&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/msqrt&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;60&lt;/mn&gt;&lt;/math&gt;&quot;}</annotation></semantics></math></p>\n<p><math title=\"\" xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"inline\"><semantics><mstyle><mi>x</mi><mo>=</mo><mfrac><mn>60</mn><msqrt><mn>3</mn></msqrt></mfrac></mstyle><annotation encoding=\"wiris\">{&quot;version&quot;:&quot;1.1&quot;,&quot;math&quot;:&quot;&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mfrac&gt;&lt;mn&gt;60&lt;/mn&gt;&lt;msqrt&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/msqrt&gt;&lt;/mfrac&gt;&lt;/math&gt;&quot;}</annotation></semantics></math></p>\n<p>≈ 34.6</p>"
+            },
+            "LastModifiedBy": 4966,
+            "LastModified": "2021-06-07T18:11:28.410Z",
+            "SectionId": 0,
+            "QuestionTemplateId": 93628,
+            "QuestionTemplateVersionId": 207910,
+            "QuestionInfo": {
+                "Blanks": [
+                    {
+                        "PartId": 879853,
+                        "Answers": [
+                            {
+                                "Text": "34.6",
+                                "Weight": 100
+                            }
+                        ],
+                        "EvaluationType": 0
+                    }
+                ],
+                "GradingType": 0
+            }
+        }
+    ],
+    "Next": "https://learn.petersons.com/d2l/api/le/1.60/12408/quizzes/16532/questions/?bookmark=1492746"
+}
