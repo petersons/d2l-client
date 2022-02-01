@@ -11,7 +11,7 @@ final class MultipleShortAnswer implements Arrayable
 {
     public function __construct(
         private string $answerText,
-        private int $weight,
+        private float $weight,
         private EvaluationType $evaluationType,
     ) {
     }
@@ -21,7 +21,7 @@ final class MultipleShortAnswer implements Arrayable
         return $this->answerText;
     }
 
-    public function getWeight(): int
+    public function getWeight(): float
     {
         return $this->weight;
     }

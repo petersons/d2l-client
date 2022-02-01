@@ -1856,7 +1856,7 @@ final class SymfonyHttpClientTest extends TestCase
         $answers = $blanks[0]->getAnswers();
 
         $this->assertSame('34.6', $answers[0]->getText());
-        $this->assertSame(100, $answers[0]->getWeight());
+        $this->assertSame(100.0, $answers[0]->getWeight());
 
         $this->assertSame(0, $blanks[0]->getEvaluationType()->type());
         $this->assertSame(0, $questionInfo->getGradingType()->rule());

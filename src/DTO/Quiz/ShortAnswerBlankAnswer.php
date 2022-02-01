@@ -10,7 +10,7 @@ final class ShortAnswerBlankAnswer implements Arrayable
 {
     public function __construct(
         private string $text,
-        private int $weight
+        private float $weight
     ) {
     }
 
@@ -19,7 +19,7 @@ final class ShortAnswerBlankAnswer implements Arrayable
         return $this->text;
     }
 
-    public function getWeight(): int
+    public function getWeight(): float
     {
         return $this->weight;
     }

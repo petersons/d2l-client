@@ -11,7 +11,7 @@ final class FillInTheBlankAnswer implements Arrayable
 {
     public function __construct(
         private string $textAnswer,
-        private int $weight,
+        private float $weight,
         private EvaluationType $evaluationType
     ) {
     }
@@ -21,7 +21,7 @@ final class FillInTheBlankAnswer implements Arrayable
         return $this->textAnswer;
     }
 
-    public function getWeight(): int
+    public function getWeight(): float
     {
         return $this->weight;
     }
