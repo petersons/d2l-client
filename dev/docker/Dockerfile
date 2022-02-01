@@ -3,7 +3,7 @@ ARG PHP_VERSION=8.0
 FROM php:${PHP_VERSION}-cli-alpine
 LABEL maintainer="Antonio Pauletich <antonio.pauletich95@gmail.com>"
 
-ARG COMPOSER_VERSION=2.1.14
+ARG COMPOSER_VERSION=2.2.4
 ARG XDEBUG_VERSION=3.1.2
 
 ENV XDEBUG_START_WITH_REQUEST "no"

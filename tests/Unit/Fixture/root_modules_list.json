@@ -1,0 +1,61 @@
+[
+  {
+    "Description": {
+      "Text": "",
+      "Html": ""
+    },
+    "ParentModuleId": null,
+    "ModuleDueDate": null,
+    "Structure": [
+      {
+        "Id": 862,
+        "Title": "Getting Started",
+        "ShortTitle": "",
+        "Type": 1,
+        "LastModifiedDate": "2020-07-29T18:09:33.633Z"
+      }
+    ],
+    "ModuleStartDate": null,
+    "ModuleEndDate": null,
+    "IsHidden": false,
+    "IsLocked": false,
+    "Id": 861,
+    "Title": "Getting Started",
+    "ShortTitle": "",
+    "Type": 0,
+    "LastModifiedDate": "2017-11-04T17:45:48.067Z"
+  },
+  {
+    "Description": {
+      "Text": "This module contains video playlists outline common tasks that can be completed in Brightspace tools.  Remember you can also connect and learn using some of the following:\n\nVisit our community site and few some frequently asked questions\nVisit our documentation site to view some steps for completing common tasks.\nView our learner guides for popular tools\nDownload Brightspace Apps: Pulse | ePorfolio \n",
+      "Html": "<p>This module contains video playlists outline common tasks that can be completed in Brightspace tools.&#160; Remember you can also connect and learn using some of the following:</p>\n<ul>\n<li>Visit our <a rel=\"noopener\" href=\"https://community.brightspace.com/s/topic/0TO610000000JcvGAE/learner\">community site</a><span style=\"font-size: 0.95rem;letter-spacing: 0.01rem;\">&#160;and few some frequently asked questions</span></li>\n<li>Visit our <a rel=\"noopener\" href=\"https://documentation.brightspace.com/EN/learners/learners.htm?tocpath=Learners%7c_____0\">documentation site</a><span style=\"font-size: 0.95rem;letter-spacing: 0.01rem;\">&#160;to view some steps for completing common tasks.</span></li>\n<li>View our <a rel=\"noopener\" href=\"https://community.brightspace.com/s/article/Guides-Learners\">learner guides</a> for popular tools</li>\n<li>Download Brightspace Apps: <a rel=\"noopener\" href=\"https://www.d2l.com/products/pulse/\">Pulse</a>&#160;| <a rel=\"noopener\" href=\"https://www.d2l.com/products/eportfolio/\">ePorfolio&#160;</a></li>\n</ul>"
+    },
+    "ParentModuleId": null,
+    "ModuleDueDate": null,
+    "Structure": [
+      {
+        "Id": 864,
+        "Title": "Quick Tips for Getting Started",
+        "ShortTitle": "",
+        "Type": 1,
+        "LastModifiedDate": "2017-11-04T17:45:50.053Z"
+      },
+      {
+        "Id": 865,
+        "Title": "Using ePortfolio",
+        "ShortTitle": "",
+        "Type": 1,
+        "LastModifiedDate": "2017-11-04T17:45:50.130Z"
+      }
+    ],
+    "ModuleStartDate": null,
+    "ModuleEndDate": null,
+    "IsHidden": false,
+    "IsLocked": false,
+    "Id": 863,
+    "Title": "Learner Essentials",
+    "ShortTitle": "",
+    "Type": 0,
+    "LastModifiedDate": "2020-07-29T17:58:22.740Z"
+  }
+]

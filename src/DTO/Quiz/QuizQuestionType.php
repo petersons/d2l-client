@@ -53,6 +53,76 @@ final class QuizQuestionType
         return $this->type;
     }
 
+    public function isMultipleChoice(): bool
+    {
+        return self::MULTIPLE_CHOICE === $this->type;
+    }
+
+    public function isTrueFalse(): bool
+    {
+        return self::TRUE_FALSE === $this->type;
+    }
+
+    public function isFillInTheBlank(): bool
+    {
+        return self::FILL_IN_THE_BLANK === $this->type;
+    }
+
+    public function isMultiSelect(): bool
+    {
+        return self::MULTI_SELECT === $this->type;
+    }
+
+    public function isMatching(): bool
+    {
+        return self::MATCHING === $this->type;
+    }
+
+    public function isOrdering(): bool
+    {
+        return self::ORDERING === $this->type;
+    }
+
+    public function isLongAnswer(): bool
+    {
+        return self::LONG_ANSWER === $this->type;
+    }
+
+    public function isShortAnswer(): bool
+    {
+        return self::SHORT_ANSWER === $this->type;
+    }
+
+    public function isLikert(): bool
+    {
+        return self::LIKERT === $this->type;
+    }
+
+    public function isImageInfo(): bool
+    {
+        return self::IMAGE_INFO === $this->type;
+    }
+
+    public function isTextInfo(): bool
+    {
+        return self::TEXT_INFO === $this->type;
+    }
+
+    public function isArithmetic(): bool
+    {
+        return self::ARITHMETIC === $this->type;
+    }
+
+    public function isSignificantFigures(): bool
+    {
+        return self::SIGNIFICANT_FIGURES === $this->type;
+    }
+
+    public function isMultiShortAnswer(): bool
+    {
+        return self::MULTI_SHORT_ANSWER === $this->type;
+    }
+
     private function __construct(private int $type)
     {
         if (!in_array($type, self::SUPPORTED_TYPES, true)) {

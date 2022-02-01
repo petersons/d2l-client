@@ -1,0 +1,80 @@
+[
+  {
+    "ActivityId": null,
+    "IsExempt": false,
+    "DueDate": null,
+    "Description": {
+      "Text": "",
+      "Html": ""
+    },
+    "ParentModuleId": 321600,
+    "OpenAsExternalResource": false,
+    "TopicType": 3,
+    "Url": "https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=200",
+    "StartDate": null,
+    "EndDate": null,
+    "IsHidden": false,
+    "IsLocked": false,
+    "ActivityType": 2,
+    "ToolId": null,
+    "ToolItemId": null,
+    "GradeItemId": null,
+    "Id": 321655,
+    "Title": "Introduction to the Dean Vaughn Total Retention System®",
+    "ShortTitle": "",
+    "Type": 1,
+    "LastModifiedDate": "2021-12-23T15:46:21.353Z"
+  },
+  {
+    "ActivityId": null,
+    "IsExempt": false,
+    "DueDate": null,
+    "Description": {
+      "Text": "",
+      "Html": ""
+    },
+    "ParentModuleId": 321600,
+    "OpenAsExternalResource": false,
+    "TopicType": 3,
+    "Url": "https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=201",
+    "StartDate": null,
+    "EndDate": null,
+    "IsHidden": false,
+    "IsLocked": false,
+    "ActivityType": 2,
+    "ToolId": null,
+    "ToolItemId": null,
+    "GradeItemId": null,
+    "Id": 321656,
+    "Title": "The Dean Vaughn Total Retention System™- Part 1",
+    "ShortTitle": "",
+    "Type": 1,
+    "LastModifiedDate": "2021-12-23T15:46:21.470Z"
+  },
+  {
+    "ActivityId": null,
+    "IsExempt": false,
+    "DueDate": null,
+    "Description": {
+      "Text": "",
+      "Html": ""
+    },
+    "ParentModuleId": 321600,
+    "OpenAsExternalResource": false,
+    "TopicType": 3,
+    "Url": "https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=202",
+    "StartDate": null,
+    "EndDate": null,
+    "IsHidden": false,
+    "IsLocked": false,
+    "ActivityType": 2,
+    "ToolId": null,
+    "ToolItemId": null,
+    "GradeItemId": null,
+    "Id": 321657,
+    "Title": "The Dean Vaughn Total Retention System™- Part 2",
+    "ShortTitle": "",
+    "Type": 1,
+    "LastModifiedDate": "2021-12-23T15:46:21.527Z"
+  }
+]

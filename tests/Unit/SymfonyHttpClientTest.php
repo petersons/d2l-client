@@ -6,13 +6,23 @@ namespace Tests\Unit;
 
 use Carbon\CarbonImmutable;
 use Petersons\D2L\AuthenticatedUriFactory;
+use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
+use Petersons\D2L\DTO\ContentObject\ContentObject;
+use Petersons\D2L\DTO\ContentObject\Module;
+use Petersons\D2L\DTO\ContentObject\Topic;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\ExportJobFilter;
 use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
 use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
+use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
+use Petersons\D2L\DTO\Quiz\LongAnswer;
+use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
+use Petersons\D2L\DTO\Quiz\ShortAnswers;
+use Petersons\D2L\DTO\RichTextInput;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
+use Petersons\D2L\Enum\RichTextInputType;
 use Petersons\D2L\Exceptions\ApiException;
 use Petersons\D2L\SymfonyHttpClient;
 use PHPUnit\Framework\TestCase;
@@ -26,6 +36,67 @@ final class SymfonyHttpClientTest extends TestCase
     {
         CarbonImmutable::setTestNow();
         parent::tearDown();
+    }
+
+    public function testFetchingUserById(): void
+    {
+        $this->freezeTime();
+
+        $userJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'user_fetch_by_id_response.json');
+        $callback = function (string $method, string $url, array $options) use ($userJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=FpMfkzXcBy3gqB2smJhHzyQv6m8JlMVURMpFbtn5j0U&x_d=kZdNU7pg3RQR7GQ319kNTDCMJfybaa5KtjbqziiR9SM&x_t=1615390200' === $url) {
+                return new MockResponse($userJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $user = $client->getUserById(3163);
+
+        $this->assertSame(6606, $user->getOrgId());
+        $this->assertSame(3163, $user->getUserId());
+        $this->assertSame('Nicholas', $user->getFirstName());
+        $this->assertNull($user->getMiddleName());
+        $this->assertSame('Test', $user->getLastName());
+        $this->assertSame('Nicholas.Test.2.1356', $user->getUsername());
+        $this->assertSame('petersons_508833_0@email.fake', $user->getExternalEmail());
+        $this->assertSame('2.508833', $user->getOrgDefinedId());
+        $this->assertSame('Nicholas.Holland.2.1356', $user->getUniqueIdentifier());
+        $this->assertTrue($user->isActive());
+        $this->assertSame(
+            CarbonImmutable::createFromFormat("Y-m-d\TH:i:s.v\Z", '2020-07-22T03:05:09.700Z')->toAtomString(),
+            $user->getLastAccessedAt()->toAtomString()
+        );
+    }
+
+    public function testFetchingUserByIdWhenD2LReturnsNotFoundResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=FpMfkzXcBy3gqB2smJhHzyQv6m8JlMVURMpFbtn5j0U&x_d=kZdNU7pg3RQR7GQ319kNTDCMJfybaa5KtjbqziiR9SM&x_t=1615390200' === $url) {
+                return new MockResponse('', ['http_code' => 404]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=FpMfkzXcBy3gqB2smJhHzyQv6m8JlMVURMpFbtn5j0U&x_d=kZdNU7pg3RQR7GQ319kNTDCMJfybaa5KtjbqziiR9SM&x_t=1615390200".',
+                404
+            )
+        );
+
+        $client->getUserById(3163);
     }
 
     public function testFetchingUserByOrgDefinedId(): void
@@ -1050,6 +1121,74 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($client->findBrightspaceDataExportItemByName('Rubric Object Criteria 1'));
     }
 
+    public function testGetQuizById(): void
+    {
+        $this->freezeTime();
+
+        $quizJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_fetch_by_id_response.json');
+        $callback = function (string $method, string $url, array $options) use ($quizJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/514893/quizzes/46673?x_a=baz&x_b=foo&x_c=zDeDx7bLby5mVCJ7AovrXKqvZq-pVtEysBW3exY-gzk&x_d=JuXn5lEot0_ON-AupXnHK8K5l2agmJxyv_P0l7TIxkY&x_t=1615390200' === $url) {
+                return new MockResponse($quizJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quiz = $client->getQuizById(514893, 46673);
+
+        $this->assertSame(46673, $quiz->getId());
+        $this->assertSame('Module 4 Prefixes Quiz', $quiz->getName());
+        $this->assertTrue($quiz->isActive());
+        $this->assertSame(5, $quiz->getSortOrder());
+        $this->assertTrue($quiz->getAutoExportToGrades());
+        $this->assertSame(50354, $quiz->getGradeItemId());
+        $this->assertTrue($quiz->isAutoSetGraded());
+        $this->assertSame('', $quiz->getInstructions()->getText()->getText());
+        $this->assertSame('', $quiz->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quiz->getInstructions()->isDisplayed());
+        $this->assertSame('', $quiz->getDescription()->getText()->getText());
+        $this->assertSame('', $quiz->getDescription()->getText()->getHtml());
+        $this->assertFalse($quiz->getDescription()->isDisplayed());
+        $this->assertSame('2021-10-14 14:00:00', $quiz->getStartDate()->format('Y-m-d H:i:s'));
+        $this->assertSame('2021-11-04 22:00:00', $quiz->getEndDate()->format('Y-m-d H:i:s'));
+        $this->assertSame('2021-10-15 22:00:00', $quiz->getDueDate()->format('Y-m-d H:i:s'));
+        $this->assertFalse($quiz->displayInCalendar());
+        $this->assertTrue($quiz->getAttemptsAllowed()->isUnlimited());
+        $this->assertNull($quiz->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(0, $quiz->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertNull($quiz->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertFalse($quiz->getSubmissionTimeLimit()->isEnforced());
+        $this->assertFalse($quiz->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(120, $quiz->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(5, $quiz->getSubmissionGracePeriod());
+        $this->assertNull($quiz->getPassword());
+        $this->assertSame('', $quiz->getHeader()->getText()->getText());
+        $this->assertSame('', $quiz->getHeader()->getText()->getHtml());
+        $this->assertFalse($quiz->getHeader()->isDisplayed());
+        $this->assertSame('', $quiz->getFooter()->getText()->getText());
+        $this->assertSame('', $quiz->getFooter()->getText()->getHtml());
+        $this->assertFalse($quiz->getFooter()->isDisplayed());
+        $this->assertFalse($quiz->allowHints());
+        $this->assertFalse($quiz->disableRightClick());
+        $this->assertFalse($quiz->disablePagerAndAlerts());
+        $this->assertNull($quiz->getNotificationEmail());
+        $this->assertSame(1, $quiz->getCalcTypeId()->getOption());
+        $this->assertTrue($quiz->getRestrictIPAddressRange()->isEmpty());
+        $this->assertNull($quiz->getCategoryId());
+        $this->assertFalse($quiz->preventMovingBackwards());
+        $this->assertFalse($quiz->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-77531',
+            $quiz->getActivityId()
+        );
+        $this->assertFalse($quiz->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quiz->isRetakeIncorrectOnly());
+    }
+
     public function testQuizzesListWithoutBookmark(): void
     {
         $this->freezeTime();
@@ -1081,12 +1220,98 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(41575, $quizzes[0]->getId());
         $this->assertSame('Diagnostic Test - Arithmetic Reasoning', $quizzes[0]->getName());
         $this->assertTrue($quizzes[0]->isActive());
+        $this->assertSame(2, $quizzes[0]->getSortOrder());
+        $this->assertTrue($quizzes[0]->getAutoExportToGrades());
         $this->assertSame(44372, $quizzes[0]->getGradeItemId());
+        $this->assertTrue($quizzes[0]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[0]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[0]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[0]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[0]->getStartDate());
+        $this->assertNull($quizzes[0]->getEndDate());
+        $this->assertNull($quizzes[0]->getDueDate());
+        $this->assertFalse($quizzes[0]->displayInCalendar());
+        $this->assertFalse($quizzes[0]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[0]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[0]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[0]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(36, $quizzes[0]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[0]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[0]->getPassword());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[0]->allowHints());
+        $this->assertFalse($quizzes[0]->disableRightClick());
+        $this->assertTrue($quizzes[0]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[0]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[0]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[0]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[0]->getCategoryId());
+        $this->assertFalse($quizzes[0]->preventMovingBackwards());
+        $this->assertFalse($quizzes[0]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14513',
+            $quizzes[0]->getActivityId()
+        );
+        $this->assertFalse($quizzes[0]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[0]->isRetakeIncorrectOnly());
 
         $this->assertSame(41576, $quizzes[1]->getId());
         $this->assertSame('Diagnostic Test - Word Knowledge', $quizzes[1]->getName());
         $this->assertTrue($quizzes[1]->isActive());
+        $this->assertSame(3, $quizzes[1]->getSortOrder());
+        $this->assertTrue($quizzes[1]->getAutoExportToGrades());
         $this->assertSame(44375, $quizzes[1]->getGradeItemId());
+        $this->assertTrue($quizzes[1]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[1]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[1]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[1]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[1]->getStartDate());
+        $this->assertNull($quizzes[1]->getEndDate());
+        $this->assertNull($quizzes[1]->getDueDate());
+        $this->assertFalse($quizzes[1]->displayInCalendar());
+        $this->assertFalse($quizzes[1]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[1]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[1]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[1]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(11, $quizzes[1]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[1]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[1]->getPassword());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[1]->allowHints());
+        $this->assertFalse($quizzes[1]->disableRightClick());
+        $this->assertTrue($quizzes[1]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[1]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[1]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[1]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[1]->getCategoryId());
+        $this->assertFalse($quizzes[1]->preventMovingBackwards());
+        $this->assertFalse($quizzes[1]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14514',
+            $quizzes[1]->getActivityId()
+        );
+        $this->assertFalse($quizzes[1]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[1]->isRetakeIncorrectOnly());
     }
 
     public function testQuizzesListWithBookmark(): void
@@ -1120,12 +1345,98 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(41575, $quizzes[0]->getId());
         $this->assertSame('Diagnostic Test - Arithmetic Reasoning', $quizzes[0]->getName());
         $this->assertTrue($quizzes[0]->isActive());
+        $this->assertSame(2, $quizzes[0]->getSortOrder());
+        $this->assertTrue($quizzes[0]->getAutoExportToGrades());
         $this->assertSame(44372, $quizzes[0]->getGradeItemId());
+        $this->assertTrue($quizzes[0]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[0]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[0]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[0]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[0]->getStartDate());
+        $this->assertNull($quizzes[0]->getEndDate());
+        $this->assertNull($quizzes[0]->getDueDate());
+        $this->assertFalse($quizzes[0]->displayInCalendar());
+        $this->assertFalse($quizzes[0]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[0]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[0]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[0]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[0]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(36, $quizzes[0]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[0]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[0]->getPassword());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[0]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[0]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[0]->allowHints());
+        $this->assertFalse($quizzes[0]->disableRightClick());
+        $this->assertTrue($quizzes[0]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[0]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[0]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[0]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[0]->getCategoryId());
+        $this->assertFalse($quizzes[0]->preventMovingBackwards());
+        $this->assertFalse($quizzes[0]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14513',
+            $quizzes[0]->getActivityId()
+        );
+        $this->assertFalse($quizzes[0]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[0]->isRetakeIncorrectOnly());
 
         $this->assertSame(41576, $quizzes[1]->getId());
         $this->assertSame('Diagnostic Test - Word Knowledge', $quizzes[1]->getName());
         $this->assertTrue($quizzes[1]->isActive());
+        $this->assertSame(3, $quizzes[1]->getSortOrder());
+        $this->assertTrue($quizzes[1]->getAutoExportToGrades());
         $this->assertSame(44375, $quizzes[1]->getGradeItemId());
+        $this->assertTrue($quizzes[1]->isAutoSetGraded());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getInstructions()->getText()->getHtml());
+        $this->assertFalse($quizzes[1]->getInstructions()->isDisplayed());
+        $this->assertStringContainsString("\r\nDiagnostic", $quizzes[1]->getDescription()->getText()->getText());
+        $this->assertStringContainsString('<hr style="width: 100%', $quizzes[1]->getDescription()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getDescription()->isDisplayed());
+        $this->assertNull($quizzes[1]->getStartDate());
+        $this->assertNull($quizzes[1]->getEndDate());
+        $this->assertNull($quizzes[1]->getDueDate());
+        $this->assertFalse($quizzes[1]->displayInCalendar());
+        $this->assertFalse($quizzes[1]->getAttemptsAllowed()->isUnlimited());
+        $this->assertSame(1, $quizzes[1]->getAttemptsAllowed()->getNumberOfAttemptsAllowed());
+        $this->assertSame(2, $quizzes[1]->getLateSubmissionInfo()->getLateSubmissionOption()->getOption());
+        $this->assertSame(1, $quizzes[1]->getLateSubmissionInfo()->getLateLimitMinutes());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isEnforced());
+        $this->assertTrue($quizzes[1]->getSubmissionTimeLimit()->isShowClock());
+        $this->assertSame(11, $quizzes[1]->getSubmissionTimeLimit()->getTimeLimitValue());
+        $this->assertSame(1, $quizzes[1]->getSubmissionGracePeriod());
+        $this->assertNull($quizzes[1]->getPassword());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getHeader()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getHeader()->isDisplayed());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getText());
+        $this->assertSame('', $quizzes[1]->getFooter()->getText()->getHtml());
+        $this->assertTrue($quizzes[1]->getFooter()->isDisplayed());
+        $this->assertFalse($quizzes[1]->allowHints());
+        $this->assertFalse($quizzes[1]->disableRightClick());
+        $this->assertTrue($quizzes[1]->disablePagerAndAlerts());
+        $this->assertNull($quizzes[1]->getNotificationEmail());
+        $this->assertSame(4, $quizzes[1]->getCalcTypeId()->getOption());
+        $this->assertTrue($quizzes[1]->getRestrictIPAddressRange()->isEmpty());
+        $this->assertSame(376, $quizzes[1]->getCategoryId());
+        $this->assertFalse($quizzes[1]->preventMovingBackwards());
+        $this->assertFalse($quizzes[1]->shuffle());
+        $this->assertSame(
+            'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14514',
+            $quizzes[1]->getActivityId()
+        );
+        $this->assertFalse($quizzes[1]->allowOnlyUsersWithSpecialAccess());
+        $this->assertFalse($quizzes[1]->isRetakeIncorrectOnly());
     }
 
     public function testGetQuizzesForAnOrganizationUnit(): void
@@ -1139,7 +1450,80 @@ final class SymfonyHttpClientTest extends TestCase
             }
 
             if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/quizzes/?x_a=baz&x_b=foo&x_c=UtDgaa6gsOZvsTtjqMFdV91XFGy-DjoCVcn1ZSYOjVY&x_d=z8jqC7KwlcEPSuv247ZiwTeiEd97tYXSUr9JUc9fibk&x_t=1615390200&bookmark=41594_21' === $url) {
-                return new MockResponse(json_encode(['Next' => null, 'Objects' => [['QuizId' => 123, 'Name' => 'foo', 'IsActive' => false, 'GradeItemId' => null]]]));
+                return new MockResponse(json_encode([
+                    'Next' => null,
+                    'Objects' => [
+                        [
+                            'QuizId' => 123,
+                            'Name' => 'foo',
+                            'AutoExportToGrades' => true,
+                            'IsActive' => false,
+                            'GradeItemId' => null,
+                            'IsAutoSetGraded' => true,
+                            'Instructions' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'Description' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'Header' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'Footer' => [
+                                'Text' => [
+                                    'Text' => '',
+                                    'Html' => '',
+                                ],
+                                'IsDisplayed' => false,
+                            ],
+                            'StartDate' => '2021-10-14T14:00:00.000Z',
+                            'EndDate' => '2021-11-04T22:00:00.000Z',
+                            'DueDate' => '2021-10-15T22:00:00.000Z',
+                            'DisplayInCalendar' => false,
+                            'SortOrder' => 5,
+                            'SubmissionTimeLimit' => [
+                                'IsEnforced' => false,
+                                'ShowClock' => false,
+                                'TimeLimitValue' => 120,
+                            ],
+                            'SubmissionGracePeriod' => 5,
+                            'LateSubmissionInfo' => [
+                                'LateSubmissionOption' => 0,
+                                'LateLimitMinutes' => null,
+                            ],
+                            'AttemptsAllowed' => [
+                                'IsUnlimited' => true,
+                                'NumberOfAttemptsAllowed' => null,
+                            ],
+                            'Password' => null,
+                            'AllowHints' => false,
+                            'DisableRightClick' => false,
+                            'DisablePagerAndAlerts' => false,
+                            'RestrictIPAddressRange' => [
+                            ],
+                            'NotificationEmail' => null,
+                            'CalcTypeId' => 1,
+                            'CategoryId' => null,
+                            'PreventMovingBackwards' => false,
+                            'Shuffle' => false,
+                            'ActivityId' => 'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-77531',
+                            'AllowOnlyUsersWithSpecialAccess' => false,
+                            'IsRetakeIncorrectOnly' => false,
+                        ]
+                    ]
+                ]));
             }
 
             $this->fail('This should not have happened.');
@@ -1227,6 +1611,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(71207, $questions[0]->getTemplateId());
         $this->assertSame(71218, $questions[0]->getTemplateVersionId());
 
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(307387, $answers[0]->getPartId());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getText());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[0]->getWeight());
+
+        $this->assertSame(307388, $answers[1]->getPartId());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getText());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100.0, $answers[1]->getWeight());
+
+        $this->assertSame(307389, $answers[2]->getPartId());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getText());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[2]->getWeight());
+
+        $this->assertSame(307390, $answers[3]->getPartId());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getText());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
+
         $this->assertSame(3077000, $questions[1]->getId());
         $this->assertSame(1, $questions[1]->getType()->type());
         $this->assertSame('ASVAB-D1-AR-Q21', $questions[1]->getName());
@@ -1256,6 +1678,188 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[1]->getSectionId());
         $this->assertSame(71227, $questions[1]->getTemplateId());
         $this->assertSame(110378, $questions[1]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[1]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(473242, $answers[0]->getPartId());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getText());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[0]->getWeight());
+
+        $this->assertSame(473243, $answers[1]->getPartId());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getText());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[1]->getWeight());
+
+        $this->assertSame(473244, $answers[2]->getPartId());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getText());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[2]->getWeight());
+
+        $this->assertSame(473245, $answers[3]->getPartId());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getText());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100.0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
+    }
+
+    public function testQuizQuestionsListWithLongAnswerType(): void
+    {
+        $this->freezeTime();
+
+        $quizQuestionsListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_questions_list_with_long_answer_type.json');
+        $callback = function (string $method, string $url, array $options) use ($quizQuestionsListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12396/quizzes/40412/questions/?x_a=baz&x_b=foo&x_c=i8cvgucGOeXc4ecjBVbhj-1Hbui7j9dQ7XU3YN0MnRY&x_d=3g2mBt2EZ7we-3wIUEoCivMVo0_6el4DmcB_ilp2qjs&x_t=1615390200&bookmark=' === $url) {
+                return new MockResponse($quizQuestionsListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizQuestionListPage = $client->quizQuestionsList(12396, 40412);
+
+        $this->assertNull($quizQuestionListPage->getNextUrl());
+
+        $questions = $quizQuestionListPage->getObjects();
+
+        $this->assertCount(1, $questions);
+
+        $this->assertSame(3005481, $questions[0]->getId());
+        $this->assertSame(7, $questions[0]->getType()->type());
+        $this->assertSame('CLEP-CollegeComposition-PT1-S2-Q1', $questions[0]->getName());
+        $this->assertStringContainsString(
+            'Directions: Write an essay',
+            $questions[0]->getText()->getText()
+        );
+        $this->assertStringContainsString(
+            'Write an essay in which you discuss',
+            $questions[0]->getText()->getHtml()
+        );
+        $this->assertSame(1.0, $questions[0]->getPoints());
+        $this->assertSame(1, $questions[0]->getDifficulty());
+        $this->assertFalse($questions[0]->isBonus());
+        $this->assertFalse($questions[0]->isMandatory());
+        $this->assertNull($questions[0]->getHint());
+        $this->assertStringContainsString(
+            'Sample Essay A: This essay is scored a 6',
+            $questions[0]->getFeedback()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p><strong>Sample Essay A:</strong> This essay is scored a 6',
+            $questions[0]->getFeedback()->getHtml()
+        );
+        $this->assertSame('2021-03-30T22:42:46+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
+        $this->assertNull($questions[0]->getLastModifiedBy());
+        $this->assertSame(0, $questions[0]->getSectionId());
+        $this->assertSame(143538, $questions[0]->getTemplateId());
+        $this->assertSame(185743, $questions[0]->getTemplateVersionId());
+
+        /** @var LongAnswer $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(LongAnswer::class, $questionInfo);
+
+        $this->assertSame(785986, $questionInfo->getPartId());
+        $this->assertFalse($questionInfo->studentEditorEnabled());
+        $this->assertSame('', $questionInfo->getInitialText()->getText());
+        $this->assertSame('', $questionInfo->getInitialText()->getHtml());
+        $this->assertSame('', $questionInfo->getAnswerKey()->getText());
+        $this->assertSame('', $questionInfo->getAnswerKey()->getHtml());
+        $this->assertFalse($questionInfo->attachmentsEnabled());
+    }
+
+    public function testQuizQuestionsListWithShortAnswerType(): void
+    {
+        $this->freezeTime();
+
+        $quizQuestionsListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_questions_list_with_short_answer_type.json');
+        $callback = function (string $method, string $url, array $options) use ($quizQuestionsListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12408/quizzes/16532/questions/?x_a=baz&x_b=foo&x_c=lohTujGj5AEQNxtIk317SG3wzXCiewwn0oigBQSrnNA&x_d=Djf5WWfF8DXyplxpB00OLCGnE43FfHtc4kj2wHZariI&x_t=1615390200&bookmark=' === $url) {
+                return new MockResponse($quizQuestionsListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizQuestionListPage = $client->quizQuestionsList(12408, 16532);
+
+        $this->assertSame(
+            'https://learn.petersons.com/d2l/api/le/1.60/12408/quizzes/16532/questions/?bookmark=1492746',
+            $quizQuestionListPage->getNextUrl()
+        );
+
+        $questions = $quizQuestionListPage->getObjects();
+
+        $this->assertCount(1, $questions);
+
+        $this->assertSame(1492746, $questions[0]->getId());
+        $this->assertSame(8, $questions[0]->getType()->type());
+        $this->assertSame('CLEP-PT1-S2-Q8', $questions[0]->getName());
+        $this->assertStringContainsString(
+            'A car starts at point A and drives 30 miles due east',
+            $questions[0]->getText()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p>A car starts at point A and drives 30 miles due east',
+            $questions[0]->getText()->getHtml()
+        );
+        $this->assertSame(1.0, $questions[0]->getPoints());
+        $this->assertSame(1, $questions[0]->getDifficulty());
+        $this->assertFalse($questions[0]->isBonus());
+        $this->assertFalse($questions[0]->isMandatory());
+        $this->assertNull($questions[0]->getHint());
+        $this->assertStringContainsString(
+            'The correct answer is 34.6.',
+            $questions[0]->getFeedback()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p><strong>The correct answer is 34.6.',
+            $questions[0]->getFeedback()->getHtml()
+        );
+        $this->assertSame('2021-06-07T18:11:28+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
+        $this->assertSame(4966, $questions[0]->getLastModifiedBy());
+        $this->assertSame(0, $questions[0]->getSectionId());
+        $this->assertSame(93628, $questions[0]->getTemplateId());
+        $this->assertSame(207910, $questions[0]->getTemplateVersionId());
+
+        /** @var ShortAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(ShortAnswers::class, $questionInfo);
+
+        $blanks = $questionInfo->getBlanks();
+        $this->assertCount(1, $blanks);
+
+        $this->assertSame(879853, $blanks[0]->getPartId());
+
+        $answers = $blanks[0]->getAnswers();
+
+        $this->assertSame('34.6', $answers[0]->getText());
+        $this->assertSame(100, $answers[0]->getWeight());
+
+        $this->assertSame(0, $blanks[0]->getEvaluationType()->type());
+        $this->assertSame(0, $questionInfo->getGradingType()->rule());
     }
 
     public function testQuizQuestionsListWithBookmark(): void
@@ -1316,6 +1920,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(71207, $questions[0]->getTemplateId());
         $this->assertSame(71218, $questions[0]->getTemplateVersionId());
 
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(307387, $answers[0]->getPartId());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getText());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[0]->getWeight());
+
+        $this->assertSame(307388, $answers[1]->getPartId());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getText());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100.0, $answers[1]->getWeight());
+
+        $this->assertSame(307389, $answers[2]->getPartId());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getText());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[2]->getWeight());
+
+        $this->assertSame(307390, $answers[3]->getPartId());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getText());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
+
         $this->assertSame(3077000, $questions[1]->getId());
         $this->assertSame(1, $questions[1]->getType()->type());
         $this->assertSame('ASVAB-D1-AR-Q21', $questions[1]->getName());
@@ -1345,6 +1987,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[1]->getSectionId());
         $this->assertSame(71227, $questions[1]->getTemplateId());
         $this->assertSame(110378, $questions[1]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[1]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(473242, $answers[0]->getPartId());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getText());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[0]->getWeight());
+
+        $this->assertSame(473243, $answers[1]->getPartId());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getText());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[1]->getWeight());
+
+        $this->assertSame(473244, $answers[2]->getPartId());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getText());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[2]->getWeight());
+
+        $this->assertSame(473245, $answers[3]->getPartId());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getText());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100.0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
     }
 
     public function testGetQuizQuestionsForAQuiz(): void
@@ -1402,6 +2082,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[0]->getSectionId());
         $this->assertSame(71207, $questions[0]->getTemplateId());
         $this->assertSame(71218, $questions[0]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(307387, $answers[0]->getPartId());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getText());
+        $this->assertSame('47 shares', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[0]->getWeight());
+
+        $this->assertSame(307388, $answers[1]->getPartId());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getText());
+        $this->assertSame('53 shares', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100.0, $answers[1]->getWeight());
+
+        $this->assertSame(307389, $answers[2]->getPartId());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getText());
+        $this->assertSame('56 shares', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[2]->getWeight());
+
+        $this->assertSame(307390, $answers[3]->getPartId());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getText());
+        $this->assertSame('62 shares', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
 
         $this->assertSame(3077000, $questions[1]->getId());
         $this->assertSame(1, $questions[1]->getType()->type());
@@ -1462,6 +2180,44 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(0, $questions[2]->getSectionId());
         $this->assertSame(71207, $questions[2]->getTemplateId());
         $this->assertSame(71218, $questions[2]->getTemplateVersionId());
+
+        /** @var MultipleChoiceAnswers $questionInfo */
+        $questionInfo = $questions[1]->getQuestionInfo();
+        $this->assertInstanceOf(MultipleChoiceAnswers::class, $questionInfo);
+
+        $answers = $questionInfo->getAnswers();
+        $this->assertCount(4, $answers);
+
+        $this->assertSame(473242, $answers[0]->getPartId());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getText());
+        $this->assertSame('$90.10', $answers[0]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[0]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[0]->getWeight());
+
+        $this->assertSame(473243, $answers[1]->getPartId());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getText());
+        $this->assertSame('$100.10', $answers[1]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[1]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[1]->getWeight());
+
+        $this->assertSame(473244, $answers[2]->getPartId());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getText());
+        $this->assertSame('$126.10', $answers[2]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[2]->getAnswerFeedback()->getHtml());
+        $this->assertSame(0.0, $answers[2]->getWeight());
+
+        $this->assertSame(473245, $answers[3]->getPartId());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getText());
+        $this->assertSame('$148.10', $answers[3]->getAnswer()->getHtml());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getText());
+        $this->assertSame('', $answers[3]->getAnswerFeedback()->getHtml());
+        $this->assertSame(100.0, $answers[3]->getWeight());
+
+        $this->assertFalse($questionInfo->isRandomize());
+        $this->assertSame(4, $questionInfo->getEnumeration()->type());
     }
 
     public function testGetEnrolledUsersForAnOrganizationUnit(): void
@@ -1506,6 +2262,81 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(106, $enrolledUsers[1]->getRoleInfo()->getId());
         $this->assertNull($enrolledUsers[1]->getRoleInfo()->getCode());
         $this->assertSame('Administrator (C)', $enrolledUsers[1]->getRoleInfo()->getName());
+    }
+
+    public function testUpdateGradeValueForUserDoesNotThrowExceptionOnSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $incomingGradeValue = IncomingGradeValue::numeric(
+            new RichTextInput('', RichTextInputType::make('Text')),
+            new RichTextInput('', RichTextInputType::make('Text')),
+            3.0,
+        );
+
+        $callback = function (string $method, string $url, array $options) use ($incomingGradeValue): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
+                &&
+                $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
+                &&
+                $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer foo'
+            ) {
+                return new MockResponse('');
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $client->updateGradeValueForUser($incomingGradeValue, 1, 2, 3, 'foo');
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testUpdateGradeValueForUserThrowsExceptionOnNonSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $incomingGradeValue = IncomingGradeValue::numeric(
+            new RichTextInput('', RichTextInputType::make('Text')),
+            new RichTextInput('', RichTextInputType::make('Text')),
+            3.0,
+        );
+
+        $callback = function (string $method, string $url, array $options) use ($incomingGradeValue): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
+                &&
+                $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
+                &&
+                $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer bar'
+            ) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->updateGradeValueForUser($incomingGradeValue, 1, 2, 3, 'bar');
     }
 
     public function testGetOrganizationInfo(): void
@@ -1755,6 +2586,334 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('2021-05-24T16:30:42+00:00', $exportJobData->getSubmitDate()->toAtomString());
         $this->assertSame(0, $exportJobData->getStatus()->getStatus());
         $this->assertSame('AdvancedDataSets', $exportJobData->getCategory());
+    }
+
+    public function testGetRootModulesForAnOrganizationUnit(): void
+    {
+        $this->freezeTime();
+
+        $rootModulesListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'root_modules_list.json');
+        $callback = function (string $method, string $url, array $options) use ($rootModulesListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/content/root/?x_a=baz&x_b=foo&x_c=sd87uCDudUE851NdLXKGaBjMKdKDel70YRrPZnITszQ&x_d=5c20ppHATy57XledQl1-STfyAAz7gGCtEj8IUC7SJ3U&x_t=1615390200' === $url) {
+                return new MockResponse($rootModulesListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        /** @var Module[] $rootModules */
+        $rootModules = $client->getRootModulesForAnOrganizationUnit(513982);
+
+        $this->assertCount(2, $rootModules);
+
+        $this->assertInstanceOf(Module::class, $rootModules[0]);
+        $this->assertSame(861, $rootModules[0]->getId());
+        $this->assertSame('Getting Started', $rootModules[0]->getTitle());
+        $this->assertSame('', $rootModules[0]->getShortTitle());
+        $structure = $rootModules[0]->getStructure();
+        $this->assertCount(1, $structure);
+        $this->assertSame(862, $structure[0]->getId());
+        $this->assertSame('Getting Started', $structure[0]->getTitle());
+        $this->assertSame('', $structure[0]->getShortTitle());
+        $this->assertSame(1, $structure[0]->getType()->getType());
+        $this->assertSame('2020-07-29 18:09:33', $structure[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertNull($rootModules[0]->getStartDate());
+        $this->assertNull($rootModules[0]->getEndDate());
+        $this->assertNull($rootModules[0]->getDueDate());
+        $this->assertFalse($rootModules[0]->isHidden());
+        $this->assertFalse($rootModules[0]->isLocked());
+        $this->assertSame('', $rootModules[0]->getDescription()->getText());
+        $this->assertSame('', $rootModules[0]->getDescription()->getHtml());
+        $this->assertNull($rootModules[0]->getParentModuleId());
+        $this->assertSame('2017-11-04 17:45:48', $rootModules[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+
+        $this->assertInstanceOf(Module::class, $rootModules[1]);
+        $this->assertSame(863, $rootModules[1]->getId());
+        $this->assertSame('Learner Essentials', $rootModules[1]->getTitle());
+        $this->assertSame('', $rootModules[1]->getShortTitle());
+        $structure = $rootModules[1]->getStructure();
+        $this->assertCount(2, $structure);
+        $this->assertSame(864, $structure[0]->getId());
+        $this->assertSame('Quick Tips for Getting Started', $structure[0]->getTitle());
+        $this->assertSame('', $structure[0]->getShortTitle());
+        $this->assertSame(1, $structure[0]->getType()->getType());
+        $this->assertSame('2017-11-04 17:45:50', $structure[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertSame(865, $structure[1]->getId());
+        $this->assertSame('Using ePortfolio', $structure[1]->getTitle());
+        $this->assertSame('', $structure[1]->getShortTitle());
+        $this->assertSame(1, $structure[1]->getType()->getType());
+        $this->assertSame('2017-11-04 17:45:50', $structure[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertNull($rootModules[1]->getStartDate());
+        $this->assertNull($rootModules[1]->getEndDate());
+        $this->assertNull($rootModules[1]->getDueDate());
+        $this->assertFalse($rootModules[1]->isHidden());
+        $this->assertFalse($rootModules[1]->isLocked());
+        $this->assertStringContainsString('This module contains video playlists', $rootModules[1]->getDescription()->getText());
+        $this->assertStringContainsString('<p>This module contains video playlists', $rootModules[1]->getDescription()->getHtml());
+        $this->assertNull($rootModules[1]->getParentModuleId());
+        $this->assertSame('2020-07-29 17:58:22', $rootModules[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+    }
+
+    public function testGetRootModulesForAnOrganizationUnitWhenD2LReturnsForbiddenResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/content/root/?x_a=baz&x_b=foo&x_c=sd87uCDudUE851NdLXKGaBjMKdKDel70YRrPZnITszQ&x_d=5c20ppHATy57XledQl1-STfyAAz7gGCtEj8IUC7SJ3U&x_t=1615390200' === $url) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/content/root/?x_a=baz&x_b=foo&x_c=sd87uCDudUE851NdLXKGaBjMKdKDel70YRrPZnITszQ&x_d=5c20ppHATy57XledQl1-STfyAAz7gGCtEj8IUC7SJ3U&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->getRootModulesForAnOrganizationUnit(513982);
+    }
+
+    public function testGetModuleStructureForAnOrganizationUnitWithModuleInResponse(): void
+    {
+        $this->freezeTime();
+
+        $moduleStructureListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'module_structure_list_with_module_record.json');
+        $callback = function (string $method, string $url, array $options) use ($moduleStructureListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200' === $url) {
+                return new MockResponse($moduleStructureListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        /** @var ContentObject[] $contentObjects */
+        $contentObjects = $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
+
+        $this->assertCount(1, $contentObjects);
+
+        $this->assertInstanceOf(Module::class, $contentObjects[0]);
+        $this->assertSame(321606, $contentObjects[0]->getId());
+        $this->assertSame('Suffix Elements 1 - 20', $contentObjects[0]->getTitle());
+        $this->assertSame('', $contentObjects[0]->getShortTitle());
+        $structure = $contentObjects[0]->getStructure();
+        $this->assertCount(2, $structure);
+        $this->assertSame(321666, $structure[0]->getId());
+        $this->assertSame('Suffix Elements 1-5', $structure[0]->getTitle());
+        $this->assertSame('', $structure[0]->getShortTitle());
+        $this->assertSame(1, $structure[0]->getType()->getType());
+        $this->assertSame('2021-12-23 15:46:22', $structure[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertSame(321667, $structure[1]->getId());
+        $this->assertSame('Suffix Elements 6-10', $structure[1]->getTitle());
+        $this->assertSame('', $structure[1]->getShortTitle());
+        $this->assertSame(1, $structure[1]->getType()->getType());
+        $this->assertSame('2021-12-23 15:46:22', $structure[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+        $this->assertNull($contentObjects[0]->getStartDate());
+        $this->assertNull($contentObjects[0]->getEndDate());
+        $this->assertNull($contentObjects[0]->getDueDate());
+        $this->assertFalse($contentObjects[0]->isHidden());
+        $this->assertFalse($contentObjects[0]->isLocked());
+        $this->assertSame("\n\n\n\n\n\n\n", $contentObjects[0]->getDescription()->getText());
+        $this->assertSame("\n\n\n\n\n\n\n", $contentObjects[0]->getDescription()->getHtml());
+        $this->assertSame(321584, $contentObjects[0]->getParentModuleId());
+        $this->assertSame('2020-08-03 19:12:47', $contentObjects[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+    }
+
+    public function testGetModuleStructureForAnOrganizationUnitWithTopicsInResponse(): void
+    {
+        $this->freezeTime();
+
+        $moduleStructureListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'module_structure_list_with_topic_records.json');
+        $callback = function (string $method, string $url, array $options) use ($moduleStructureListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200' === $url) {
+                return new MockResponse($moduleStructureListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        /** @var Topic[] $contentObjects */
+        $contentObjects = $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
+
+        $this->assertCount(3, $contentObjects);
+
+        $this->assertInstanceOf(Topic::class, $contentObjects[0]);
+        $this->assertSame(321655, $contentObjects[0]->getId());
+        $this->assertSame(3, $contentObjects[0]->getTopicType()->getType());
+        $this->assertSame('Introduction to the Dean Vaughn Total Retention System®', $contentObjects[0]->getTitle());
+        $this->assertSame('', $contentObjects[0]->getShortTitle());
+        $this->assertSame('https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=200', $contentObjects[0]->getUrl());
+        $this->assertNull($contentObjects[0]->getStartDate());
+        $this->assertNull($contentObjects[0]->getEndDate());
+        $this->assertNull($contentObjects[0]->getDueDate());
+        $this->assertFalse($contentObjects[0]->isHidden());
+        $this->assertFalse($contentObjects[0]->isLocked());
+        $this->assertFalse($contentObjects[0]->isExempt());
+        $this->assertFalse($contentObjects[0]->getOpenAsExternalResource());
+        $this->assertSame('', $contentObjects[0]->getDescription()->getText());
+        $this->assertSame('', $contentObjects[0]->getDescription()->getHtml());
+        $this->assertSame(321600, $contentObjects[0]->getParentModuleId());
+        $this->assertNull($contentObjects[0]->getActivityId());
+        $this->assertSame(2, $contentObjects[0]->getActivityType()->getType());
+        $this->assertNull($contentObjects[0]->getToolId());
+        $this->assertNull($contentObjects[0]->getToolItemId());
+        $this->assertNull($contentObjects[0]->getGradeItemId());
+        $this->assertSame('2021-12-23 15:46:21', $contentObjects[0]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+
+        $this->assertInstanceOf(Topic::class, $contentObjects[1]);
+        $this->assertSame(321656, $contentObjects[1]->getId());
+        $this->assertSame(3, $contentObjects[1]->getTopicType()->getType());
+        $this->assertSame('The Dean Vaughn Total Retention System™- Part 1', $contentObjects[1]->getTitle());
+        $this->assertSame('', $contentObjects[1]->getShortTitle());
+        $this->assertSame('https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=201', $contentObjects[1]->getUrl());
+        $this->assertNull($contentObjects[1]->getStartDate());
+        $this->assertNull($contentObjects[1]->getEndDate());
+        $this->assertNull($contentObjects[1]->getDueDate());
+        $this->assertFalse($contentObjects[1]->isHidden());
+        $this->assertFalse($contentObjects[1]->isLocked());
+        $this->assertFalse($contentObjects[1]->isExempt());
+        $this->assertFalse($contentObjects[1]->getOpenAsExternalResource());
+        $this->assertSame('', $contentObjects[1]->getDescription()->getText());
+        $this->assertSame('', $contentObjects[1]->getDescription()->getHtml());
+        $this->assertSame(321600, $contentObjects[1]->getParentModuleId());
+        $this->assertNull($contentObjects[1]->getActivityId());
+        $this->assertSame(2, $contentObjects[1]->getActivityType()->getType());
+        $this->assertNull($contentObjects[1]->getToolId());
+        $this->assertNull($contentObjects[1]->getToolItemId());
+        $this->assertNull($contentObjects[1]->getGradeItemId());
+        $this->assertSame('2021-12-23 15:46:21', $contentObjects[1]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+
+        $this->assertInstanceOf(Topic::class, $contentObjects[2]);
+        $this->assertSame(321657, $contentObjects[2]->getId());
+        $this->assertSame(3, $contentObjects[2]->getTopicType()->getType());
+        $this->assertSame('The Dean Vaughn Total Retention System™- Part 2', $contentObjects[2]->getTitle());
+        $this->assertSame('', $contentObjects[2]->getShortTitle());
+        $this->assertSame('https://learn.petersons.com/d2l/lor/viewer/view.d2l?ou=515376&loIdentId=202', $contentObjects[2]->getUrl());
+        $this->assertNull($contentObjects[2]->getStartDate());
+        $this->assertNull($contentObjects[2]->getEndDate());
+        $this->assertNull($contentObjects[2]->getDueDate());
+        $this->assertFalse($contentObjects[2]->isHidden());
+        $this->assertFalse($contentObjects[2]->isLocked());
+        $this->assertFalse($contentObjects[2]->isExempt());
+        $this->assertFalse($contentObjects[2]->getOpenAsExternalResource());
+        $this->assertSame('', $contentObjects[2]->getDescription()->getText());
+        $this->assertSame('', $contentObjects[2]->getDescription()->getHtml());
+        $this->assertSame(321600, $contentObjects[2]->getParentModuleId());
+        $this->assertNull($contentObjects[2]->getActivityId());
+        $this->assertSame(2, $contentObjects[2]->getActivityType()->getType());
+        $this->assertNull($contentObjects[2]->getToolId());
+        $this->assertNull($contentObjects[2]->getToolItemId());
+        $this->assertNull($contentObjects[2]->getGradeItemId());
+        $this->assertSame('2021-12-23 15:46:21', $contentObjects[2]->getLastModifiedDate()->format('Y-m-d H:i:s'));
+    }
+
+    public function testGetModuleStructureForAnOrganizationUnitWhenD2LReturnsForbiddenResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200' === $url) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
+    }
+
+    public function testUpdateContentTopicCompletionDoesNotThrowExceptionOnSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $time = CarbonImmutable::now();
+
+        $contentTopicCompletionUpdate = new ContentTopicCompletionUpdate($time);
+
+        $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
+                && $options['body'] === json_encode($contentTopicCompletionUpdate->toArray())
+            ) {
+                return new MockResponse('');
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testUpdateContentTopicCompletionThrowsExceptionOnNonSuccessfulUpdate(): void
+    {
+        $this->freezeTime();
+
+        $time = CarbonImmutable::now();
+
+        $contentTopicCompletionUpdate = new ContentTopicCompletionUpdate($time);
+
+        $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate): MockResponse {
+            if (
+                'PUT' === $method
+                &&
+                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
+                && $options['body'] === json_encode($contentTopicCompletionUpdate->toArray())
+            ) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200".',
+                403
+            )
+        );
+
+        $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);
     }
 
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient

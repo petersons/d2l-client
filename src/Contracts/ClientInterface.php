@@ -8,6 +8,9 @@ use Illuminate\Support\Collection;
 use Petersons\D2L\DTO\BrightspaceDataSet\BrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
+use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
+use Petersons\D2L\DTO\ContentObject\ContentObject;
+use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\DataSetData;
 use Petersons\D2L\DTO\DataExport\ExportJobData;
@@ -16,6 +19,7 @@ use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Enrollment\Enrollment;
 use Petersons\D2L\DTO\Enrollment\OrganizationUnitUser;
 use Petersons\D2L\DTO\Grade\GradeObjectCategory;
+use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Organization\OrganizationInfo;
 use Petersons\D2L\DTO\Organization\OrgUnit;
@@ -40,6 +44,12 @@ interface ClientInterface
     public const GUID_UNKNOWN_VERSION = 'UNKNOWN_VERSION';
     public const GUID_INVALID_DATA = 'INVALID_DATA';
     public const GUID_NO_DB_CONNECTION = 'NO_DB_CONNECTION';
+
+    /**
+     * @link https://docs.valence.desire2learn.com/res/user.html#get--d2l-api-lp-(version)-users-(userId)
+     * @throws ApiException
+     */
+    public function getUserById(int $userId): UserData;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/user.html#get--d2l-api-lp-(version)-users-
@@ -109,6 +119,12 @@ interface ClientInterface
     public function findBrightspaceDataExportItemByName(string $name): ?BrightspaceDataSetReportInfo;
 
     /**
+     * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)
+     * @throws ApiException
+     */
+    public function getQuizById(int $orgUnitId, int $quizId): Quiz;
+
+    /**
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-
      * @throws ApiException
      */
@@ -138,6 +154,12 @@ interface ClientInterface
      * @return Collection|OrganizationUnitUser[]
      */
     public function getEnrolledUsersForAnOrganizationUnit(int $orgUnitId): Collection;
+
+    /**
+     * @link https://docs.valence.desire2learn.com/res/grade.html#put--d2l-api-le-(version)-(orgUnitId)-grades-(gradeObjectId)-values-(userId)
+     * @throws ApiException
+     */
+    public function updateGradeValueForUser(IncomingGradeValue $incomingGradeValue, int $orgUnitId, int $gradeObjectId, int $userId, string $bearerToken): void;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/orgunit.html#get--d2l-api-lp-(version)-organization-info
@@ -178,4 +200,24 @@ interface ClientInterface
      * @throws ApiException
      */
     public function createDataExport(CreateExportJobData $createExportJobData): ExportJobData;
+
+    /**
+     * @link https://docs.valence.desire2learn.com/res/content.html#get--d2l-api-le-(version)-(orgUnitId)-content-root-
+     * @throws ApiException
+     * @return Collection|Module[]
+     */
+    public function getRootModulesForAnOrganizationUnit(int $orgUnitId): Collection;
+
+    /**
+     * @link https://docs.valence.desire2learn.com/res/content.html#get--d2l-api-le-(version)-(orgUnitId)-content-modules-(moduleId)-structure-
+     * @throws ApiException
+     * @return Collection|ContentObject[]
+     */
+    public function getModuleStructureForAnOrganizationUnit(int $orgUnitId, int $moduleId): Collection;
+
+    /**
+     * @link https://docs.valence.desire2learn.com/res/content.html#put--d2l-api-le-(version)-(orgUnitId)-content-topics-(topicId)-completions-users-(userId)
+     * @throws ApiException
+     */
+    public function updateContentTopicCompletion(ContentTopicCompletionUpdate $updateContentTopicCompletion, int $orgUnitId, int $topicId, int $userId): void;
 }

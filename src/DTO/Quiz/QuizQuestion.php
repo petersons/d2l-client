@@ -6,6 +6,7 @@ namespace Petersons\D2L\DTO\Quiz;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Support\Arrayable;
+use Petersons\D2L\Contracts\ClientInterface;
 use Petersons\D2L\DTO\RichText;
 
 /**
@@ -28,7 +29,8 @@ final class QuizQuestion implements Arrayable
         private ?int $lastModifiedBy,
         private int $sectionId,
         private int $templateId,
-        private int $templateVersionId
+        private int $templateVersionId,
+        private ?QuestionInfo $questionInfo,
     ) {
     }
 
@@ -107,6 +109,11 @@ final class QuizQuestion implements Arrayable
         return $this->templateVersionId;
     }
 
+    public function getQuestionInfo(): ?QuestionInfo
+    {
+        return $this->questionInfo;
+    }
+
     public function toArray(): array
     {
         return [
@@ -118,13 +125,14 @@ final class QuizQuestion implements Arrayable
             'Difficulty' => $this->difficulty,
             'Bonus' => $this->isBonus,
             'Mandatory' => $this->isMandatory,
-            'Hint' => $this->hint ? $this->hint->toArray() : null,
-            'Feedback' => $this->feedback->toArray(),
-            'LastModified' => $this->lastModifiedAt->toDateTime(),
+            'Hint' => $this->hint?->toArray(),
+            'Feedback' => $this->feedback?->toArray(),
+            'LastModified' => $this->lastModifiedAt->format(ClientInterface::D2L_DATETIME_FORMAT),
             'LastModifiedBy' => $this->lastModifiedBy,
             'SectionId' => $this->sectionId,
             'QuestionTemplateId' => $this->templateId,
             'QuestionTemplateVersionId' => $this->templateVersionId,
+            'QuestionInfo' => $this->questionInfo?->toArray(),
         ];
     }
 }

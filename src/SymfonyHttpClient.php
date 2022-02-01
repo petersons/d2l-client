@@ -10,6 +10,10 @@ use Petersons\D2L\Contracts\ClientInterface;
 use Petersons\D2L\DTO\BrightspaceDataSet\BrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
+use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
+use Petersons\D2L\DTO\ContentObject\Module;
+use Petersons\D2L\DTO\ContentObject\Structure;
+use Petersons\D2L\DTO\ContentObject\Topic;
 use Petersons\D2L\DTO\DataExport\CreateExportJobData;
 use Petersons\D2L\DTO\DataExport\DataSetData;
 use Petersons\D2L\DTO\DataExport\DataSetFilter;
@@ -22,23 +26,59 @@ use Petersons\D2L\DTO\Enrollment\RoleInfo;
 use Petersons\D2L\DTO\Grade\GradeObject;
 use Petersons\D2L\DTO\Grade\GradeObjectCategory;
 use Petersons\D2L\DTO\Grade\GradeObjectCategoryData;
+use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Organization\OrganizationInfo;
 use Petersons\D2L\DTO\Organization\OrganizationUnitTypeInfo;
 use Petersons\D2L\DTO\Organization\OrgUnit;
 use Petersons\D2L\DTO\Organization\OrgUnitProperties;
+use Petersons\D2L\DTO\Quiz\AttemptsAllowed;
+use Petersons\D2L\DTO\Quiz\Description;
+use Petersons\D2L\DTO\Quiz\FillInTheBlank;
+use Petersons\D2L\DTO\Quiz\FillInTheBlankAnswer;
+use Petersons\D2L\DTO\Quiz\FillInTheBlankBlank;
+use Petersons\D2L\DTO\Quiz\FillInTheBlankText;
+use Petersons\D2L\DTO\Quiz\Footer;
+use Petersons\D2L\DTO\Quiz\Header;
+use Petersons\D2L\DTO\Quiz\Instructions;
+use Petersons\D2L\DTO\Quiz\LateSubmissionInfo;
+use Petersons\D2L\DTO\Quiz\Likert;
+use Petersons\D2L\DTO\Quiz\LikertStatement;
+use Petersons\D2L\DTO\Quiz\LongAnswer;
+use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswer;
+use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
+use Petersons\D2L\DTO\Quiz\MultipleShortAnswer;
+use Petersons\D2L\DTO\Quiz\MultipleShortAnswers;
+use Petersons\D2L\DTO\Quiz\MultiSelectAnswer;
+use Petersons\D2L\DTO\Quiz\MultiSelectAnswers;
 use Petersons\D2L\DTO\Quiz\Quiz;
 use Petersons\D2L\DTO\Quiz\QuizListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestion;
 use Petersons\D2L\DTO\Quiz\QuizQuestionListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestionType;
+use Petersons\D2L\DTO\Quiz\RestrictIPAddressRange;
+use Petersons\D2L\DTO\Quiz\ShortAnswerBlank;
+use Petersons\D2L\DTO\Quiz\ShortAnswerBlankAnswer;
+use Petersons\D2L\DTO\Quiz\ShortAnswers;
+use Petersons\D2L\DTO\Quiz\SubmissionTimeLimit;
+use Petersons\D2L\DTO\Quiz\TrueFalse;
 use Petersons\D2L\DTO\RichText;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\DTO\User\User;
 use Petersons\D2L\DTO\User\UserData;
+use Petersons\D2L\Enum\ContentObject\ActivityType;
+use Petersons\D2L\Enum\ContentObject\TopicType;
+use Petersons\D2L\Enum\ContentObject\Type;
 use Petersons\D2L\Enum\DataExport\ExportFilterType;
 use Petersons\D2L\Enum\DataExport\ExportJobStatus;
+use Petersons\D2L\Enum\Quiz\EnumerationType;
+use Petersons\D2L\Enum\Quiz\EvaluationType;
+use Petersons\D2L\Enum\Quiz\LateSubmissionOption;
+use Petersons\D2L\Enum\Quiz\OverallGradeCalculationOption;
+use Petersons\D2L\Enum\Quiz\QuestionGradingRule;
+use Petersons\D2L\Enum\Quiz\QuestionScaleOption;
+use Petersons\D2L\Enum\Quiz\QuestionStyle;
 use Petersons\D2L\Exceptions\ApiException;
 use SimpleXMLElement;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -56,6 +96,30 @@ final class SymfonyHttpClient implements ClientInterface
         private string $apiLpVersion,
         private string $apiLeVersion
     ) {
+    }
+
+    public function getUserById(int $userId): UserData
+    {
+        $method = 'GET';
+        $path = sprintf('/d2l/api/lp/%s/users/%d', $this->apiLpVersion, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        return $this->getUserDtoFromUserArrayResponse($decodedResponse);
     }
 
     public function getUserByOrgDefinedId(string $orgDefinedId): UserData
@@ -331,6 +395,35 @@ final class SymfonyHttpClient implements ClientInterface
         });
     }
 
+    public function getQuizById(int $orgUnitId, int $quizId): Quiz
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/le/%s/%d/quizzes/%d',
+            $this->apiLeVersion,
+            $orgUnitId,
+            $quizId,
+        );
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        return $this->getQuizDtoFromQuizArrayResponse($decodedResponse);
+    }
+
     public function quizzesList(int $orgUnitId, ?string $bookmark = null): QuizListPage
     {
         $method = 'GET';
@@ -362,12 +455,7 @@ final class SymfonyHttpClient implements ClientInterface
         $decodedResponse = json_decode($body, true);
 
         return new QuizListPage($decodedResponse['Next'], Collection::make($decodedResponse['Objects'] ?? [])->map(function (array $item): Quiz {
-            return new Quiz(
-                $item['QuizId'],
-                $item['Name'],
-                $item['IsActive'],
-                $item['GradeItemId'],
-            );
+            return $this->getQuizDtoFromQuizArrayResponse($item);
         }));
     }
 
@@ -429,9 +517,23 @@ final class SymfonyHttpClient implements ClientInterface
         $decodedResponse = json_decode($body, true);
 
         return new QuizQuestionListPage($decodedResponse['Next'], Collection::make($decodedResponse['Objects'] ?? [])->map(function (array $item): QuizQuestion {
+            $quizQuestionType = QuizQuestionType::make($item['QuestionTypeId']);
+
+            $questionInfo = match ($quizQuestionType->type()) {
+                QuizQuestionType::MULTIPLE_CHOICE => $this->createMultipleChoiceQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::TRUE_FALSE => $this->createTrueFalseQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::FILL_IN_THE_BLANK => $this->createFillInTheBlankQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::MULTI_SELECT => $this->createMultiSelectAnswerQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::LONG_ANSWER => $this->createLongAnswerQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::SHORT_ANSWER => $this->createShortAnswerQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::LIKERT => $this->createLikertQuestionInfo($item['QuestionInfo']),
+                QuizQuestionType::MULTI_SHORT_ANSWER => $this->createMultipleShortAnswerQuestionInfo($item['QuestionInfo']),
+                default => null,
+            };
+
             return new QuizQuestion(
                 $item['QuestionId'],
-                QuizQuestionType::make($item['QuestionTypeId']),
+                $quizQuestionType,
                 $item['Name'],
                 new RichText($item['QuestionText']['Text'], $item['QuestionText']['Html']),
                 $item['Points'],
@@ -445,6 +547,7 @@ final class SymfonyHttpClient implements ClientInterface
                 $item['SectionId'],
                 $item['QuestionTemplateId'],
                 $item['QuestionTemplateVersionId'],
+                $questionInfo,
             );
         }));
     }
@@ -517,6 +620,28 @@ final class SymfonyHttpClient implements ClientInterface
         }
 
         return $collection;
+    }
+
+    public function updateGradeValueForUser(IncomingGradeValue $incomingGradeValue, int $orgUnitId, int $gradeObjectId, int $userId, string $bearerToken): void
+    {
+        $method = 'PUT';
+        $path = sprintf('/d2l/api/le/%s/%d/grades/%d/values/%d', $this->apiLeVersion, $orgUnitId, $gradeObjectId, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+                'json' => $incomingGradeValue->toArray(),
+                'auth_bearer' => $bearerToken,
+            ]
+        );
+
+        try {
+            $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
     }
 
     public function getOrganizationInfo(): OrganizationInfo
@@ -761,6 +886,100 @@ final class SymfonyHttpClient implements ClientInterface
         );
     }
 
+    public function getRootModulesForAnOrganizationUnit(int $orgUnitId): Collection
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/le/%s/%d/content/root/',
+            $this->apiLeVersion,
+            $orgUnitId,
+        );
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $collection = new Collection();
+
+        foreach ($decodedResponse as $item) {
+            $collection->add($this->parseModuleItem($item));
+        }
+
+        return $collection;
+    }
+
+    public function getModuleStructureForAnOrganizationUnit(int $orgUnitId, int $moduleId): Collection
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/le/%s/%d/content/modules/%d/structure/',
+            $this->apiLeVersion,
+            $orgUnitId,
+            $moduleId,
+        );
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $collection = new Collection();
+
+        foreach ($decodedResponse as $item) {
+            if (Type::make($item['Type'])->isModule()) {
+                $collection->add($this->parseModuleItem($item));
+            } else {
+                $collection->add($this->parseTopicItem($item));
+            }
+        }
+
+        return $collection;
+    }
+
+    public function updateContentTopicCompletion(ContentTopicCompletionUpdate $updateContentTopicCompletion, int $orgUnitId, int $topicId, int $userId): void
+    {
+        $method = 'PUT';
+        $path = sprintf('/d2l/api/le/%s/%d/content/topics/%d/completions/users/%d', $this->apiLeVersion, $orgUnitId, $topicId, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+                'json' => $updateContentTopicCompletion->toArray(),
+            ]
+        );
+
+        try {
+            $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+    }
+
     public function generateExpiringGuid(string $orgDefinedId): Guid
     {
         $response = $this->httpClient->request(
@@ -881,5 +1100,295 @@ final class SymfonyHttpClient implements ClientInterface
         }
 
         return new Collection($previousDatasets);
+    }
+
+    private function parseModuleItem(array $item): Module
+    {
+        $structure = new Collection();
+
+        foreach ($item['Structure'] as $structureItem) {
+            $structure->add(
+                new Structure(
+                    $structureItem['Id'],
+                    $structureItem['Title'],
+                    $structureItem['ShortTitle'],
+                    Type::make($structureItem['Type']),
+                    null !== $structureItem['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $structureItem['LastModifiedDate']) : null,
+                )
+            );
+        }
+
+        return new Module(
+            $item['Id'],
+            $structure,
+            null !== $item['ModuleStartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleStartDate']) : null,
+            null !== $item['ModuleEndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleEndDate']) : null,
+            null !== $item['ModuleDueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['ModuleDueDate']) : null,
+            $item['IsHidden'],
+            $item['IsLocked'],
+            $item['Title'],
+            $item['ShortTitle'],
+            null !== $item['Description'] ? new RichText($item['Description']['Text'], $item['Description']['Html']) : null,
+            $item['ParentModuleId'],
+            null !== $item['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['LastModifiedDate']) : null,
+        );
+    }
+
+    private function parseTopicItem(array $item): Topic
+    {
+        return new Topic(
+            $item['Id'],
+            TopicType::make($item['TopicType']),
+            $item['Url'],
+            null !== $item['StartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['StartDate']) : null,
+            null !== $item['EndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['EndDate']) : null,
+            null !== $item['DueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['DueDate']) : null,
+            $item['IsHidden'],
+            $item['IsLocked'],
+            $item['OpenAsExternalResource'],
+            $item['Title'],
+            $item['ShortTitle'],
+            null !== $item['Description'] ? new RichText($item['Description']['Text'], $item['Description']['Html']) : null,
+            $item['ParentModuleId'],
+            $item['ActivityId'],
+            $item['IsExempt'],
+            $item['ToolId'],
+            $item['ToolItemId'],
+            ActivityType::make($item['ActivityType']),
+            $item['GradeItemId'],
+            null !== $item['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $item['LastModifiedDate']) : null,
+        );
+    }
+
+    private function getQuizDtoFromQuizArrayResponse(array $decodedResponse): Quiz
+    {
+        $restrictIPAddressRangeCollection = new Collection();
+
+        foreach ($decodedResponse['RestrictIPAddressRange'] as $restrictIPAddressRangeItem) {
+            $restrictIPAddressRangeCollection->add(new RestrictIPAddressRange($restrictIPAddressRangeItem['IPRangeStart'], $restrictIPAddressRangeItem['IPRangeEnd']));
+        }
+
+        return new Quiz(
+            $decodedResponse['QuizId'],
+            $decodedResponse['Name'],
+            $decodedResponse['IsActive'],
+            $decodedResponse['SortOrder'],
+            $decodedResponse['AutoExportToGrades'],
+            $decodedResponse['GradeItemId'],
+            $decodedResponse['IsAutoSetGraded'],
+            new Instructions(new RichText($decodedResponse['Instructions']['Text']['Text'], $decodedResponse['Instructions']['Text']['Html']), $decodedResponse['Instructions']['IsDisplayed']),
+            new Description(new RichText($decodedResponse['Description']['Text']['Text'], $decodedResponse['Description']['Text']['Html']), $decodedResponse['Description']['IsDisplayed']),
+            null !== $decodedResponse['StartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['StartDate']) : null,
+            null !== $decodedResponse['EndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['EndDate']) : null,
+            null !== $decodedResponse['DueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['DueDate']) : null,
+            $decodedResponse['DisplayInCalendar'],
+            new AttemptsAllowed($decodedResponse['AttemptsAllowed']['IsUnlimited'], $decodedResponse['AttemptsAllowed']['NumberOfAttemptsAllowed']),
+            new LateSubmissionInfo(LateSubmissionOption::make($decodedResponse['LateSubmissionInfo']['LateSubmissionOption']), $decodedResponse['LateSubmissionInfo']['LateLimitMinutes']),
+            new SubmissionTimeLimit($decodedResponse['SubmissionTimeLimit']['IsEnforced'], $decodedResponse['SubmissionTimeLimit']['ShowClock'], $decodedResponse['SubmissionTimeLimit']['TimeLimitValue']),
+            $decodedResponse['SubmissionGracePeriod'],
+            $decodedResponse['Password'],
+            new Header(new RichText($decodedResponse['Header']['Text']['Text'], $decodedResponse['Header']['Text']['Html']), $decodedResponse['Header']['IsDisplayed']),
+            new Footer(new RichText($decodedResponse['Footer']['Text']['Text'], $decodedResponse['Footer']['Text']['Html']), $decodedResponse['Footer']['IsDisplayed']),
+            $decodedResponse['AllowHints'],
+            $decodedResponse['DisableRightClick'],
+            $decodedResponse['DisablePagerAndAlerts'],
+            $decodedResponse['NotificationEmail'],
+            OverallGradeCalculationOption::make($decodedResponse['CalcTypeId']),
+            $restrictIPAddressRangeCollection,
+            $decodedResponse['CategoryId'],
+            $decodedResponse['PreventMovingBackwards'],
+            $decodedResponse['Shuffle'],
+            $decodedResponse['ActivityId'],
+            $decodedResponse['AllowOnlyUsersWithSpecialAccess'],
+            $decodedResponse['IsRetakeIncorrectOnly'],
+        );
+    }
+
+    private function createMultipleChoiceQuestionInfo(array $questionInfo): MultipleChoiceAnswers
+    {
+        $answers = new Collection();
+
+        foreach ($questionInfo['Answers'] as $answer) {
+            $answers->add(
+                new MultipleChoiceAnswer(
+                    $answer['PartId'],
+                    new RichText($answer['Answer']['Text'], $answer['Answer']['Html']),
+                    new RichText($answer['AnswerFeedback']['Text'], $answer['AnswerFeedback']['Html']),
+                    $answer['Weight'],
+                )
+            );
+        }
+
+        return new MultipleChoiceAnswers(
+            $answers,
+            $questionInfo['Randomize'],
+            EnumerationType::make($questionInfo['Enumeration']),
+        );
+    }
+
+    private function createTrueFalseQuestionInfo(array $questionInfo): TrueFalse
+    {
+        return new TrueFalse(
+            $questionInfo['TruePartId'],
+            $questionInfo['TrueWeight'],
+            new RichText($questionInfo['TrueFeedback']['Text'], $questionInfo['TrueFeedback']['Html']),
+            $questionInfo['FalsePartId'],
+            $questionInfo['FalseWeight'],
+            new RichText($questionInfo['FalseFeedback']['Text'], $questionInfo['FalseFeedback']['Html']),
+            EnumerationType::make($questionInfo['Enumeration']),
+        );
+    }
+
+    private function createFillInTheBlankQuestionInfo(array $questionInfo): FillInTheBlank
+    {
+        $texts = new Collection();
+
+        foreach ($questionInfo['Texts'] as $text) {
+            $texts->add(
+                new FillInTheBlankText(
+                    new RichText($text['Text']['Text'], $questionInfo['Text']['Html']),
+                )
+            );
+        }
+
+        $blanks = new Collection();
+
+        foreach ($questionInfo['Blanks'] as $blank) {
+            $answers = new Collection();
+
+            foreach ($blank['Answers'] as $answer) {
+                $answers->add(
+                    new FillInTheBlankAnswer(
+                        $answer['TextAnswer'],
+                        $answer['Weight'],
+                        EvaluationType::make($answer['EvaluationType']),
+                    )
+                );
+            }
+
+            $blanks->add(
+                new FillInTheBlankBlank(
+                    $blank['PartId'],
+                    $blank['Size'],
+                    $answers,
+                )
+            );
+        }
+
+        return new FillInTheBlank(
+            $texts,
+            $blanks,
+        );
+    }
+
+    private function createMultiSelectAnswerQuestionInfo(array $questionInfo): MultiSelectAnswers
+    {
+        $answers = new Collection();
+
+        foreach ($questionInfo['Answers'] as $answer) {
+            $answers->add(
+                new MultiSelectAnswer(
+                    $answer['PartId'],
+                    new RichText($answer['Answer']['Text'], $answer['Answer']['Html']),
+                    new RichText($answer['AnswerFeedback']['Text'], $answer['AnswerFeedback']['Html']),
+                    $answer['IsCorrect'],
+                )
+            );
+        }
+
+        return new MultiSelectAnswers(
+            $answers,
+            $questionInfo['Randomize'],
+            EnumerationType::make($questionInfo['Enumeration']),
+            QuestionStyle::make($questionInfo['Style']),
+            QuestionGradingRule::make($questionInfo['GradingType']),
+        );
+    }
+
+    private function createLongAnswerQuestionInfo(array $questionInfo): LongAnswer
+    {
+        return new LongAnswer(
+            $questionInfo['PartId'],
+            $questionInfo['EnableStudentEditor'],
+            new RichText($questionInfo['InitialText']['Text'], $questionInfo['InitialText']['Html']),
+            new RichText($questionInfo['AnswerKey']['Text'], $questionInfo['AnswerKey']['Html']),
+            $questionInfo['EnableAttachments'],
+        );
+    }
+
+    private function createShortAnswerQuestionInfo(array $questionInfo): ShortAnswers
+    {
+        $blanks = new Collection();
+
+        foreach ($questionInfo['Blanks'] as $blank) {
+            $shortAnswerBlankAnswers = new Collection();
+
+            foreach ($blank['Answers'] as $answer) {
+                $shortAnswerBlankAnswers->add(
+                    new ShortAnswerBlankAnswer(
+                        $answer['Text'],
+                        $answer['Weight'],
+                    )
+                );
+            }
+
+            $blanks->add(
+                new ShortAnswerBlank(
+                    $blank['PartId'],
+                    $shortAnswerBlankAnswers,
+                    EvaluationType::make($blank['EvaluationType']),
+                )
+            );
+        }
+
+        return new ShortAnswers(
+            $blanks,
+            QuestionGradingRule::make($questionInfo['GradingType']),
+        );
+    }
+
+    private function createLikertQuestionInfo(array $questionInfo): Likert
+    {
+        $statements = new Collection();
+
+        foreach ($questionInfo['Statements'] as $statement) {
+            $statements->add(
+                new LikertStatement(
+                    $statement['PartId'],
+                    new RichText($statement['Statement']['Text'], $statement['Statement']['Html']),
+                )
+            );
+        }
+
+        return new Likert(
+            QuestionScaleOption::make($questionInfo['Scale']),
+            $questionInfo['NaOption'],
+            $statements,
+        );
+    }
+
+    private function createMultipleShortAnswerQuestionInfo(array $questionInfo): MultipleShortAnswers
+    {
+        $partIds = Collection::make($questionInfo['PartIds']);
+
+        $answers = new Collection();
+
+        foreach ($questionInfo['Answers'] as $answer) {
+            $answers->add(
+                new MultipleShortAnswer(
+                    $answer['AnswerText'],
+                    $answer['Weight'],
+                    EvaluationType::make($answer['EvaluationType']),
+                )
+            );
+        }
+
+        return new MultipleShortAnswers(
+            $partIds,
+            $questionInfo['Boxes'],
+            $questionInfo['Rows'],
+            $questionInfo['Columns'],
+            $answers,
+        );
     }
 }
