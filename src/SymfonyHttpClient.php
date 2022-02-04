@@ -1246,7 +1246,7 @@ final class SymfonyHttpClient implements ClientInterface
         foreach ($questionInfo['Texts'] as $text) {
             $texts->add(
                 new FillInTheBlankText(
-                    new RichText($text['Text']['Text'], $questionInfo['Text']['Html']),
+                    new RichText($text['Text']['Text'], $text['Text']['Html']),
                 )
             );
         }

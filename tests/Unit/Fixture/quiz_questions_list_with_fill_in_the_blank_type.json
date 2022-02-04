@@ -1,0 +1,51 @@
+{
+    "Objects": [
+        {
+            "QuestionText": {
+                "Text": "Directions: For the following question, enter your answer in the box.\r\nA math professor predicted a 20% increase in the number of points scored by his students on the second test over that of the first test. However, the number of points scored on the second test actually decreased by 5%. Approximately what percent of the predicted number of points scored was the actual number of points scored on the second test?\r\nGive your answer to the nearest integer.\r\n______ % _______ ",
+                "Html": "<p><strong>Directions:</strong>&#160;<em>For the following question, enter your answer in the box</em>.</p>\r\n<p>A math professor predicted a 20% increase in the number of points scored by his students on the second test over that of the first test. However, the number of points scored on the second test actually decreased by 5%. Approximately what percent of the predicted number of points scored was the actual number of points scored on the second test?</p>\r\n<p>Give your answer to the nearest integer.</p>\r\n<p><span style=\"text-decoration: underline;\">______</span>&#160;%</p> _______ "
+            },
+            "QuestionId": 980317,
+            "QuestionTypeId": 3,
+            "Name": "GRE PT1_S1_Q18",
+            "Points": 1,
+            "Difficulty": 1,
+            "Bonus": false,
+            "Mandatory": false,
+            "Hint": null,
+            "Feedback": {
+                "Text": "The correct answer is 79. If P is the number of points scored on the first test, then the predicted number of points for the second test is 1.20P. The actual number of points scored on the second test was 0.95P. The percent of the predicted number of points scored that was the actual number of points scored is  times 100%, which equals approximately 79%.",
+                "Html": "<p><strong>The correct answer is 79.</strong>&#160;If&#160;<em>P</em>&#160;is the number of points scored on the first test, then the predicted number of points for the second test is 1.20<em>P</em>. The actual number of points scored on the second test was 0.95<em>P</em>. The percent of the predicted number of points scored that was the actual number of points scored is&#160;<img alt=\"18.png\" src=\"https://s3.amazonaws.com/wmx-api-production/courses/1853/images/18.png\" style=\"max-width: 100%;height: auto;border-width: 0px;border-image-width: initial;line-height: 1.4;\"/>&#160;times 100%, which equals approximately 79%.</p>"
+            },
+            "LastModifiedBy": 72488,
+            "LastModified": "2021-10-12T19:53:46.093Z",
+            "SectionId": 0,
+            "QuestionTemplateId": 109334,
+            "QuestionTemplateVersionId": 225035,
+            "QuestionInfo": {
+                "Texts": [
+                    {
+                        "Text": {
+                            "Text": "Directions: For the following question, enter your answer in the box.\r\nA math professor predicted a 20% increase in the number of points scored by his students on the second test over that of the first test. However, the number of points scored on the second test actually decreased by 5%. Approximately what percent of the predicted number of points scored was the actual number of points scored on the second test?\r\nGive your answer to the nearest integer.\r\n______ %",
+                            "Html": "<p><strong>Directions:</strong>&#160;<em>For the following question, enter your answer in the box</em>.</p>\r\n<p>A math professor predicted a 20% increase in the number of points scored by his students on the second test over that of the first test. However, the number of points scored on the second test actually decreased by 5%. Approximately what percent of the predicted number of points scored was the actual number of points scored on the second test?</p>\r\n<p>Give your answer to the nearest integer.</p>\r\n<p><span style=\"text-decoration: underline;\">______</span>&#160;%</p>"
+                        }
+                    }
+                ],
+                "Blanks": [
+                    {
+                        "PartId": 952730,
+                        "Size": 30,
+                        "Answers": [
+                            {
+                                "TextAnswer": "79",
+                                "Weight": 100,
+                                "EvaluationType": 0
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "Next": null
+}

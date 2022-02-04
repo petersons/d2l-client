@@ -16,6 +16,7 @@ use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
 use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Grade\IncomingGradeValue;
 use Petersons\D2L\DTO\Guid;
+use Petersons\D2L\DTO\Quiz\FillInTheBlank;
 use Petersons\D2L\DTO\Quiz\LongAnswer;
 use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
 use Petersons\D2L\DTO\Quiz\ShortAnswers;
@@ -1860,6 +1861,94 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(0, $blanks[0]->getEvaluationType()->type());
         $this->assertSame(0, $questionInfo->getGradingType()->rule());
+    }
+
+    public function testQuizQuestionsListWithFillInTheBlankType(): void
+    {
+        $this->freezeTime();
+
+        $quizQuestionsListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_questions_list_with_fill_in_the_blank_type.json');
+        $callback = function (string $method, string $url, array $options) use ($quizQuestionsListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/14859/quizzes/11097/questions/?x_a=baz&x_b=foo&x_c=0aOYqkpQ0E_q4GJwvgAb2h9irnklfftT08JeMDqIoNw&x_d=_MoB5gVMTg2gr7HWZ-STsF4TU-Nn_4MpR1zUPiVoBaM&x_t=1615390200&bookmark=' === $url) {
+                return new MockResponse($quizQuestionsListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizQuestionListPage = $client->quizQuestionsList(14859, 11097);
+
+        $this->assertNull($quizQuestionListPage->getNextUrl());
+
+        $questions = $quizQuestionListPage->getObjects();
+
+        $this->assertCount(1, $questions);
+
+        $this->assertSame(980317, $questions[0]->getId());
+        $this->assertSame(3, $questions[0]->getType()->type());
+        $this->assertSame('GRE PT1_S1_Q18', $questions[0]->getName());
+        $this->assertStringContainsString(
+            'Directions: For the following question, enter your answer in the box.',
+            $questions[0]->getText()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p><strong>Directions:</strong>&#160;<em>For the following question, enter your answer in the box</em>.</p>',
+            $questions[0]->getText()->getHtml()
+        );
+        $this->assertSame(1.0, $questions[0]->getPoints());
+        $this->assertSame(1, $questions[0]->getDifficulty());
+        $this->assertFalse($questions[0]->isBonus());
+        $this->assertFalse($questions[0]->isMandatory());
+        $this->assertNull($questions[0]->getHint());
+        $this->assertStringContainsString(
+            'The correct answer is 79.',
+            $questions[0]->getFeedback()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p><strong>The correct answer is 79.</strong>',
+            $questions[0]->getFeedback()->getHtml()
+        );
+        $this->assertSame('2021-10-12T19:53:46+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
+        $this->assertSame(72488, $questions[0]->getLastModifiedBy());
+        $this->assertSame(0, $questions[0]->getSectionId());
+        $this->assertSame(109334, $questions[0]->getTemplateId());
+        $this->assertSame(225035, $questions[0]->getTemplateVersionId());
+
+        /** @var FillInTheBlank $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(FillInTheBlank::class, $questionInfo);
+
+        $texts = $questionInfo->getTexts();
+
+        $this->assertCount(1, $texts);
+
+        $this->assertStringContainsString(
+            'Directions: For the following question, enter your answer in the box.',
+            $texts[0]->getText()->getText()
+        );
+
+        $this->assertStringContainsString(
+            '<p><strong>Directions:</strong>',
+            $texts[0]->getText()->getHtml()
+        );
+
+        $blanks = $questionInfo->getBlanks();
+        $this->assertCount(1, $blanks);
+
+        $this->assertSame(952730, $blanks[0]->getPartId());
+        $this->assertSame(30, $blanks[0]->getSize());
+
+        $answers = $blanks[0]->getAnswers();
+
+        $this->assertCount(1, $answers);
+
+        $this->assertSame('79', $answers[0]->getTextAnswer());
+        $this->assertSame(100.0, $answers[0]->getWeight());
+        $this->assertSame(0, $answers[0]->getEvaluationType()->type());
     }
 
     public function testQuizQuestionsListWithBookmark(): void
