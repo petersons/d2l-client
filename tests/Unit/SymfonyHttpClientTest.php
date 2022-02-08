@@ -20,6 +20,7 @@ use Petersons\D2L\DTO\Quiz\FillInTheBlank;
 use Petersons\D2L\DTO\Quiz\LongAnswer;
 use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
 use Petersons\D2L\DTO\Quiz\ShortAnswers;
+use Petersons\D2L\DTO\Quiz\TrueFalse;
 use Petersons\D2L\DTO\RichTextInput;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
@@ -1949,6 +1950,81 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('79', $answers[0]->getTextAnswer());
         $this->assertSame(100.0, $answers[0]->getWeight());
         $this->assertSame(0, $answers[0]->getEvaluationType()->type());
+    }
+
+    public function testQuizQuestionsListWithTrueFalseType(): void
+    {
+        $this->freezeTime();
+
+        $quizQuestionsListJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_questions_list_with_true_false_type.json');
+        $callback = function (string $method, string $url, array $options) use ($quizQuestionsListJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12479/quizzes/17315/questions/?x_a=baz&x_b=foo&x_c=zc_3gAV5K3bTq-Xt4t3kyx3ynByACl60sirCUQ9IFO0&x_d=48AZdbF-ma6d2PSKOjn1pDUYzhBqdLzcaqMtEghT34Y&x_t=1615390200&bookmark=' === $url) {
+                return new MockResponse($quizQuestionsListJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizQuestionListPage = $client->quizQuestionsList(12479, 17315);
+
+        $this->assertSame(
+            'https://learn.petersons.com/d2l/api/le/1.60/12479/quizzes/17315/questions/?bookmark=3447017',
+            $quizQuestionListPage->getNextUrl()
+        );
+
+        $questions = $quizQuestionListPage->getObjects();
+
+        $this->assertCount(1, $questions);
+
+        $this->assertSame(3447012, $questions[0]->getId());
+        $this->assertSame(2, $questions[0]->getType()->type());
+        $this->assertSame('GMAT-PT1-S2-Q12 ', $questions[0]->getName());
+        $this->assertStringContainsString(
+            'The following question is based on this passage:',
+            $questions[0]->getText()->getText()
+        );
+        $this->assertStringContainsString(
+            '<div class="d-none">
+<div style="display: none;">
+<p>The following question is',
+            $questions[0]->getText()->getHtml()
+        );
+        $this->assertSame(1.0, $questions[0]->getPoints());
+        $this->assertSame(1, $questions[0]->getDifficulty());
+        $this->assertFalse($questions[0]->isBonus());
+        $this->assertFalse($questions[0]->isMandatory());
+        $this->assertNull($questions[0]->getHint());
+        $this->assertStringContainsString(
+            'The correct answer is True. Sort the table by',
+            $questions[0]->getFeedback()->getText()
+        );
+        $this->assertStringContainsString(
+            '<p><strong>The correct answer is True.</strong> Sort the table by',
+            $questions[0]->getFeedback()->getHtml()
+        );
+        $this->assertSame('2021-11-11T17:10:08+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
+        $this->assertSame(190, $questions[0]->getLastModifiedBy());
+        $this->assertSame(1536134, $questions[0]->getSectionId());
+        $this->assertSame(167179, $questions[0]->getTemplateId());
+        $this->assertSame(229020, $questions[0]->getTemplateVersionId());
+
+        /** @var TrueFalse $questionInfo */
+        $questionInfo = $questions[0]->getQuestionInfo();
+        $this->assertInstanceOf(TrueFalse::class, $questionInfo);
+
+        $this->assertSame(969854, $questionInfo->getTruePartId());
+        $this->assertSame(100.0, $questionInfo->getTrueWeight());
+        $this->assertSame('', $questionInfo->getTrueFeedback()->getText());
+        $this->assertSame('', $questionInfo->getTrueFeedback()->getHtml());
+        $this->assertSame(969855, $questionInfo->getFalsePartId());
+        $this->assertSame(0.0, $questionInfo->getFalseWeight());
+        $this->assertSame('', $questionInfo->getFalseFeedback()->getText());
+        $this->assertSame('', $questionInfo->getFalseFeedback()->getHtml());
+        $this->assertSame(6, $questionInfo->getEnumeration()->type());
     }
 
     public function testQuizQuestionsListWithBookmark(): void

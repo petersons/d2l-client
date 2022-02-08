@@ -1,0 +1,43 @@
+{
+    "Objects": [
+        {
+            "QuestionId": 3447012,
+            "QuestionTypeId": 2,
+            "Name": "GMAT-PT1-S2-Q12 ",
+            "QuestionText": {
+                "Text": "\n\nThe following question is based on this passage:\n\n\nThe average female of any species in the genus Lambda weighs more than the average male of any species in Subfamily I.",
+                "Html": "<div class=\"d-none\">\n<div style=\"display: none;\">\n<p>The following question is <a rel=\"noopener\" href=\"https://learn.petersons.com/shared/Passages/GMAT/GMAT_PT1_S2_Q12-14.html\" target=\"_blank\">based on this passage</a>:</p>\n</div>\n</div>\n<p>The average female of any species in the genus Lambda weighs more than the average male of any species in Subfamily I.</p>"
+            },
+            "Points": 1,
+            "Difficulty": 1,
+            "Bonus": false,
+            "Mandatory": false,
+            "Hint": null,
+            "Feedback": {
+                "Text": "The correct answer is True. Sort the table by \"Genus\" in order to group all Lambdas together. Doing so also gets all the Subfamily I species together. Check the lowest female weight among the three Lambda species (110kg) against the greatest male weight among the Subfamily I species (95kg). Indeed, the average female of any species in the genus Lambda weighs more than the average male of any species in Subfamily I.",
+                "Html": "<p><strong>The correct answer is True.</strong> Sort the table by &quot;Genus&quot; in order to group all Lambdas together. Doing so also gets all the Subfamily I species together. Check the lowest female weight among the three Lambda species (110kg) against the greatest male weight among the Subfamily I species (95kg). Indeed, the average female of any species in the genus Lambda weighs more than the average male of any species in Subfamily I.</p>"
+            },
+            "LastModifiedBy": 190,
+            "LastModified": "2021-11-11T17:10:08.377Z",
+            "SectionId": 1536134,
+            "QuestionTemplateId": 167179,
+            "QuestionTemplateVersionId": 229020,
+            "QuestionInfo": {
+                "TruePartId": 969854,
+                "TrueWeight": 100,
+                "TrueFeedback": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "FalsePartId": 969855,
+                "FalseWeight": 0,
+                "FalseFeedback": {
+                    "Text": "",
+                    "Html": ""
+                },
+                "Enumeration": 6
+            }
+        }
+    ],
+    "Next": "https://learn.petersons.com/d2l/api/le/1.60/12479/quizzes/17315/questions/?bookmark=3447017"
+}
