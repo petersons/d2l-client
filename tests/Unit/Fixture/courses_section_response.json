@@ -1,0 +1,22 @@
+[
+    {
+        "SectionId": 501471,
+        "Name": "Section 1",
+        "Code": "sec1",
+        "Description": {
+            "Text": "",
+            "Html": ""
+        },
+        "Enrollments": []
+    },
+    {
+        "SectionId": 501472,
+        "Name": "Archive",
+        "Code": "sec2",
+        "Description": {
+            "Text": "",
+            "Html": ""
+        },
+        "Enrollments": []
+    }
+]

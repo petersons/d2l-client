@@ -220,4 +220,12 @@ interface ClientInterface
      * @throws ApiException
      */
     public function updateContentTopicCompletion(ContentTopicCompletionUpdate $updateContentTopicCompletion, int $orgUnitId, int $topicId, int $userId): void;
+
+    /**
+     * Retrieve all the sections for a provided org unit.
+     * @link https://docs.valence.desire2learn.com/res/enroll.html#get--d2l-api-lp-(version)-(orgUnitId)-sections-
+     * @throws ApiException
+     * @return Collection&ContentObject[]
+     */
+    public function getSectionsForOrganizationUnit(int $orgUnitId): Collection;
 }

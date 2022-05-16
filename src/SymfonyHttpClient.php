@@ -11,6 +11,7 @@ use Petersons\D2L\DTO\BrightspaceDataSet\BrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
+use Petersons\D2L\DTO\ContentObject\ContentObject;
 use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\ContentObject\Structure;
 use Petersons\D2L\DTO\ContentObject\Topic;
@@ -63,6 +64,7 @@ use Petersons\D2L\DTO\Quiz\ShortAnswers;
 use Petersons\D2L\DTO\Quiz\SubmissionTimeLimit;
 use Petersons\D2L\DTO\Quiz\TrueFalse;
 use Petersons\D2L\DTO\RichText;
+use Petersons\D2L\DTO\Section\Section;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\DTO\User\User;
@@ -980,6 +982,40 @@ final class SymfonyHttpClient implements ClientInterface
         }
     }
 
+    public function getSectionsForOrganizationUnit(int $orgUnitId): Collection
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/lp/%s/%d/sections/',
+            $this->apiLpVersion,
+            $orgUnitId,
+        );
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ]
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $collection = new Collection();
+
+        foreach ($decodedResponse as $item) {
+            $collection->add($this->parseSectionItem($item));
+        }
+
+        return $collection;
+    }
+
     public function generateExpiringGuid(string $orgDefinedId): Guid
     {
         $response = $this->httpClient->request(
@@ -1389,6 +1425,30 @@ final class SymfonyHttpClient implements ClientInterface
             $questionInfo['Rows'],
             $questionInfo['Columns'],
             $answers,
+        );
+    }
+
+    private function parseSectionItem(array $item): Section
+    {
+        $enrollments = new Collection();
+
+        foreach ($item['Enrollments'] as $enrollment) {
+            $enrollments->add(
+                new Enrollment(
+                    $enrollment['OrgUnitId'],
+                    $enrollment['UserId'],
+                    $enrollment['RoleId'],
+                    $enrollment['IsCascading']
+                )
+            );
+        }
+
+        return new Section(
+            $item['SectionId'],
+            $item['Name'],
+            $item['Code'],
+            new RichText($item['Description']['Text'], $item['Description']['Html']),
+            $enrollments
         );
     }
 }
