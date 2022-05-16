@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Petersons\D2L\DTO\Section;
 
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Arrayable;
 use Petersons\D2L\DTO\RichText;
 
-final class Section
+/**
+ * @link https://docs.valence.desire2learn.com/res/enroll.html#Section.SectionData
+ */
+final class Section implements Arrayable
 {
     public function __construct(
-        public int        $sectionId,
-        public string     $name,
-        public string     $code,
-        public RichText $description,
-        public Collection $enrollments,
+        private int        $sectionId,
+        private string     $name,
+        private string     $code,
+        private RichText $description,
+        private array $enrollments,
     ) {
     }
 
@@ -38,7 +41,10 @@ final class Section
         return $this->description;
     }
 
-    public function getEnrollments(): Collection
+    /**
+     * @return array&int[]
+     */
+    public function getEnrollments(): array
     {
         return $this->enrollments;
     }
@@ -50,9 +56,7 @@ final class Section
             'Name' => $this->name,
             'Code' => $this->code,
             'Description' => $this->description->toArray(),
-            'Enrollments' => $this->enrollments->toArray()
+            'Enrollments' => $this->enrollments
         ];
     }
-
-
 }

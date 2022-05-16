@@ -3082,9 +3082,6 @@ final class SymfonyHttpClientTest extends TestCase
         $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);
     }
 
-    /**
-     * @throws ApiException
-     */
     public function testGetSectionsForOrganizationUnit(): void
     {
         $this->freezeTime();
@@ -3113,7 +3110,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('sec1', $sectionsForOrganizationUnit[0]->getCode());
         $this->assertSame('', $sectionsForOrganizationUnit[0]->getDescription()->getHtml());
         $this->assertSame('', $sectionsForOrganizationUnit[0]->getDescription()->getText());
-        $this->assertCount(0, $sectionsForOrganizationUnit[0]->getEnrollments());
+        $this->assertCount(3, $sectionsForOrganizationUnit[0]->getEnrollments());
+        $this->assertSame([13, 42, 333], $sectionsForOrganizationUnit[0]->getEnrollments());
 
         $this->assertInstanceOf(Section::class, $sectionsForOrganizationUnit[1]);
         $this->assertSame(501472, $sectionsForOrganizationUnit[1]->getSectionId());

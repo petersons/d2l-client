@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Section;
 
-use Illuminate\Support\Collection;
 use Petersons\D2L\DTO\RichText;
 use Petersons\D2L\DTO\Section\Section;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +16,7 @@ final class GetSectionTest extends TestCase
         $name = 'Marvel';
         $code = '1234';
         $description = new RichText('pero', '');
-        $enrollments = new Collection();
+        $enrollments = [3, 6, 9];
 
         $createSectionEnrollment = new Section($sectionId, $name, $code, $description, $enrollments);
 
@@ -27,7 +26,7 @@ final class GetSectionTest extends TestCase
                 'Name' => $name,
                 'Code' => $code,
                 'Description' => $description->toArray(),
-                'Enrollments' => $enrollments->toArray(),
+                'Enrollments' => $enrollments,
             ],
             $createSectionEnrollment->toArray()
         );

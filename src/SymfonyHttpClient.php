@@ -11,7 +11,6 @@ use Petersons\D2L\DTO\BrightspaceDataSet\BrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\DataSetReportInfo;
 use Petersons\D2L\DTO\BrightspaceDataSet\PagedBrightspaceDataSetReportInfo;
 use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
-use Petersons\D2L\DTO\ContentObject\ContentObject;
 use Petersons\D2L\DTO\ContentObject\Module;
 use Petersons\D2L\DTO\ContentObject\Structure;
 use Petersons\D2L\DTO\ContentObject\Topic;
@@ -1430,25 +1429,12 @@ final class SymfonyHttpClient implements ClientInterface
 
     private function parseSectionItem(array $item): Section
     {
-        $enrollments = new Collection();
-
-        foreach ($item['Enrollments'] as $enrollment) {
-            $enrollments->add(
-                new Enrollment(
-                    $enrollment['OrgUnitId'],
-                    $enrollment['UserId'],
-                    $enrollment['RoleId'],
-                    $enrollment['IsCascading']
-                )
-            );
-        }
-
         return new Section(
             $item['SectionId'],
             $item['Name'],
             $item['Code'],
             new RichText($item['Description']['Text'], $item['Description']['Html']),
-            $enrollments
+            $item['Enrollments']
         );
     }
 }
