@@ -22,6 +22,7 @@ use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
 use Petersons\D2L\DTO\Quiz\ShortAnswers;
 use Petersons\D2L\DTO\Quiz\TrueFalse;
 use Petersons\D2L\DTO\RichTextInput;
+use Petersons\D2L\DTO\Section\Section;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\Enum\RichTextInputType;
@@ -3079,6 +3080,46 @@ final class SymfonyHttpClientTest extends TestCase
         );
 
         $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);
+    }
+
+    public function testGetSectionsForOrganizationUnit(): void
+    {
+        $this->freezeTime();
+
+        $coursesSectionResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'courses_section_response.json');
+        $callback = function (string $method, string $url, array $options) use ($coursesSectionResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/501470/sections/?x_a=baz&x_b=foo&x_c=DAnAWfmb-87cZ7EHLqBqBf4mrX3GFbtUplW5oz6YcK4&x_d=HSqx-2FOzQ08dIKhqVrgiD-2V7jmXaIZ14eq25Sd1GU&x_t=1615390200' === $url) {
+                return new MockResponse($coursesSectionResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        /** @var Section[] $sectionsForOrganizationUnit */
+        $sectionsForOrganizationUnit = $client->getSectionsForOrganizationUnit(501470);
+
+        $this->assertCount(2, $sectionsForOrganizationUnit);
+
+        $this->assertInstanceOf(Section::class, $sectionsForOrganizationUnit[0]);
+        $this->assertSame(501471, $sectionsForOrganizationUnit[0]->getSectionId());
+        $this->assertSame('Section 1', $sectionsForOrganizationUnit[0]->getName());
+        $this->assertSame('sec1', $sectionsForOrganizationUnit[0]->getCode());
+        $this->assertSame('', $sectionsForOrganizationUnit[0]->getDescription()->getHtml());
+        $this->assertSame('', $sectionsForOrganizationUnit[0]->getDescription()->getText());
+        $this->assertCount(3, $sectionsForOrganizationUnit[0]->getEnrollments());
+        $this->assertSame([13, 42, 333], $sectionsForOrganizationUnit[0]->getEnrollments());
+
+        $this->assertInstanceOf(Section::class, $sectionsForOrganizationUnit[1]);
+        $this->assertSame(501472, $sectionsForOrganizationUnit[1]->getSectionId());
+        $this->assertSame('Archive', $sectionsForOrganizationUnit[1]->getName());
+        $this->assertSame('sec2', $sectionsForOrganizationUnit[1]->getCode());
+        $this->assertSame('', $sectionsForOrganizationUnit[1]->getDescription()->getHtml());
+        $this->assertSame('', $sectionsForOrganizationUnit[1]->getDescription()->getText());
+        $this->assertCount(0, $sectionsForOrganizationUnit[1]->getEnrollments());
     }
 
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient
