@@ -1,10 +1,10 @@
-ARG PHP_VERSION=8.0
+ARG PHP_VERSION=8.1
 
 FROM php:${PHP_VERSION}-cli-alpine
 LABEL maintainer="Antonio Pauletich <antonio.pauletich95@gmail.com>"
 
-ARG COMPOSER_VERSION=2.2.4
-ARG XDEBUG_VERSION=3.1.2
+ARG COMPOSER_VERSION=2.5.8
+ARG XDEBUG_VERSION=3.2.1
 
 ENV XDEBUG_START_WITH_REQUEST "no"
 
@@ -17,6 +17,7 @@ RUN apk add --update --no-cache --virtual .build-deps \
         ${PHPIZE_DEPS} \
         libzip-dev \
         zlib-dev \
+        linux-headers \
     && docker-php-ext-install -j $(getconf _NPROCESSORS_ONLN) \
         zip \
     && pecl install \

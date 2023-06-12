@@ -21,7 +21,7 @@ composer require petersons/d2l-client
 
 ## Requirements
 
-* [PHP 8.0](https://www.php.net/releases/8_0_0.php) or greater
+* [PHP 8.1](https://www.php.net/releases/8_1_0.php) or greater
 
 ## Usage example
 
@@ -78,7 +78,7 @@ Docker dependencies for local development:
 
 0. Build the Docker image
     ```bash
-    dev/bin/docker-compose build --build-arg PHP_VERSION=8.0 php
+    dev/bin/docker-compose build --build-arg PHP_VERSION=8.1 php
     ```
 
 0. Install library dependencies
