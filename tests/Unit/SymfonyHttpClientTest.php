@@ -195,7 +195,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $userJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'user_show_response.json');
         $callback = function (string $method, string $url, array $options) use ($userJsonResponse): MockResponse {
-            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0%40email.fake' === $url) {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0@email.fake' === $url) {
                 return new MockResponse($userJsonResponse);
             }
 
@@ -229,7 +229,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->freezeTime();
 
         $callback = function (string $method, string $url, array $options): MockResponse {
-            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0%40email.fake' === $url) {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0@email.fake' === $url) {
                 return new MockResponse('', ['http_code' => 403]);
             }
 
@@ -242,7 +242,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->expectExceptionObject(
             new ApiException(
-                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0%40email.fake".',
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0@email.fake".',
                 403
             )
         );
@@ -255,7 +255,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->freezeTime();
 
         $callback = function (string $method, string $url, array $options): MockResponse {
-            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0%40email.fake' === $url) {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0@email.fake' === $url) {
                 return new MockResponse('', ['http_code' => 404]);
             }
 
@@ -268,7 +268,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->expectExceptionObject(
             new ApiException(
-                'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0%40email.fake".',
+                'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0@email.fake".',
                 404
             )
         );
