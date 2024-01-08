@@ -24,7 +24,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.46",
-        "illuminate/container": "^8.62 || ^9.0",
+        "illuminate/container": "^9.0 || ^10.0",
         "phpunit/phpunit": "^9.6.9",
         "nikic/php-parser": "^4.15.5"
     },
