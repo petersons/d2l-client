@@ -44,7 +44,7 @@ return (new PhpCsFixer\Config())
         'no_trailing_whitespace_in_comment' => true,
         'no_whitespace_in_blank_line' => true,
         'single_blank_line_at_eof' => true,
-        'single_blank_line_before_namespace' => true,
+        'blank_lines_before_namespace' => true,
         'single_class_element_per_statement' => true,
         'single_import_per_statement' => true,
         'single_line_after_imports' => true,
