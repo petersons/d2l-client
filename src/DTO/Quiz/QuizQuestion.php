@@ -17,22 +17,21 @@ final class QuizQuestion implements Arrayable
     public function __construct(
         private int $id,
         private QuizQuestionType $type,
-        private ?string $name,
+        private string|null $name,
         private RichText $text,
         private float $points,
         private int $difficulty,
         private bool $isBonus,
         private bool $isMandatory,
-        private ?RichText $hint,
-        private ?RichText $feedback,
+        private RichText|null $hint,
+        private RichText|null $feedback,
         private CarbonImmutable $lastModifiedAt,
-        private ?int $lastModifiedBy,
+        private int|null $lastModifiedBy,
         private int $sectionId,
         private int $templateId,
         private int $templateVersionId,
-        private ?QuestionInfo $questionInfo,
-    ) {
-    }
+        private QuestionInfo|null $questionInfo,
+    ) {}
 
     public function getId(): int
     {
@@ -44,7 +43,7 @@ final class QuizQuestion implements Arrayable
         return $this->type;
     }
 
-    public function getName(): ?string
+    public function getName(): string|null
     {
         return $this->name;
     }
@@ -74,12 +73,12 @@ final class QuizQuestion implements Arrayable
         return $this->isMandatory;
     }
 
-    public function getHint(): ?RichText
+    public function getHint(): RichText|null
     {
         return $this->hint;
     }
 
-    public function getFeedback(): ?RichText
+    public function getFeedback(): RichText|null
     {
         return $this->feedback;
     }
@@ -89,7 +88,7 @@ final class QuizQuestion implements Arrayable
         return $this->lastModifiedAt;
     }
 
-    public function getLastModifiedBy(): ?int
+    public function getLastModifiedBy(): int|null
     {
         return $this->lastModifiedBy;
     }
@@ -109,7 +108,7 @@ final class QuizQuestion implements Arrayable
         return $this->templateVersionId;
     }
 
-    public function getQuestionInfo(): ?QuestionInfo
+    public function getQuestionInfo(): QuestionInfo|null
     {
         return $this->questionInfo;
     }

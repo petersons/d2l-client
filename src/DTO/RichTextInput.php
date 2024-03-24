@@ -15,8 +15,7 @@ final class RichTextInput implements Arrayable
     public function __construct(
         private string $content,
         private RichTextInputType $richTextInputType,
-    ) {
-    }
+    ) {}
 
     public function getContent(): string
     {

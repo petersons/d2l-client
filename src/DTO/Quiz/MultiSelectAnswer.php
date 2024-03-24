@@ -14,8 +14,7 @@ final class MultiSelectAnswer implements Arrayable
         private RichText $answer,
         private RichText $answerFeedback,
         private bool $isCorrect,
-    ) {
-    }
+    ) {}
 
     public function getPartId(): int
     {

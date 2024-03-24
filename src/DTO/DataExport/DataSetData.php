@@ -17,8 +17,7 @@ final class DataSetData
         private string $description,
         private string $category,
         private Collection $filters
-    ) {
-    }
+    ) {}
 
     public function getId(): string
     {
@@ -41,7 +40,7 @@ final class DataSetData
     }
 
     /**
-     * @return Collection|DataSetFilter[]
+     * @return Collection<DataSetFilter>
      */
     public function getFilters(): Collection
     {

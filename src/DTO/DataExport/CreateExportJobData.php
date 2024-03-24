@@ -22,6 +22,9 @@ final class CreateExportJobData implements Arrayable, Jsonable
      */
     private array $filters;
 
+    /**
+     * @param ExportJobFilter[] $filters
+     */
     public function __construct(string $dataSetId, array $filters)
     {
         $this->dataSetId = $dataSetId;

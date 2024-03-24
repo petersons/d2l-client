@@ -18,14 +18,13 @@ final class BrightspaceDataSetReportInfo implements Arrayable
         private string $name,
         private string $description,
         private bool $fullDataset,
-        private ?CarbonImmutable $createdDate = null,
-        private ?string $downloadLink = null,
-        private ?float $downloadSize = null,
-        private ?string $version = null,
-        private ?Collection $previousDataSets = null,
-        private ?CarbonImmutable $queuedForProcessingDate = null
-    ) {
-    }
+        private CarbonImmutable|null $createdDate = null,
+        private string|null $downloadLink = null,
+        private float|null $downloadSize = null,
+        private string|null $version = null,
+        private Collection|null $previousDataSets = null,
+        private CarbonImmutable|null $queuedForProcessingDate = null
+    ) {}
 
     public function getPluginId(): string
     {
@@ -47,35 +46,35 @@ final class BrightspaceDataSetReportInfo implements Arrayable
         return $this->fullDataset;
     }
 
-    public function getCreatedDate(): ?CarbonImmutable
+    public function getCreatedDate(): CarbonImmutable|null
     {
         return $this->createdDate;
     }
 
-    public function getDownloadLink(): ?string
+    public function getDownloadLink(): string|null
     {
         return $this->downloadLink;
     }
 
-    public function getDownloadSize(): ?float
+    public function getDownloadSize(): float|null
     {
         return $this->downloadSize;
     }
 
-    public function getVersion(): ?string
+    public function getVersion(): string|null
     {
         return $this->version;
     }
 
     /**
-     * @return Collection|null|BrightspaceDataSetReportInfo[]
+     * @return Collection<BrightspaceDataSetReportInfo>|null
      */
-    public function getPreviousDataSets(): ?Collection
+    public function getPreviousDataSets(): Collection|null
     {
         return $this->previousDataSets;
     }
 
-    public function getQueuedForProcessingDate(): ?CarbonImmutable
+    public function getQueuedForProcessingDate(): CarbonImmutable|null
     {
         return $this->queuedForProcessingDate;
     }
@@ -87,12 +86,12 @@ final class BrightspaceDataSetReportInfo implements Arrayable
             'Name' => $this->name,
             'Description' => $this->description,
             'FullDataSet' => $this->fullDataset,
-            'CreatedDate' => null !== $this->createdDate ? $this->createdDate->toDateTime() : null,
+            'CreatedDate' => $this->createdDate?->toDateTime(),
             'DownloadLink' => $this->downloadLink,
             'DownloadSize' => $this->downloadSize,
             'Version' => $this->version,
-            'PreviousDataSets' => null !== $this->previousDataSets ? $this->previousDataSets->toArray() : null,
-            'QueuedForProcessingDate' => null !== $this->queuedForProcessingDate ? $this->queuedForProcessingDate->toDateTime() : null,
+            'PreviousDataSets' => $this->previousDataSets?->toArray(),
+            'QueuedForProcessingDate' => $this->queuedForProcessingDate?->toDateTime(),
         ];
     }
 }

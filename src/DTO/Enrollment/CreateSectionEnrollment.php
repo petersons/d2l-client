@@ -13,8 +13,7 @@ final class CreateSectionEnrollment
         private int $orgUnitId,
         private int $userId,
         private int $sectionId
-    ) {
-    }
+    ) {}
 
     public function getOrgUnitId(): int
     {

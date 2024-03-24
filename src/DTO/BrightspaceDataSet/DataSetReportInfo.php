@@ -16,11 +16,10 @@ final class DataSetReportInfo implements Arrayable
         private string $pluginId,
         private string $name,
         private string $description,
-        private ?CarbonImmutable $createdAt,
-        private ?string $downloadLink,
-        private ?float $downloadSize
-    ) {
-    }
+        private CarbonImmutable|null $createdAt,
+        private string|null $downloadLink,
+        private float|null $downloadSize
+    ) {}
 
     public function getPluginId(): string
     {
@@ -37,17 +36,17 @@ final class DataSetReportInfo implements Arrayable
         return $this->description;
     }
 
-    public function getCreatedAt(): ?CarbonImmutable
+    public function getCreatedAt(): CarbonImmutable|null
     {
         return $this->createdAt;
     }
 
-    public function getDownloadLink(): ?string
+    public function getDownloadLink(): string|null
     {
         return $this->downloadLink;
     }
 
-    public function getDownloadSize(): ?float
+    public function getDownloadSize(): float|null
     {
         return $this->downloadSize;
     }
@@ -58,7 +57,7 @@ final class DataSetReportInfo implements Arrayable
             'PluginId' => $this->pluginId,
             'Name' => $this->name,
             'Description' => $this->description,
-            'CreatedDate' => $this->createdAt ? $this->createdAt->toDateTime() : null,
+            'CreatedDate' => $this->createdAt?->toDateTime(),
             'DownloadLink' => $this->downloadLink,
             'DownloadSize' => $this->downloadSize,
         ];

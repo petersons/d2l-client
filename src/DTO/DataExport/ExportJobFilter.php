@@ -54,7 +54,7 @@ final class ExportJobFilter implements Arrayable, JsonSerializable
         return new self(self::ROLES_TYPE, $roles->join(','));
     }
 
-    public static function userId(?int $userId): self
+    public static function userId(int|null $userId): self
     {
         return new self(self::USER_ID_TYPE, (string) $userId);
     }

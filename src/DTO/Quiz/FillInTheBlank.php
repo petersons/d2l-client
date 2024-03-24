@@ -14,11 +14,10 @@ final class FillInTheBlank implements QuestionInfo
     public function __construct(
         private Collection $texts,
         private Collection $blanks
-    ) {
-    }
+    ) {}
 
     /**
-     * @return Collection|FillInTheBlankText[]
+     * @return Collection<FillInTheBlankText>
      */
     public function getTexts(): Collection
     {
@@ -26,7 +25,7 @@ final class FillInTheBlank implements QuestionInfo
     }
 
     /**
-     * @return Collection|FillInTheBlankBlank[]
+     * @return Collection<FillInTheBlankBlank>
      */
     public function getBlanks(): Collection
     {

@@ -13,8 +13,7 @@ final class FillInTheBlankAnswer implements Arrayable
         private string $textAnswer,
         private float $weight,
         private EvaluationType $evaluationType
-    ) {
-    }
+    ) {}
 
     public function getTextAnswer(): string
     {

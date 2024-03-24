@@ -72,7 +72,7 @@ final class ServiceProvider extends LaravelServiceProvider implements Deferrable
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/config/d2l.php' => $this->app->configPath('d2l.php'),
+                __DIR__ . '/config/d2l.php' => $this->app->configPath('d2l.php'),
             ], 'd2l-config');
         }
     }

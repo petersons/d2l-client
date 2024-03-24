@@ -17,8 +17,7 @@ final class MultipleChoiceAnswer implements Arrayable
         private RichText $answer,
         private RichText $answerFeedback,
         private float $weight,
-    ) {
-    }
+    ) {}
 
     public function getPartId(): int
     {

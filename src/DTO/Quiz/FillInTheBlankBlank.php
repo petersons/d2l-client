@@ -13,8 +13,7 @@ final class FillInTheBlankBlank implements Arrayable
         private int $partId,
         private int $size,
         private Collection $answers
-    ) {
-    }
+    ) {}
 
     public function getPartId(): int
     {
@@ -27,7 +26,7 @@ final class FillInTheBlankBlank implements Arrayable
     }
 
     /**
-     * @return Collection|FillInTheBlankAnswer[]
+     * @return Collection<FillInTheBlankAnswer>
      */
     public function getAnswers(): Collection
     {

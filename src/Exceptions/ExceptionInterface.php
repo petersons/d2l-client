@@ -9,6 +9,4 @@ use Throwable;
 /**
  * The base interface for all exceptions.
  */
-interface ExceptionInterface extends Throwable
-{
-}
+interface ExceptionInterface extends Throwable {}

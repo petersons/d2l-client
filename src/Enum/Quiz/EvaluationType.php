@@ -30,7 +30,5 @@ final class EvaluationType
         return $this->type;
     }
 
-    private function __construct(private int $type)
-    {
-    }
+    private function __construct(private int $type) {}
 }

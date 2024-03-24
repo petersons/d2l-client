@@ -96,8 +96,7 @@ final class SymfonyHttpClient implements ClientInterface
         private string $pKey,
         private string $apiLpVersion,
         private string $apiLeVersion
-    ) {
-    }
+    ) {}
 
     public function getUserById(int $userId): UserData
     {
@@ -387,7 +386,7 @@ final class SymfonyHttpClient implements ClientInterface
         );
     }
 
-    public function findBrightspaceDataExportItemByName(string $name): ?BrightspaceDataSetReportInfo
+    public function findBrightspaceDataExportItemByName(string $name): BrightspaceDataSetReportInfo|null
     {
         $pagedBrightspaceDataSetReportInfo = $this->getBrightspaceDataExportItems(1, 1000);
 
@@ -425,7 +424,7 @@ final class SymfonyHttpClient implements ClientInterface
         return $this->getQuizDtoFromQuizArrayResponse($decodedResponse);
     }
 
-    public function quizzesList(int $orgUnitId, ?string $bookmark = null): QuizListPage
+    public function quizzesList(int $orgUnitId, string|null $bookmark = null): QuizListPage
     {
         $method = 'GET';
         $path = sprintf(
@@ -486,7 +485,7 @@ final class SymfonyHttpClient implements ClientInterface
         return $result;
     }
 
-    public function quizQuestionsList(int $orgUnitId, int $quizId, ?string $bookmark = null): QuizQuestionListPage
+    public function quizQuestionsList(int $orgUnitId, int $quizId, string|null $bookmark = null): QuizQuestionListPage
     {
         $method = 'GET';
         $path = sprintf(
@@ -1038,8 +1037,26 @@ final class SymfonyHttpClient implements ClientInterface
             throw ApiException::fromSymfonyHttpException($exception);
         }
 
+        set_error_handler(function (
+            int $errorLevel,
+            string $errorMessage,
+            string|null $errorFilename = null,
+            int|null $errorLine = null,
+            array|null $errorContext = null
+        ) {
+            throw new \Exception($errorMessage, $errorLevel);
+        });
+
         try {
-            $data = json_decode(json_encode(new SimpleXMLElement($body)), true, 512, JSON_THROW_ON_ERROR);
+            $xml = new SimpleXMLElement($body);
+        } catch (Throwable $e) {
+            throw new ApiException(sprintf('Invalid response - "%s" given', $body), $e->getCode(), $e);
+        } finally {
+            restore_error_handler();
+        }
+
+        try {
+            $data = json_decode(json_encode($xml), true, 512, JSON_THROW_ON_ERROR);
         } catch (Throwable $e) {
             throw new ApiException(sprintf('Invalid response - "%s" given', $body), $e->getCode(), $e);
         }
@@ -1075,8 +1092,26 @@ final class SymfonyHttpClient implements ClientInterface
             throw ApiException::fromSymfonyHttpException($exception);
         }
 
+        set_error_handler(function (
+            int $errorLevel,
+            string $errorMessage,
+            string|null $errorFilename = null,
+            int|null $errorLine = null,
+            array|null $errorContext = null
+        ) {
+            throw new \Exception($errorMessage, $errorLevel);
+        });
+
         try {
-            $data = json_decode(json_encode(new SimpleXMLElement($body)), true, 512, JSON_THROW_ON_ERROR);
+            $xml = new SimpleXMLElement($body);
+        } catch (Throwable $e) {
+            throw new ApiException(sprintf('Invalid response - "%s" given', $body), $e->getCode(), $e);
+        } finally {
+            restore_error_handler();
+        }
+
+        try {
+            $data = json_decode(json_encode($xml), true, 512, JSON_THROW_ON_ERROR);
         } catch (Throwable $e) {
             throw new ApiException(sprintf('Invalid response - "%s" given', $body), $e->getCode(), $e);
         }
@@ -1110,7 +1145,10 @@ final class SymfonyHttpClient implements ClientInterface
         );
     }
 
-    private function buildPreviousDataSets(?array $previousDataSets = null): ?Collection
+    /**
+     * @return Collection<BrightspaceDataSetReportInfo>|null
+     */
+    private function buildPreviousDataSets(array|null $previousDataSets = null): Collection|null
     {
         if (null === $previousDataSets) {
             return null;

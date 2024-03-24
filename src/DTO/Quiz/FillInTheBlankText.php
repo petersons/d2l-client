@@ -9,9 +9,7 @@ use Petersons\D2L\DTO\RichText;
 
 final class FillInTheBlankText implements Arrayable
 {
-    public function __construct(private RichText $text)
-    {
-    }
+    public function __construct(private RichText $text) {}
 
     public function getText(): RichText
     {

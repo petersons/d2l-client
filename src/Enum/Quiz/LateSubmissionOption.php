@@ -30,7 +30,5 @@ final class LateSubmissionOption
         return $this->option;
     }
 
-    private function __construct(private int $option)
-    {
-    }
+    private function __construct(private int $option) {}
 }

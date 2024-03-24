@@ -20,8 +20,7 @@ final class TrueFalse implements QuestionInfo
         private float $falseWeight,
         private RichText $falseFeedback,
         private EnumerationType $enumeration,
-    ) {
-    }
+    ) {}
 
     public function getTruePartId(): int
     {

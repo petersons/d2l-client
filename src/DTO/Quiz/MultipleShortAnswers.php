@@ -17,11 +17,10 @@ final class MultipleShortAnswers implements QuestionInfo
         private int $rows,
         private int $columns,
         private Collection $answers
-    ) {
-    }
+    ) {}
 
     /**
-     * @return Collection|int[]
+     * @return Collection<int>
      */
     public function getPartIds(): Collection
     {
@@ -44,7 +43,7 @@ final class MultipleShortAnswers implements QuestionInfo
     }
 
     /**
-     * @return Collection|MultipleShortAnswer[]
+     * @return Collection<MultipleShortAnswer>
      */
     public function getAnswers(): Collection
     {

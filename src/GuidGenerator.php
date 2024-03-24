@@ -13,9 +13,7 @@ use Petersons\D2L\Exceptions\UserOrgDefinedIdMissingException;
 
 final class GuidGenerator
 {
-    public function __construct(private ClientInterface $d2lClient)
-    {
-    }
+    public function __construct(private ClientInterface $d2lClient) {}
 
     /**
      * @throws UserOrgDefinedIdMissingException

@@ -12,8 +12,7 @@ final class SubmissionTimeLimit implements Arrayable
         private bool $isEnforced,
         private bool $showClock,
         private int $timeLimitValue
-    ) {
-    }
+    ) {}
 
     public function isEnforced(): bool
     {

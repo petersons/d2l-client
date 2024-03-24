@@ -6,9 +6,7 @@ namespace Petersons\D2L\DTO;
 
 final class Guid
 {
-    public function __construct(private string $value)
-    {
-    }
+    public function __construct(private string $value) {}
 
     public function getValue(): string
     {

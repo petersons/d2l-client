@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Petersons\D2L\DTO\ObjectListPage;
 
 /**
- * @method Collection|Quiz[] getObjects
+ * @method Collection<Quiz> getObjects
  */
 final class QuizListPage extends ObjectListPage
 {

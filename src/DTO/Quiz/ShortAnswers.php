@@ -15,11 +15,10 @@ final class ShortAnswers implements QuestionInfo
     public function __construct(
         private Collection $blanks,
         private QuestionGradingRule $gradingType,
-    ) {
-    }
+    ) {}
 
     /**
-     * @return Collection|ShortAnswerBlank[]
+     * @return Collection<ShortAnswerBlank>
      */
     public function getBlanks(): Collection
     {

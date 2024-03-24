@@ -20,36 +20,35 @@ final class Quiz implements Arrayable
         private string $name,
         private bool $isActive,
         private int $sortOrder,
-        private ?bool $autoExportToGrades,
-        private ?int $gradeItemId,
+        private bool|null $autoExportToGrades,
+        private int|null $gradeItemId,
         private bool $isAutoSetGraded,
         private Instructions $instructions,
         private Description $description,
-        private ?CarbonImmutable $startDate,
-        private ?CarbonImmutable $endDate,
-        private ?CarbonImmutable $dueDate,
+        private CarbonImmutable|null $startDate,
+        private CarbonImmutable|null $endDate,
+        private CarbonImmutable|null $dueDate,
         private bool $displayInCalendar,
         private AttemptsAllowed $attemptsAllowed,
         private LateSubmissionInfo $lateSubmissionInfo,
         private SubmissionTimeLimit $submissionTimeLimit,
-        private ?int $submissionGracePeriod,
-        private ?string $password,
+        private int|null $submissionGracePeriod,
+        private string|null $password,
         private Header $header,
         private Footer $footer,
         private bool $allowHints,
         private bool $disableRightClick,
         private bool $disablePagerAndAlerts,
-        private ?string $notificationEmail,
+        private string|null $notificationEmail,
         private OverallGradeCalculationOption $calcTypeId,
         private Collection $restrictIPAddressRange,
-        private ?int $categoryId,
+        private int|null $categoryId,
         private bool $preventMovingBackwards,
         private bool $shuffle,
-        private ?string $activityId,
+        private string|null $activityId,
         private bool $allowOnlyUsersWithSpecialAccess,
         private bool $isRetakeIncorrectOnly,
-    ) {
-    }
+    ) {}
 
     public function getId(): int
     {
@@ -71,12 +70,12 @@ final class Quiz implements Arrayable
         return $this->sortOrder;
     }
 
-    public function getAutoExportToGrades(): ?bool
+    public function getAutoExportToGrades(): bool|null
     {
         return $this->autoExportToGrades;
     }
 
-    public function getGradeItemId(): ?int
+    public function getGradeItemId(): int|null
     {
         return $this->gradeItemId;
     }
@@ -96,17 +95,17 @@ final class Quiz implements Arrayable
         return $this->description;
     }
 
-    public function getStartDate(): ?CarbonImmutable
+    public function getStartDate(): CarbonImmutable|null
     {
         return $this->startDate;
     }
 
-    public function getEndDate(): ?CarbonImmutable
+    public function getEndDate(): CarbonImmutable|null
     {
         return $this->endDate;
     }
 
-    public function getDueDate(): ?CarbonImmutable
+    public function getDueDate(): CarbonImmutable|null
     {
         return $this->dueDate;
     }
@@ -131,12 +130,12 @@ final class Quiz implements Arrayable
         return $this->submissionTimeLimit;
     }
 
-    public function getSubmissionGracePeriod(): ?int
+    public function getSubmissionGracePeriod(): int|null
     {
         return $this->submissionGracePeriod;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string|null
     {
         return $this->password;
     }
@@ -166,7 +165,7 @@ final class Quiz implements Arrayable
         return $this->disablePagerAndAlerts;
     }
 
-    public function getNotificationEmail(): ?string
+    public function getNotificationEmail(): string|null
     {
         return $this->notificationEmail;
     }
@@ -177,14 +176,14 @@ final class Quiz implements Arrayable
     }
 
     /**
-     * @return Collection|RestrictIPAddressRange[]
+     * @return Collection<RestrictIPAddressRange>
      */
     public function getRestrictIPAddressRange(): Collection
     {
         return $this->restrictIPAddressRange;
     }
 
-    public function getCategoryId(): ?int
+    public function getCategoryId(): int|null
     {
         return $this->categoryId;
     }
@@ -199,7 +198,7 @@ final class Quiz implements Arrayable
         return $this->shuffle;
     }
 
-    public function getActivityId(): ?string
+    public function getActivityId(): string|null
     {
         return $this->activityId;
     }

@@ -12,8 +12,7 @@ final class LikertStatement implements Arrayable
     public function __construct(
         private int $partId,
         private RichText $statement,
-    ) {
-    }
+    ) {}
 
     public function getPartId(): int
     {

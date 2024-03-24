@@ -16,8 +16,7 @@ final class GradeObjectCategory implements Arrayable
         private int $id,
         private Collection $grades,
         private GradeObjectCategoryData $gradeObjectCategoryData
-    ) {
-    }
+    ) {}
 
     public function getId(): int
     {
@@ -25,7 +24,7 @@ final class GradeObjectCategory implements Arrayable
     }
 
     /**
-     * @return Collection|GradeObject[]
+     * @return Collection<GradeObject>
      */
     public function getGrades(): Collection
     {
@@ -46,8 +45,8 @@ final class GradeObjectCategory implements Arrayable
             'ShortName' => $this->gradeObjectCategoryData->getShortName(),
             'CanExceedMax' => $this->gradeObjectCategoryData->canExceedMax(),
             'ExcludeFromFinalGrade' => $this->gradeObjectCategoryData->excludeFromFinalGrade(),
-            'StartDate' => $this->gradeObjectCategoryData->getStartDate() ? $this->gradeObjectCategoryData->getStartDate()->toDateTime() : null,
-            'EndDate' => $this->gradeObjectCategoryData->getEndDate() ? $this->gradeObjectCategoryData->getEndDate()->toDateTime() : null,
+            'StartDate' => $this->gradeObjectCategoryData->getStartDate()?->toDateTime(),
+            'EndDate' => $this->gradeObjectCategoryData->getEndDate()?->toDateTime(),
             'Weight' => $this->gradeObjectCategoryData->getWeight(),
             'MaxPoints' => $this->gradeObjectCategoryData->getMaxPoints(),
             'AutoPoints' => $this->gradeObjectCategoryData->autoPoints(),

@@ -16,9 +16,8 @@ final class Structure implements Arrayable
         private string $title,
         private string $shortTitle,
         private Type $type,
-        private ?CarbonImmutable $lastModifiedDate
-    ) {
-    }
+        private CarbonImmutable|null $lastModifiedDate
+    ) {}
 
     public function getId(): int
     {
@@ -40,7 +39,7 @@ final class Structure implements Arrayable
         return $this->type;
     }
 
-    public function getLastModifiedDate(): ?CarbonImmutable
+    public function getLastModifiedDate(): CarbonImmutable|null
     {
         return $this->lastModifiedDate;
     }

@@ -12,41 +12,40 @@ use Illuminate\Contracts\Support\Arrayable;
 final class User implements Arrayable
 {
     public function __construct(
-        private ?string $identifier = null,
-        private ?string $displayName = null,
-        private ?string $emailAddress = null,
-        private ?string $orgDefinedId = null,
-        private ?string $profileBadgeUrl = null,
-        private ?string $profileIdentifier = null
-    ) {
-    }
+        private string|null $identifier = null,
+        private string|null $displayName = null,
+        private string|null $emailAddress = null,
+        private string|null $orgDefinedId = null,
+        private string|null $profileBadgeUrl = null,
+        private string|null $profileIdentifier = null
+    ) {}
 
-    public function getIdentifier(): ?string
+    public function getIdentifier(): string|null
     {
         return $this->identifier;
     }
 
-    public function getDisplayName(): ?string
+    public function getDisplayName(): string|null
     {
         return $this->displayName;
     }
 
-    public function getEmailAddress(): ?string
+    public function getEmailAddress(): string|null
     {
         return $this->emailAddress;
     }
 
-    public function getOrgDefinedId(): ?string
+    public function getOrgDefinedId(): string|null
     {
         return $this->orgDefinedId;
     }
 
-    public function getProfileBadgeUrl(): ?string
+    public function getProfileBadgeUrl(): string|null
     {
         return $this->profileBadgeUrl;
     }
 
-    public function getProfileIdentifier(): ?string
+    public function getProfileIdentifier(): string|null
     {
         return $this->profileIdentifier;
     }

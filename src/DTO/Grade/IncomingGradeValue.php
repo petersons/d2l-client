@@ -146,10 +146,9 @@ final class IncomingGradeValue implements Arrayable
         private RichTextInput $comments,
         private RichTextInput $privateComments,
         private GradeObjectType $gradeObjectType,
-        private ?float $pointsNumerator = null,
-        private ?bool $pass = null,
-        private ?string $value = null,
-        private ?string $text = null,
-    ) {
-    }
+        private float|null $pointsNumerator = null,
+        private bool|null $pass = null,
+        private string|null $value = null,
+        private string|null $text = null,
+    ) {}
 }

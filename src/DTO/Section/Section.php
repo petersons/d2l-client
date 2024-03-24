@@ -18,8 +18,7 @@ final class Section implements Arrayable
         private string     $code,
         private RichText $description,
         private array $enrollments,
-    ) {
-    }
+    ) {}
 
     public function getSectionId(): int
     {

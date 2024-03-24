@@ -95,7 +95,7 @@ final class CourseUrlGeneratorTest extends TestCase
         $courseUrlGenerator->generateCourseGradesUrl($guid, $user, $lmsCourseId);
     }
 
-    private function getUser(?string $orgDefinedId): UserData
+    private function getUser(string|null $orgDefinedId): UserData
     {
         return new UserData(
             555,

@@ -10,16 +10,15 @@ final class RestrictIPAddressRange implements Arrayable
 {
     public function __construct(
         private string $IPRangeStart,
-        private ?string $IPRangeEnd
-    ) {
-    }
+        private string|null $IPRangeEnd
+    ) {}
 
     public function getIPRangeStart(): string
     {
         return $this->IPRangeStart;
     }
 
-    public function getIPRangeEnd(): ?string
+    public function getIPRangeEnd(): string|null
     {
         return $this->IPRangeEnd;
     }

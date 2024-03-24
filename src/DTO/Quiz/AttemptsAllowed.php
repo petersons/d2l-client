@@ -10,16 +10,15 @@ final class AttemptsAllowed implements Arrayable
 {
     public function __construct(
         private bool $isUnlimited,
-        private ?int $numberOfAttemptsAllowed
-    ) {
-    }
+        private int|null $numberOfAttemptsAllowed
+    ) {}
 
     public function isUnlimited(): bool
     {
         return $this->isUnlimited;
     }
 
-    public function getNumberOfAttemptsAllowed(): ?int
+    public function getNumberOfAttemptsAllowed(): int|null
     {
         return $this->numberOfAttemptsAllowed;
     }

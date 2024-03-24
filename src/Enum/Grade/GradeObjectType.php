@@ -87,7 +87,5 @@ final class GradeObjectType
         return self::CATEGORY === $this->type;
     }
 
-    private function __construct(private int $type)
-    {
-    }
+    private function __construct(private int $type) {}
 }
