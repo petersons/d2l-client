@@ -14,18 +14,17 @@ abstract class ContentObject implements Arrayable
     public function __construct(
         private int $id,
         private Type $type,
-        private ?CarbonImmutable $startDate,
-        private ?CarbonImmutable $endDate,
-        private ?CarbonImmutable $dueDate,
+        private CarbonImmutable|null $startDate,
+        private CarbonImmutable|null $endDate,
+        private CarbonImmutable|null $dueDate,
         private bool $isHidden,
         private bool $isLocked,
         private string $title,
         private string $shortTitle,
-        private ?RichText $description,
-        private ?int $parentModuleId,
-        private ?CarbonImmutable $lastModifiedDate
-    ) {
-    }
+        private RichText|null $description,
+        private int|null $parentModuleId,
+        private CarbonImmutable|null $lastModifiedDate
+    ) {}
 
     public function getId(): int
     {
@@ -37,17 +36,17 @@ abstract class ContentObject implements Arrayable
         return $this->type;
     }
 
-    public function getStartDate(): ?CarbonImmutable
+    public function getStartDate(): CarbonImmutable|null
     {
         return $this->startDate;
     }
 
-    public function getEndDate(): ?CarbonImmutable
+    public function getEndDate(): CarbonImmutable|null
     {
         return $this->endDate;
     }
 
-    public function getDueDate(): ?CarbonImmutable
+    public function getDueDate(): CarbonImmutable|null
     {
         return $this->dueDate;
     }
@@ -72,17 +71,17 @@ abstract class ContentObject implements Arrayable
         return $this->shortTitle;
     }
 
-    public function getDescription(): ?RichText
+    public function getDescription(): RichText|null
     {
         return $this->description;
     }
 
-    public function getParentModuleId(): ?int
+    public function getParentModuleId(): int|null
     {
         return $this->parentModuleId;
     }
 
-    public function getLastModifiedDate(): ?CarbonImmutable
+    public function getLastModifiedDate(): CarbonImmutable|null
     {
         return $this->lastModifiedDate;
     }

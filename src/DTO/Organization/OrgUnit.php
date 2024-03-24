@@ -15,9 +15,8 @@ final class OrgUnit implements Arrayable
         private string $identifier,
         private string $name,
         private OrganizationUnitTypeInfo $organizationUnitTypeInfo,
-        private ?string $code = null
-    ) {
-    }
+        private string|null $code = null
+    ) {}
 
     public function getIdentifier(): string
     {
@@ -34,7 +33,7 @@ final class OrgUnit implements Arrayable
         return $this->organizationUnitTypeInfo;
     }
 
-    public function getCode(): ?string
+    public function getCode(): string|null
     {
         return $this->code;
     }

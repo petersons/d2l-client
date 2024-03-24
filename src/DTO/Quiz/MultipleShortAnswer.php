@@ -13,8 +13,7 @@ final class MultipleShortAnswer implements Arrayable
         private string $answerText,
         private float $weight,
         private EvaluationType $evaluationType,
-    ) {
-    }
+    ) {}
 
     public function getAnswerText(): string
     {

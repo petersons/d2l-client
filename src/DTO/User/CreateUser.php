@@ -12,15 +12,14 @@ final class CreateUser
     public function __construct(
         private string $orgDefinedId,
         private string $firstName,
-        private ?string $middleName,
+        private string|null $middleName,
         private string $lastName,
-        private ?string $externalEmail,
+        private string|null $externalEmail,
         private string $username,
         private int $roleId,
         private bool $isActive,
         private bool $sendCreationEmail
-    ) {
-    }
+    ) {}
 
     public function getOrgDefinedId(): string
     {
@@ -32,7 +31,7 @@ final class CreateUser
         return $this->firstName;
     }
 
-    public function getMiddleName(): ?string
+    public function getMiddleName(): string|null
     {
         return $this->middleName;
     }
@@ -42,7 +41,7 @@ final class CreateUser
         return $this->lastName;
     }
 
-    public function getExternalEmail(): ?string
+    public function getExternalEmail(): string|null
     {
         return $this->externalEmail;
     }

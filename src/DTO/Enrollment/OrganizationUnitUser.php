@@ -15,8 +15,7 @@ final class OrganizationUnitUser implements Arrayable
     public function __construct(
         private User $user,
         private RoleInfo $roleInfo
-    ) {
-    }
+    ) {}
 
     public function getUser(): User
     {

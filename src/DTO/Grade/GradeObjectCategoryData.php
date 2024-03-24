@@ -16,16 +16,15 @@ final class GradeObjectCategoryData
         private string $shortName,
         private bool $canExceedMax,
         private bool $excludeFromFinalGrade,
-        private ?CarbonImmutable $startDate,
-        private ?CarbonImmutable $endDate,
-        private ?float $weight,
-        private ?float $maxPoints,
-        private ?bool $autoPoints,
-        private ?int $weightDistributionType,
-        private ?int $numberOfHighestToDrop,
-        private ?int $numberOfLowestToDrop
-    ) {
-    }
+        private CarbonImmutable|null $startDate,
+        private CarbonImmutable|null $endDate,
+        private float|null $weight,
+        private float|null $maxPoints,
+        private bool|null $autoPoints,
+        private int|null $weightDistributionType,
+        private int|null $numberOfHighestToDrop,
+        private int|null $numberOfLowestToDrop
+    ) {}
 
     public function getName(): string
     {
@@ -47,42 +46,42 @@ final class GradeObjectCategoryData
         return $this->excludeFromFinalGrade;
     }
 
-    public function getStartDate(): ?CarbonImmutable
+    public function getStartDate(): CarbonImmutable|null
     {
         return $this->startDate;
     }
 
-    public function getEndDate(): ?CarbonImmutable
+    public function getEndDate(): CarbonImmutable|null
     {
         return $this->endDate;
     }
 
-    public function getWeight(): ?float
+    public function getWeight(): float|null
     {
         return $this->weight;
     }
 
-    public function getMaxPoints(): ?float
+    public function getMaxPoints(): float|null
     {
         return $this->maxPoints;
     }
 
-    public function autoPoints(): ?bool
+    public function autoPoints(): bool|null
     {
         return $this->autoPoints;
     }
 
-    public function getWeightDistributionType(): ?int
+    public function getWeightDistributionType(): int|null
     {
         return $this->weightDistributionType;
     }
 
-    public function getNumberOfHighestToDrop(): ?int
+    public function getNumberOfHighestToDrop(): int|null
     {
         return $this->numberOfHighestToDrop;
     }
 
-    public function getNumberOfLowestToDrop(): ?int
+    public function getNumberOfLowestToDrop(): int|null
     {
         return $this->numberOfLowestToDrop;
     }

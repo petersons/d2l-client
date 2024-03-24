@@ -9,13 +9,13 @@ use Illuminate\Support\Collection;
 abstract class ObjectListPage
 {
     public function __construct(
-        private ?string $nextUrl,
+        private string|null $nextUrl,
         private Collection $objects
     ) {
         $this->checkObjectInstance();
     }
 
-    public function getNextUrl(): ?string
+    public function getNextUrl(): string|null
     {
         return $this->nextUrl;
     }

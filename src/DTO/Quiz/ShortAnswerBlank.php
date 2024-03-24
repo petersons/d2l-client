@@ -17,8 +17,7 @@ final class ShortAnswerBlank implements Arrayable
         private int $partId,
         private Collection $answers,
         private EvaluationType $evaluationType,
-    ) {
-    }
+    ) {}
 
     public function getPartId(): int
     {
@@ -26,7 +25,7 @@ final class ShortAnswerBlank implements Arrayable
     }
 
     /**
-     * @return Collection|ShortAnswerBlankAnswer[]
+     * @return Collection<ShortAnswerBlankAnswer>
      */
     public function getAnswers(): Collection
     {

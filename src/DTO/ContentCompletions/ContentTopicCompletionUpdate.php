@@ -12,11 +12,9 @@ use Petersons\D2L\Contracts\ClientInterface;
  */
 final class ContentTopicCompletionUpdate
 {
-    public function __construct(private ?CarbonImmutable $completedDate)
-    {
-    }
+    public function __construct(private CarbonImmutable|null $completedDate) {}
 
-    public function getCompletedDate(): ?CarbonImmutable
+    public function getCompletedDate(): CarbonImmutable|null
     {
         return $this->completedDate;
     }

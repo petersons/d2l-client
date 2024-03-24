@@ -48,7 +48,5 @@ final class Type
         return $this->type;
     }
 
-    private function __construct(private int $type)
-    {
-    }
+    private function __construct(private int $type) {}
 }

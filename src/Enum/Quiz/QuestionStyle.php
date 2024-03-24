@@ -30,7 +30,5 @@ final class QuestionStyle
         return $this->style;
     }
 
-    private function __construct(private int $style)
-    {
-    }
+    private function __construct(private int $style) {}
 }

@@ -13,8 +13,7 @@ final class CourseUrlGenerator
     public function __construct(
         private string $d2lHost,
         private string $d2lGuidLoginUri
-    ) {
-    }
+    ) {}
 
     /**
      * @throws UserOrgDefinedIdMissingException

@@ -15,10 +15,9 @@ final class DataSetFilter implements Arrayable
     public function __construct(
         private string $name,
         private ExportFilterType $type,
-        private ?string $description,
-        private ?string $defaultValue
-    ) {
-    }
+        private string|null $description,
+        private string|null $defaultValue
+    ) {}
 
     public function getName(): string
     {
@@ -30,12 +29,12 @@ final class DataSetFilter implements Arrayable
         return $this->type;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string|null
     {
         return $this->description;
     }
 
-    public function getDefaultValue(): ?string
+    public function getDefaultValue(): string|null
     {
         return $this->defaultValue;
     }

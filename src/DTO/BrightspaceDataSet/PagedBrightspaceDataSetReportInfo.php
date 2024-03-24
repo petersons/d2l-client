@@ -14,23 +14,22 @@ final class PagedBrightspaceDataSetReportInfo implements Arrayable
 {
     public function __construct(
         private Collection $brightspaceDataSets,
-        private ?string $nextPageUrl = null,
-        private ?string $prevPageUrl = null
-    ) {
-    }
+        private string|null $nextPageUrl = null,
+        private string|null $prevPageUrl = null
+    ) {}
 
-    public function getNextPageUrl(): ?string
+    public function getNextPageUrl(): string|null
     {
         return $this->nextPageUrl;
     }
 
-    public function getPrevPageUrl(): ?string
+    public function getPrevPageUrl(): string|null
     {
         return $this->prevPageUrl;
     }
 
     /**
-     * @return Collection|BrightspaceDataSetReportInfo[]
+     * @return Collection<BrightspaceDataSetReportInfo>
      */
     public function getBrightspaceDataSets(): Collection
     {

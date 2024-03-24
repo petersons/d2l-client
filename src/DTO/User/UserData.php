@@ -15,16 +15,15 @@ final class UserData
         private int $orgId,
         private int $userId,
         private string $firstName,
-        private ?string $middleName,
+        private string|null $middleName,
         private string $lastName,
         private string $username,
-        private ?string $externalEmail,
-        private ?string $orgDefinedId,
+        private string|null $externalEmail,
+        private string|null $orgDefinedId,
         private string $uniqueIdentifier,
         private bool $isActive,
-        private ?CarbonImmutable $lastAccessedAt
-    ) {
-    }
+        private CarbonImmutable|null $lastAccessedAt
+    ) {}
 
     public function getOrgId(): int
     {
@@ -41,7 +40,7 @@ final class UserData
         return $this->firstName;
     }
 
-    public function getMiddleName(): ?string
+    public function getMiddleName(): string|null
     {
         return $this->middleName;
     }
@@ -56,12 +55,12 @@ final class UserData
         return $this->username;
     }
 
-    public function getExternalEmail(): ?string
+    public function getExternalEmail(): string|null
     {
         return $this->externalEmail;
     }
 
-    public function getOrgDefinedId(): ?string
+    public function getOrgDefinedId(): string|null
     {
         return $this->orgDefinedId;
     }
@@ -76,7 +75,7 @@ final class UserData
         return $this->isActive;
     }
 
-    public function getLastAccessedAt(): ?CarbonImmutable
+    public function getLastAccessedAt(): CarbonImmutable|null
     {
         return $this->lastAccessedAt;
     }

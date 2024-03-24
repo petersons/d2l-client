@@ -74,7 +74,7 @@ final class GuidGeneratorTest extends TestCase
         $guidGenerator->generateForUser($user);
     }
 
-    private function getUser(?string $orgDefinedId): UserData
+    private function getUser(string|null $orgDefinedId): UserData
     {
         return new UserData(
             555,

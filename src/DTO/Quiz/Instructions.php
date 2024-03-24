@@ -12,8 +12,7 @@ final class Instructions implements Arrayable
     public function __construct(
         private RichText $text,
         private bool $isDisplayed
-    ) {
-    }
+    ) {}
 
     public function getText(): RichText
     {

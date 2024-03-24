@@ -16,9 +16,8 @@ final class LongAnswer implements QuestionInfo
         private bool $studentEditorEnabled,
         private RichText $initialText,
         private RichText $answerKey,
-        private ?bool $attachmentsEnabled,
-    ) {
-    }
+        private bool|null $attachmentsEnabled,
+    ) {}
 
     public function getPartId(): int
     {
@@ -40,7 +39,7 @@ final class LongAnswer implements QuestionInfo
         return $this->answerKey;
     }
 
-    public function attachmentsEnabled(): ?bool
+    public function attachmentsEnabled(): bool|null
     {
         return $this->attachmentsEnabled;
     }

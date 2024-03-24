@@ -10,7 +10,7 @@ use Throwable;
 
 final class InvalidGuidException extends Exception implements ExceptionInterface
 {
-    public function __construct(private Guid $guid, string $message = '', int $code = 0, ?Throwable $previous = null)
+    public function __construct(private Guid $guid, string $message = '', int $code = 0, Throwable|null $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

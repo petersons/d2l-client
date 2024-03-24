@@ -20,8 +20,7 @@ final class ExportJobData implements Arrayable
         private CarbonImmutable $submitDate,
         private ExportJobStatus $status,
         private string $category
-    ) {
-    }
+    ) {}
 
     public function getExportJobId(): string
     {

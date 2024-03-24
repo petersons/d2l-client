@@ -18,16 +18,16 @@ final class Module extends ContentObject
     public function __construct(
         int $id,
         private Collection $structure,
-        ?CarbonImmutable $startDate,
-        ?CarbonImmutable $endDate,
-        ?CarbonImmutable $dueDate,
+        CarbonImmutable|null $startDate,
+        CarbonImmutable|null $endDate,
+        CarbonImmutable|null $dueDate,
         bool $isHidden,
         bool $isLocked,
         string $title,
         string $shortTitle,
-        ?RichText $description,
-        ?int $parentModuleId,
-        ?CarbonImmutable $lastModifiedDate
+        RichText|null $description,
+        int|null $parentModuleId,
+        CarbonImmutable|null $lastModifiedDate
     ) {
         parent::__construct(
             $id,
@@ -46,7 +46,7 @@ final class Module extends ContentObject
     }
 
     /**
-     * @return Collection|Structure[]
+     * @return Collection<Structure>
      */
     public function getStructure(): Collection
     {

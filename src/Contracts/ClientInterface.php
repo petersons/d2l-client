@@ -103,7 +103,7 @@ interface ClientInterface
     /**
      * @link https://docs.valence.desire2learn.com/res/dataExport.html#get--d2l-api-lp-(version)-dataExport-bds
      * @throws ApiException
-     * @return Collection|DataSetReportInfo[]
+     * @return Collection<DataSetReportInfo>
      */
     public function getBrightspaceDataExportList(): Collection;
 
@@ -117,7 +117,7 @@ interface ClientInterface
      * @link https://docs.valence.desire2learn.com/res/dataExport.html#get--d2l-api-lp-(version)-dataExport-bds
      * @throws ApiException
      */
-    public function findBrightspaceDataExportItemByName(string $name): ?BrightspaceDataSetReportInfo;
+    public function findBrightspaceDataExportItemByName(string $name): BrightspaceDataSetReportInfo|null;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)
@@ -129,11 +129,11 @@ interface ClientInterface
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-
      * @throws ApiException
      */
-    public function quizzesList(int $orgUnitId, ?string $bookmark = null): QuizListPage;
+    public function quizzesList(int $orgUnitId, string|null $bookmark = null): QuizListPage;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-
-     * @return Collection|Quiz[]
+     * @return Collection<Quiz>
      */
     public function getQuizzesForAnOrganizationUnit(int $orgUnitId): Collection;
 
@@ -141,18 +141,18 @@ interface ClientInterface
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)-questions-
      * @throws ApiException
      */
-    public function quizQuestionsList(int $orgUnitId, int $quizId, ?string $bookmark = null): QuizQuestionListPage;
+    public function quizQuestionsList(int $orgUnitId, int $quizId, string|null $bookmark = null): QuizQuestionListPage;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)-questions-
-     * @return Collection|QuizQuestion[]
+     * @return Collection<QuizQuestion>
      */
     public function getQuizQuestionsForAQuiz(int $orgUnitId, int $quizId): Collection;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)-questions-
      * @throws ApiException
-     * @return Collection|OrganizationUnitUser[]
+     * @return Collection<OrganizationUnitUser>
      */
     public function getEnrolledUsersForAnOrganizationUnit(int $orgUnitId): Collection;
 
@@ -171,28 +171,28 @@ interface ClientInterface
     /**
      * @link https://docs.valence.desire2learn.com/res/orgunit.html#get--d2l-api-lp-(version)-orgstructure-
      * @throws ApiException
-     * @return Collection|OrgUnitProperties[]
+     * @return Collection<OrgUnitProperties>
      */
     public function getOrganizationStructure(): Collection;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/orgunit.html#get--d2l-api-lp-(version)-orgstructure-(orgUnitId)-descendants-paged-
      * @throws ApiException
-     * @return Collection|OrgUnit[]
+     * @return Collection<OrgUnit>
      */
     public function getDescendentUnitsForAnOrganizationUnit(int $orgUnitId): Collection;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/grade.html#get--d2l-api-le-(version)-(orgUnitId)-grades-categories-
      * @throws ApiException
-     * @return Collection|GradeObjectCategory[]
+     * @return Collection<GradeObjectCategory>
      */
     public function getGradeCategoriesForAnOrganizationUnit(int $orgUnitId): Collection;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/dataExport.html#get--d2l-api-lp-(version)-dataExport-list
      * @throws ApiException
-     * @return Collection|DataSetData[]
+     * @return Collection<DataSetData>
      */
     public function getDataExportList(): Collection;
 
@@ -205,14 +205,14 @@ interface ClientInterface
     /**
      * @link https://docs.valence.desire2learn.com/res/content.html#get--d2l-api-le-(version)-(orgUnitId)-content-root-
      * @throws ApiException
-     * @return Collection|Module[]
+     * @return Collection<Module>
      */
     public function getRootModulesForAnOrganizationUnit(int $orgUnitId): Collection;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/content.html#get--d2l-api-le-(version)-(orgUnitId)-content-modules-(moduleId)-structure-
      * @throws ApiException
-     * @return Collection|ContentObject[]
+     * @return Collection<ContentObject>
      */
     public function getModuleStructureForAnOrganizationUnit(int $orgUnitId, int $moduleId): Collection;
 
@@ -226,7 +226,7 @@ interface ClientInterface
      * Retrieve all the sections for a provided org unit.
      * @link https://docs.valence.desire2learn.com/res/enroll.html#get--d2l-api-lp-(version)-(orgUnitId)-sections-
      * @throws ApiException
-     * @return Collection|Section[]
+     * @return Collection<Section>
      */
     public function getSectionsForOrganizationUnit(int $orgUnitId): Collection;
 }

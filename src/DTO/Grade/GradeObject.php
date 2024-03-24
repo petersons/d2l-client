@@ -11,9 +11,7 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 final class GradeObject implements Arrayable
 {
-    public function __construct(private string $name)
-    {
-    }
+    public function __construct(private string $name) {}
 
     public function getName(): string
     {

@@ -20,23 +20,23 @@ final class Topic extends ContentObject
         int $id,
         private TopicType $topicType,
         private string $url,
-        ?CarbonImmutable $startDate,
-        ?CarbonImmutable $endDate,
-        ?CarbonImmutable $dueDate,
+        CarbonImmutable|null $startDate,
+        CarbonImmutable|null $endDate,
+        CarbonImmutable|null $dueDate,
         bool $isHidden,
         bool $isLocked,
-        private ?bool $openAsExternalResource,
+        private bool|null $openAsExternalResource,
         string $title,
         string $shortTitle,
-        ?RichText $description,
+        RichText|null $description,
         int $parentModuleId,
-        private ?string $activityId,
+        private string|null $activityId,
         private bool $isExempt,
-        private ?int $toolId,
-        private ?int $toolItemId,
+        private int|null $toolId,
+        private int|null $toolItemId,
         private ActivityType $activityType,
-        private ?int $gradeItemId,
-        ?CarbonImmutable $lastModifiedDate,
+        private int|null $gradeItemId,
+        CarbonImmutable|null $lastModifiedDate,
     ) {
         parent::__construct(
             $id,
@@ -64,12 +64,12 @@ final class Topic extends ContentObject
         return $this->url;
     }
 
-    public function getOpenAsExternalResource(): ?bool
+    public function getOpenAsExternalResource(): bool|null
     {
         return $this->openAsExternalResource;
     }
 
-    public function getActivityId(): ?string
+    public function getActivityId(): string|null
     {
         return $this->activityId;
     }
@@ -79,12 +79,12 @@ final class Topic extends ContentObject
         return $this->isExempt;
     }
 
-    public function getToolId(): ?int
+    public function getToolId(): int|null
     {
         return $this->toolId;
     }
 
-    public function getToolItemId(): ?int
+    public function getToolItemId(): int|null
     {
         return $this->toolItemId;
     }
@@ -94,7 +94,7 @@ final class Topic extends ContentObject
         return $this->activityType;
     }
 
-    public function getGradeItemId(): ?int
+    public function getGradeItemId(): int|null
     {
         return $this->gradeItemId;
     }

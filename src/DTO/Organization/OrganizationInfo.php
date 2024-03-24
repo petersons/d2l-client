@@ -15,8 +15,7 @@ final class OrganizationInfo implements Arrayable
         private string $identifier,
         private string $name,
         private string $timeZone
-    ) {
-    }
+    ) {}
 
     public function getIdentifier(): string
     {

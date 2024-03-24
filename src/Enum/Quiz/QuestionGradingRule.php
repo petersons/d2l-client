@@ -32,7 +32,5 @@ final class QuestionGradingRule
         return $this->rule;
     }
 
-    private function __construct(private int $rule)
-    {
-    }
+    private function __construct(private int $rule) {}
 }

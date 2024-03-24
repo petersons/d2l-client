@@ -25,7 +25,5 @@ final class RichTextInputType
         return $this->type;
     }
 
-    private function __construct(private string $type)
-    {
-    }
+    private function __construct(private string $type) {}
 }

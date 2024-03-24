@@ -16,8 +16,7 @@ final class Likert implements QuestionInfo
         private QuestionScaleOption $scale,
         private bool $naOption,
         private Collection $statements,
-    ) {
-    }
+    ) {}
 
     public function getScale(): QuestionScaleOption
     {
@@ -30,7 +29,7 @@ final class Likert implements QuestionInfo
     }
 
     /**
-     * @return Collection|LikertStatement[]
+     * @return Collection<LikertStatement>
      */
     public function getStatements(): Collection
     {

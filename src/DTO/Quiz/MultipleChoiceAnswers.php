@@ -16,11 +16,10 @@ final class MultipleChoiceAnswers implements QuestionInfo
         private Collection $answers,
         private bool $randomize,
         private EnumerationType $enumeration,
-    ) {
-    }
+    ) {}
 
     /**
-     * @return Collection|MultipleChoiceAnswer[]
+     * @return Collection<MultipleChoiceAnswer>
      */
     public function getAnswers(): Collection
     {

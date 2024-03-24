@@ -10,8 +10,7 @@ final class CreateEnrollment
         private int $orgUnitId,
         private int $userId,
         private int $roleId
-    ) {
-    }
+    ) {}
 
     public function getOrgUnitId(): int
     {

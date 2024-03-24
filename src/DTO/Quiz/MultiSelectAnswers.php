@@ -20,11 +20,10 @@ final class MultiSelectAnswers implements QuestionInfo
         private EnumerationType $enumeration,
         private QuestionStyle $style,
         private QuestionGradingRule $gradingType,
-    ) {
-    }
+    ) {}
 
     /**
-     * @return Collection|MultiSelectAnswer[]
+     * @return Collection<MultiSelectAnswer>
      */
     public function getAnswers(): Collection
     {

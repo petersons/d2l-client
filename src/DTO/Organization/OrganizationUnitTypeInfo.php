@@ -15,8 +15,7 @@ final class OrganizationUnitTypeInfo implements Arrayable
         private int $id,
         private string $code,
         private string $name
-    ) {
-    }
+    ) {}
 
     public function getId(): int
     {
