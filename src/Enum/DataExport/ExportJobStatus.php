@@ -22,7 +22,7 @@ final class ExportJobStatus
         self::STATUS_PROCESSING => 'Currently in process of exporting data set.',
         self::STATUS_COMPLETE => 'Export completed successfully.',
         self::STATUS_ERROR => 'An error occurred when processing the export.',
-        self::STATUS_DELETED => 'File associated with the completed export was deleted from the file system.'
+        self::STATUS_DELETED => 'File associated with the completed export was deleted from the file system.',
     ];
 
     public function __construct(private int $status)

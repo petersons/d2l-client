@@ -31,12 +31,12 @@ final class AuthenticatedUriFactoryTest extends TestCase
 
         $uri = $authenticatedUriFactory->createAuthenticatedUri(
             'https://learn.petersons.com/d2l/api/lp/1.30/dataexport/bds/download/1fa8ff9c-8702-46fc-a863-18ca6c2cc4d1',
-            'GET'
+            'GET',
         );
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/lp/1.30/dataexport/bds/download/1fa8ff9c-8702-46fc-a863-18ca6c2cc4d1?x_a=foo&x_b=baz&x_c=0YDdguqihIMXTLrE55bngQ7zoJKpl-AIgGXv-RnZDqw&x_d=2H0LCBp4MoGCulRk2Gvr8eaTxPb2OziPwZ2aSs_aRS0&x_t=1621814400',
-            $uri
+            $uri,
         );
     }
 
@@ -54,12 +54,12 @@ final class AuthenticatedUriFactoryTest extends TestCase
 
         $uri = $authenticatedUriFactory->createAuthenticatedUri(
             'https://learn.petersons.com/d2l/api/lp/1.30/dataexport/bds/download/1fa8ff9c-8702-46fc-a863-18ca6c2cc4d1?foo=bar',
-            'GET'
+            'GET',
         );
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/lp/1.30/dataexport/bds/download/1fa8ff9c-8702-46fc-a863-18ca6c2cc4d1?x_a=foo&x_b=baz&x_c=0YDdguqihIMXTLrE55bngQ7zoJKpl-AIgGXv-RnZDqw&x_d=2H0LCBp4MoGCulRk2Gvr8eaTxPb2OziPwZ2aSs_aRS0&x_t=1621814400&foo=bar',
-            $uri
+            $uri,
         );
     }
 }

@@ -30,7 +30,7 @@ final class CreateUserTest extends TestCase
             $username,
             $roleId,
             $isActive,
-            $sendCreationEmail
+            $sendCreationEmail,
         );
 
         $this->assertSame(
@@ -45,7 +45,7 @@ final class CreateUserTest extends TestCase
                 'IsActive' => $isActive,
                 'SendCreationEmail' => $sendCreationEmail,
             ],
-            $createUser->toArray()
+            $createUser->toArray(),
         );
     }
 }

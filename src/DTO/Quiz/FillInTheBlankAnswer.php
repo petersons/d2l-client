@@ -12,7 +12,7 @@ final class FillInTheBlankAnswer implements Arrayable
     public function __construct(
         private string $textAnswer,
         private float $weight,
-        private EvaluationType $evaluationType
+        private EvaluationType $evaluationType,
     ) {}
 
     public function getTextAnswer(): string

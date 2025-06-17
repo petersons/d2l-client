@@ -18,7 +18,7 @@ final class DataSetReportInfo implements Arrayable
         private string $description,
         private CarbonImmutable|null $createdAt,
         private string|null $downloadLink,
-        private float|null $downloadSize
+        private float|null $downloadSize,
     ) {}
 
     public function getPluginId(): string

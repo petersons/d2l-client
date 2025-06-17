@@ -13,7 +13,7 @@ final class RichText implements Arrayable
 {
     public function __construct(
         private string $text,
-        private string|null $html
+        private string|null $html,
     ) {}
 
     public function getText(): string

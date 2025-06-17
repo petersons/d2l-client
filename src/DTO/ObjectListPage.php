@@ -10,7 +10,7 @@ abstract class ObjectListPage
 {
     public function __construct(
         private string|null $nextUrl,
-        private Collection $objects
+        private Collection $objects,
     ) {
         $this->checkObjectInstance();
     }

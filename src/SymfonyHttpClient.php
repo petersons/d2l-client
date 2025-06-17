@@ -95,7 +95,7 @@ final class SymfonyHttpClient implements ClientInterface
         private string $installationCode,
         private string $pKey,
         private string $apiLpVersion,
-        private string $apiLeVersion
+        private string $apiLeVersion,
     ) {}
 
     public function getUserById(int $userId): UserData
@@ -108,7 +108,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -135,9 +135,9 @@ final class SymfonyHttpClient implements ClientInterface
                     $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                     [
                         'orgDefinedId' => $orgDefinedId,
-                    ]
+                    ],
                 ),
-            ]
+            ],
         );
 
         try {
@@ -164,9 +164,9 @@ final class SymfonyHttpClient implements ClientInterface
                     $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                     [
                         'externalEmail' => $email,
-                    ]
+                    ],
                 ),
-            ]
+            ],
         );
 
         try {
@@ -191,7 +191,7 @@ final class SymfonyHttpClient implements ClientInterface
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                 'json' => $createUser->toArray(),
-            ]
+            ],
         );
 
         try {
@@ -216,7 +216,7 @@ final class SymfonyHttpClient implements ClientInterface
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                 'json' => $updateUser->toArray(),
-            ]
+            ],
         );
 
         try {
@@ -241,7 +241,7 @@ final class SymfonyHttpClient implements ClientInterface
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                 'json' => $createEnrollment->toArray(),
-            ]
+            ],
         );
 
         try {
@@ -256,7 +256,7 @@ final class SymfonyHttpClient implements ClientInterface
             $decodedResponse['OrgUnitId'],
             $decodedResponse['UserId'],
             $decodedResponse['RoleId'],
-            $decodedResponse['IsCascading']
+            $decodedResponse['IsCascading'],
         );
     }
 
@@ -267,7 +267,7 @@ final class SymfonyHttpClient implements ClientInterface
             '/d2l/api/lp/%s/%d/sections/%d/enrollments/',
             $this->apiLpVersion,
             $createSectionEnrollment->getOrgUnitId(),
-            $createSectionEnrollment->getSectionId()
+            $createSectionEnrollment->getSectionId(),
         );
 
         $response = $this->httpClient->request(
@@ -276,7 +276,7 @@ final class SymfonyHttpClient implements ClientInterface
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                 'json' => $createSectionEnrollment->toArray(),
-            ]
+            ],
         );
 
         try {
@@ -299,7 +299,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -321,7 +321,7 @@ final class SymfonyHttpClient implements ClientInterface
                     (null !== $brightspaceDataExport['CreatedDate']) ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $brightspaceDataExport['CreatedDate']) : null,
                     $brightspaceDataExport['DownloadLink'],
                     $brightspaceDataExport['DownloadSize'],
-                )
+                ),
             );
         }
 
@@ -345,9 +345,9 @@ final class SymfonyHttpClient implements ClientInterface
                     [
                         'page' => $page,
                         'pageSize' => $pageSize,
-                    ]
+                    ],
                 ),
-            ]
+            ],
         );
 
         try {
@@ -374,8 +374,8 @@ final class SymfonyHttpClient implements ClientInterface
                     $brightspaceDataSet['DownloadSize'],
                     $brightspaceDataSet['Version'],
                     $this->buildPreviousDataSets($brightspaceDataSet['PreviousDataSets']),
-                    (null !== $brightspaceDataSet['QueuedForProcessingDate']) ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $brightspaceDataSet['QueuedForProcessingDate']) : null
-                )
+                    (null !== $brightspaceDataSet['QueuedForProcessingDate']) ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $brightspaceDataSet['QueuedForProcessingDate']) : null,
+                ),
             );
         }
 
@@ -410,7 +410,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -441,9 +441,9 @@ final class SymfonyHttpClient implements ClientInterface
                     $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                     [
                         'bookmark' => $bookmark ?? '',
-                    ]
+                    ],
                 ),
-            ]
+            ],
         );
 
         try {
@@ -503,9 +503,9 @@ final class SymfonyHttpClient implements ClientInterface
                     $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                     [
                         'bookmark' => $bookmark ?? '',
-                    ]
+                    ],
                 ),
-            ]
+            ],
         );
 
         try {
@@ -592,7 +592,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -612,7 +612,7 @@ final class SymfonyHttpClient implements ClientInterface
                 $item['User']['EmailAddress'],
                 $item['User']['OrgDefinedId'],
                 $item['User']['ProfileBadgeUrl'],
-                $item['User']['ProfileIdentifier']
+                $item['User']['ProfileIdentifier'],
             );
 
             $roleInfo = new RoleInfo($item['Role']['Id'], $item['Role']['Name'], $item['Role']['Code']);
@@ -634,7 +634,7 @@ final class SymfonyHttpClient implements ClientInterface
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                 'json' => $incomingGradeValue->toArray(),
                 'auth_bearer' => $bearerToken,
-            ]
+            ],
         );
 
         try {
@@ -657,7 +657,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -684,7 +684,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -728,7 +728,7 @@ final class SymfonyHttpClient implements ClientInterface
                         $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                         [
                             'bookmark' => $bookmark ?? '',
-                        ]
+                        ],
                     ),
                 ],
             );
@@ -771,7 +771,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -806,8 +806,8 @@ final class SymfonyHttpClient implements ClientInterface
                         $item['WeightDistributionType'],
                         $item['NumberOfHighestToDrop'],
                         $item['NumberOfLowestToDrop'],
-                    )
-                )
+                    ),
+                ),
             );
         }
 
@@ -827,7 +827,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -865,7 +865,7 @@ final class SymfonyHttpClient implements ClientInterface
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                 'json' => $createExportJobData->toArray(),
-            ]
+            ],
         );
 
         try {
@@ -882,7 +882,7 @@ final class SymfonyHttpClient implements ClientInterface
             $decodedResponse['Name'],
             CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['SubmitDate']),
             new ExportJobStatus($decodedResponse['Status']),
-            $decodedResponse['Category']
+            $decodedResponse['Category'],
         );
     }
 
@@ -900,7 +900,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -935,7 +935,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -970,7 +970,7 @@ final class SymfonyHttpClient implements ClientInterface
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
                 'json' => $updateContentTopicCompletion->toArray(),
-            ]
+            ],
         );
 
         try {
@@ -994,7 +994,7 @@ final class SymfonyHttpClient implements ClientInterface
             $path,
             [
                 'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
-            ]
+            ],
         );
 
         try {
@@ -1028,7 +1028,7 @@ final class SymfonyHttpClient implements ClientInterface
                     'data'        => $orgDefinedId,
                     'key'         => $this->pKey,
                 ],
-            ]
+            ],
         );
 
         try {
@@ -1042,7 +1042,7 @@ final class SymfonyHttpClient implements ClientInterface
             string $errorMessage,
             string|null $errorFilename = null,
             int|null $errorLine = null,
-            array|null $errorContext = null
+            array|null $errorContext = null,
         ) {
             throw new \Exception($errorMessage, $errorLevel);
         });
@@ -1083,7 +1083,7 @@ final class SymfonyHttpClient implements ClientInterface
                     'data'        => $orgDefinedId,
                     'key'         => $this->pKey,
                 ],
-            ]
+            ],
         );
 
         try {
@@ -1097,7 +1097,7 @@ final class SymfonyHttpClient implements ClientInterface
             string $errorMessage,
             string|null $errorFilename = null,
             int|null $errorLine = null,
-            array|null $errorContext = null
+            array|null $errorContext = null,
         ) {
             throw new \Exception($errorMessage, $errorLevel);
         });
@@ -1168,7 +1168,7 @@ final class SymfonyHttpClient implements ClientInterface
                 $previousDataSet['Version'],
                 //make a recursive call for deeply nested elements, if any
                 $this->buildPreviousDataSets($previousDataSet['PreviousDataSets']),
-                (null !== $previousDataSet['QueuedForProcessingDate']) ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $previousDataSet['QueuedForProcessingDate']) : null
+                (null !== $previousDataSet['QueuedForProcessingDate']) ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $previousDataSet['QueuedForProcessingDate']) : null,
             );
         }
 
@@ -1187,7 +1187,7 @@ final class SymfonyHttpClient implements ClientInterface
                     $structureItem['ShortTitle'],
                     Type::make($structureItem['Type']),
                     null !== $structureItem['LastModifiedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $structureItem['LastModifiedDate']) : null,
-                )
+                ),
             );
         }
 
@@ -1288,7 +1288,7 @@ final class SymfonyHttpClient implements ClientInterface
                     new RichText($answer['Answer']['Text'], $answer['Answer']['Html']),
                     new RichText($answer['AnswerFeedback']['Text'], $answer['AnswerFeedback']['Html']),
                     $answer['Weight'],
-                )
+                ),
             );
         }
 
@@ -1320,7 +1320,7 @@ final class SymfonyHttpClient implements ClientInterface
             $texts->add(
                 new FillInTheBlankText(
                     new RichText($text['Text']['Text'], $text['Text']['Html']),
-                )
+                ),
             );
         }
 
@@ -1335,7 +1335,7 @@ final class SymfonyHttpClient implements ClientInterface
                         $answer['TextAnswer'],
                         $answer['Weight'],
                         EvaluationType::make($answer['EvaluationType']),
-                    )
+                    ),
                 );
             }
 
@@ -1344,7 +1344,7 @@ final class SymfonyHttpClient implements ClientInterface
                     $blank['PartId'],
                     $blank['Size'],
                     $answers,
-                )
+                ),
             );
         }
 
@@ -1365,7 +1365,7 @@ final class SymfonyHttpClient implements ClientInterface
                     new RichText($answer['Answer']['Text'], $answer['Answer']['Html']),
                     new RichText($answer['AnswerFeedback']['Text'], $answer['AnswerFeedback']['Html']),
                     $answer['IsCorrect'],
-                )
+                ),
             );
         }
 
@@ -1401,7 +1401,7 @@ final class SymfonyHttpClient implements ClientInterface
                     new ShortAnswerBlankAnswer(
                         $answer['Text'],
                         $answer['Weight'],
-                    )
+                    ),
                 );
             }
 
@@ -1410,7 +1410,7 @@ final class SymfonyHttpClient implements ClientInterface
                     $blank['PartId'],
                     $shortAnswerBlankAnswers,
                     EvaluationType::make($blank['EvaluationType']),
-                )
+                ),
             );
         }
 
@@ -1429,7 +1429,7 @@ final class SymfonyHttpClient implements ClientInterface
                 new LikertStatement(
                     $statement['PartId'],
                     new RichText($statement['Statement']['Text'], $statement['Statement']['Html']),
-                )
+                ),
             );
         }
 
@@ -1452,7 +1452,7 @@ final class SymfonyHttpClient implements ClientInterface
                     $answer['AnswerText'],
                     $answer['Weight'],
                     EvaluationType::make($answer['EvaluationType']),
-                )
+                ),
             );
         }
 
@@ -1472,7 +1472,7 @@ final class SymfonyHttpClient implements ClientInterface
             $item['Name'],
             $item['Code'],
             new RichText($item['Description']['Text'], $item['Description']['Html']),
-            $item['Enrollments']
+            $item['Enrollments'],
         );
     }
 }

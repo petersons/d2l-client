@@ -50,7 +50,7 @@ final class Topic extends ContentObject
             $shortTitle,
             $description,
             $parentModuleId,
-            $lastModifiedDate
+            $lastModifiedDate,
         );
     }
 

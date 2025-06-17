@@ -10,7 +10,7 @@ final class ShortAnswerBlankAnswer implements Arrayable
 {
     public function __construct(
         private string $text,
-        private float $weight
+        private float $weight,
     ) {}
 
     public function getText(): string

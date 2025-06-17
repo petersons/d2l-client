@@ -16,7 +16,7 @@ final class DataSetData
         private string $name,
         private string $description,
         private string $category,
-        private Collection $filters
+        private Collection $filters,
     ) {}
 
     public function getId(): string

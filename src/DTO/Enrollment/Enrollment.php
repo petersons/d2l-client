@@ -10,7 +10,7 @@ final class Enrollment
         private int $orgUnitId,
         private int $userId,
         private int $roleId,
-        private bool $isCascading
+        private bool $isCascading,
     ) {}
 
     public function getOrgUnitId(): int

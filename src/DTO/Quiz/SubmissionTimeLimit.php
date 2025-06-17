@@ -11,7 +11,7 @@ final class SubmissionTimeLimit implements Arrayable
     public function __construct(
         private bool $isEnforced,
         private bool $showClock,
-        private int $timeLimitValue
+        private int $timeLimitValue,
     ) {}
 
     public function isEnforced(): bool

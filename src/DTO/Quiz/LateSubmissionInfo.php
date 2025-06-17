@@ -11,7 +11,7 @@ final class LateSubmissionInfo implements Arrayable
 {
     public function __construct(
         private LateSubmissionOption $lateSubmissionOption,
-        private int|null $lateLimitMinutes
+        private int|null $lateLimitMinutes,
     ) {}
 
     public function getLateSubmissionOption(): LateSubmissionOption

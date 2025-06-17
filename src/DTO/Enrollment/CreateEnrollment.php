@@ -9,7 +9,7 @@ final class CreateEnrollment
     public function __construct(
         private int $orgUnitId,
         private int $userId,
-        private int $roleId
+        private int $roleId,
     ) {}
 
     public function getOrgUnitId(): int

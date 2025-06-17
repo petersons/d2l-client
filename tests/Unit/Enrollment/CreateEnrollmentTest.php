@@ -22,7 +22,7 @@ final class CreateEnrollmentTest extends TestCase
                 'UserId' => $userId,
                 'RoleId' => $roleId,
             ],
-            $createEnrollment->toArray()
+            $createEnrollment->toArray(),
         );
     }
 }

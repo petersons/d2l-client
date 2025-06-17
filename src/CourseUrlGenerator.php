@@ -12,7 +12,7 @@ final class CourseUrlGenerator
 {
     public function __construct(
         private string $d2lHost,
-        private string $d2lGuidLoginUri
+        private string $d2lGuidLoginUri,
     ) {}
 
     /**
@@ -27,7 +27,7 @@ final class CourseUrlGenerator
                 'guid' => $guid->getValue(),
                 'orgId' => $lmsCourseId, // the course ID to which the user is sent
                 'orgDefinedId' => $user->getOrgDefinedId(),
-            ]
+            ],
         );
 
         return sprintf('%s%s?%s', $this->d2lHost, $this->d2lGuidLoginUri, $queryString);
@@ -46,7 +46,7 @@ final class CourseUrlGenerator
                 'orgId' => $lmsCourseId,
                 'orgDefinedId' => $user->getOrgDefinedId(),
                 'target' => sprintf('%s/d2l/lms/grades/my_grades/main.d2l?ou=%d', $this->d2lHost, $lmsCourseId),
-            ]
+            ],
         );
 
         return sprintf('%s%s?%s', $this->d2lHost, $this->d2lGuidLoginUri, $queryString);

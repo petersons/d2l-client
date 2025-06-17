@@ -27,7 +27,7 @@ final class Module extends ContentObject
         string $shortTitle,
         RichText|null $description,
         int|null $parentModuleId,
-        CarbonImmutable|null $lastModifiedDate
+        CarbonImmutable|null $lastModifiedDate,
     ) {
         parent::__construct(
             $id,
@@ -41,7 +41,7 @@ final class Module extends ContentObject
             $shortTitle,
             $description,
             $parentModuleId,
-            $lastModifiedDate
+            $lastModifiedDate,
         );
     }
 

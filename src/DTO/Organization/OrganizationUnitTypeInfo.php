@@ -14,7 +14,7 @@ final class OrganizationUnitTypeInfo implements Arrayable
     public function __construct(
         private int $id,
         private string $code,
-        private string $name
+        private string $name,
     ) {}
 
     public function getId(): int
@@ -37,7 +37,7 @@ final class OrganizationUnitTypeInfo implements Arrayable
         return [
             'Id' => $this->id,
             'Code' => $this->code,
-            'Name' => $this->code
+            'Name' => $this->code,
         ];
     }
 }

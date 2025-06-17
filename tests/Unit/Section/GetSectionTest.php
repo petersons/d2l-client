@@ -28,7 +28,7 @@ final class GetSectionTest extends TestCase
                 'Description' => $description->toArray(),
                 'Enrollments' => $enrollments,
             ],
-            $createSectionEnrollment->toArray()
+            $createSectionEnrollment->toArray(),
         );
     }
 }

@@ -17,7 +17,7 @@ final class UpdateUser
         private string $lastName,
         private string|null $externalEmail,
         private string $userName,
-        private bool $isActive
+        private bool $isActive,
     ) {}
 
     public function getLmsUserId(): int

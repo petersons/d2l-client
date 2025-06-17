@@ -15,7 +15,7 @@ final class OrgUnit implements Arrayable
         private string $identifier,
         private string $name,
         private OrganizationUnitTypeInfo $organizationUnitTypeInfo,
-        private string|null $code = null
+        private string|null $code = null,
     ) {}
 
     public function getIdentifier(): string
@@ -44,7 +44,7 @@ final class OrgUnit implements Arrayable
             'Identifier' => $this->identifier,
             'Name' => $this->name,
             'Code' => $this->code,
-            'Type' => $this->organizationUnitTypeInfo->toArray()
+            'Type' => $this->organizationUnitTypeInfo->toArray(),
         ];
     }
 }

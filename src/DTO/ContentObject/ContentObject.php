@@ -23,7 +23,7 @@ abstract class ContentObject implements Arrayable
         private string $shortTitle,
         private RichText|null $description,
         private int|null $parentModuleId,
-        private CarbonImmutable|null $lastModifiedDate
+        private CarbonImmutable|null $lastModifiedDate,
     ) {}
 
     public function getId(): int

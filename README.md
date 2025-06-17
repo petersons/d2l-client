@@ -69,7 +69,7 @@ the `\Petersons\D2L\Contracts\ClientInterface` interface via the constructor of 
 
 Docker dependencies for local development:
 - [Docker Engine](https://docs.docker.com/engine/) >= 19.03
-- [Docker Compose](https://docs.docker.com/compose/) >= 1.25.5
+- [Docker Compose](https://docs.docker.com/compose/) >= 2.0
 
 0. Clone project
     ```bash

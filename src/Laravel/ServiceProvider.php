@@ -34,7 +34,7 @@ final class ServiceProvider extends LaravelServiceProvider implements Deferrable
             return new SymfonyHttpClient(
                 ScopingHttpClient::forBaseUri(
                     $container->make(HttpClientInterface::class),
-                    $d2lConfig['host']
+                    $d2lConfig['host'],
                 ),
                 $container->make(AuthenticatedUriFactory::class),
                 $d2lConfig['org_id'],

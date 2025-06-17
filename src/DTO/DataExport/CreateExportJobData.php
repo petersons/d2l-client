@@ -65,7 +65,7 @@ final class CreateExportJobData implements Arrayable, Jsonable
     {
         return [
             'DataSetId' => $this->dataSetId,
-            'Filters' => $this->filters
+            'Filters' => $this->filters,
         ];
     }
 

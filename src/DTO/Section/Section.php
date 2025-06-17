@@ -55,7 +55,7 @@ final class Section implements Arrayable
             'Name' => $this->name,
             'Code' => $this->code,
             'Description' => $this->description->toArray(),
-            'Enrollments' => $this->enrollments
+            'Enrollments' => $this->enrollments,
         ];
     }
 }

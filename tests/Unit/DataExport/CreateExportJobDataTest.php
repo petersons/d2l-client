@@ -16,7 +16,7 @@ final class CreateExportJobDataTest extends TestCase
     {
         $createExportJobData = new CreateExportJobData(
             'foo',
-            [ExportJobFilter::startDate(CarbonImmutable::now()), ExportJobFilter::endDate(CarbonImmutable::now())]
+            [ExportJobFilter::startDate(CarbonImmutable::now()), ExportJobFilter::endDate(CarbonImmutable::now())],
         );
         $this->assertInstanceOf(CreateExportJobData::class, $createExportJobData);
     }
@@ -27,7 +27,7 @@ final class CreateExportJobDataTest extends TestCase
 
         new CreateExportJobData(
             'foo',
-            [ExportJobFilter::endDate(CarbonImmutable::now())]
+            [ExportJobFilter::endDate(CarbonImmutable::now())],
         );
     }
 
@@ -37,7 +37,7 @@ final class CreateExportJobDataTest extends TestCase
 
         new CreateExportJobData(
             'foo',
-            [ExportJobFilter::startDate(CarbonImmutable::now())]
+            [ExportJobFilter::startDate(CarbonImmutable::now())],
         );
     }
 
@@ -52,7 +52,7 @@ final class CreateExportJobDataTest extends TestCase
                 ExportJobFilter::endDate(CarbonImmutable::now()),
                 ExportJobFilter::parentOrgUnitId(5),
                 ExportJobFilter::parentOrgUnitId(6),
-            ]
+            ],
         );
     }
 }
