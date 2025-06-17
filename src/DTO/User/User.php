@@ -17,7 +17,7 @@ final class User implements Arrayable
         private string|null $emailAddress = null,
         private string|null $orgDefinedId = null,
         private string|null $profileBadgeUrl = null,
-        private string|null $profileIdentifier = null
+        private string|null $profileIdentifier = null,
     ) {}
 
     public function getIdentifier(): string|null
@@ -58,7 +58,7 @@ final class User implements Arrayable
             'EmailAddress' => $this->emailAddress,
             'OrgDefinedId' => $this->orgDefinedId,
             'ProfileBadgeUrl' => $this->profileBadgeUrl,
-            'ProfileIdentifier' => $this->profileIdentifier
+            'ProfileIdentifier' => $this->profileIdentifier,
         ];
     }
 }

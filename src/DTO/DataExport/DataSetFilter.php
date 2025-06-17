@@ -16,7 +16,7 @@ final class DataSetFilter implements Arrayable
         private string $name,
         private ExportFilterType $type,
         private string|null $description,
-        private string|null $defaultValue
+        private string|null $defaultValue,
     ) {}
 
     public function getName(): string

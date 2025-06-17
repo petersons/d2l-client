@@ -14,7 +14,7 @@ final class OrganizationInfo implements Arrayable
     public function __construct(
         private string $identifier,
         private string $name,
-        private string $timeZone
+        private string $timeZone,
     ) {}
 
     public function getIdentifier(): string
@@ -37,7 +37,7 @@ final class OrganizationInfo implements Arrayable
         return [
             'Identifier' => $this->identifier,
             'Name' => $this->name,
-            'Timezone' => $this->timeZone
+            'Timezone' => $this->timeZone,
         ];
     }
 }

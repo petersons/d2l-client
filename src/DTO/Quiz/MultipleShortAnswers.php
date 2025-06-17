@@ -16,7 +16,7 @@ final class MultipleShortAnswers implements QuestionInfo
         private int $boxes,
         private int $rows,
         private int $columns,
-        private Collection $answers
+        private Collection $answers,
     ) {}
 
     /**

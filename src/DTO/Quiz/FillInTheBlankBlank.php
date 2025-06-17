@@ -12,7 +12,7 @@ final class FillInTheBlankBlank implements Arrayable
     public function __construct(
         private int $partId,
         private int $size,
-        private Collection $answers
+        private Collection $answers,
     ) {}
 
     public function getPartId(): int

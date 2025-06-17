@@ -23,7 +23,7 @@ final class BrightspaceDataSetReportInfo implements Arrayable
         private float|null $downloadSize = null,
         private string|null $version = null,
         private Collection|null $previousDataSets = null,
-        private CarbonImmutable|null $queuedForProcessingDate = null
+        private CarbonImmutable|null $queuedForProcessingDate = null,
     ) {}
 
     public function getPluginId(): string

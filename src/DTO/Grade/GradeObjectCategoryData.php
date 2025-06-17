@@ -23,7 +23,7 @@ final class GradeObjectCategoryData
         private bool|null $autoPoints,
         private int|null $weightDistributionType,
         private int|null $numberOfHighestToDrop,
-        private int|null $numberOfLowestToDrop
+        private int|null $numberOfLowestToDrop,
     ) {}
 
     public function getName(): string

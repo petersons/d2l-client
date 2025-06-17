@@ -12,7 +12,7 @@ final class CreateSectionEnrollment
     public function __construct(
         private int $orgUnitId,
         private int $userId,
-        private int $sectionId
+        private int $sectionId,
     ) {}
 
     public function getOrgUnitId(): int

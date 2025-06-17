@@ -22,7 +22,7 @@ final class UserData
         private string|null $orgDefinedId,
         private string $uniqueIdentifier,
         private bool $isActive,
-        private CarbonImmutable|null $lastAccessedAt
+        private CarbonImmutable|null $lastAccessedAt,
     ) {}
 
     public function getOrgId(): int

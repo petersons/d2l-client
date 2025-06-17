@@ -14,7 +14,7 @@ final class RoleInfo implements Arrayable
     public function __construct(
         private int $id,
         private string $name,
-        private string|null $code = null
+        private string|null $code = null,
     ) {}
 
     public function getId(): int
@@ -37,7 +37,7 @@ final class RoleInfo implements Arrayable
         return [
             'Id' => $this->id,
             'Code' => $this->code,
-            'Name' => $this->name
+            'Name' => $this->name,
         ];
     }
 }

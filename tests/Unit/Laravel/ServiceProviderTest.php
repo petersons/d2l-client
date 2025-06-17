@@ -107,14 +107,14 @@ final class ServiceProviderTest extends TestCase
 
         $this->assertSame([
             ServiceProvider::class => [
-                realpath(__DIR__ . '/../../../src/Laravel/config/d2l.php') => $path
-            ]
+                realpath(__DIR__ . '/../../../src/Laravel/config/d2l.php') => $path,
+            ],
         ], ServiceProvider::$publishes);
 
         $this->assertSame([
             'd2l-config' => [
-                realpath(__DIR__ . '/../../../src/Laravel/config/d2l.php') => $path
-            ]
+                realpath(__DIR__ . '/../../../src/Laravel/config/d2l.php') => $path,
+            ],
         ], ServiceProvider::$publishGroups);
     }
 
@@ -127,7 +127,7 @@ final class ServiceProviderTest extends TestCase
                 AuthenticatedUriFactory::class,
                 CourseUrlGenerator::class,
             ],
-            $serviceProvider->provides()
+            $serviceProvider->provides(),
         );
     }
 }

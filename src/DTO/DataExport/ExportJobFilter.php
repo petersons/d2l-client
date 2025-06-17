@@ -73,7 +73,7 @@ final class ExportJobFilter implements Arrayable, JsonSerializable
     {
         return [
             'Name' => $this->name,
-            'Value' => $this->value
+            'Value' => $this->value,
         ];
     }
 

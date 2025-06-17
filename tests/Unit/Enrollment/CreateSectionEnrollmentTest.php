@@ -20,7 +20,7 @@ final class CreateSectionEnrollmentTest extends TestCase
             [
                 'UserId' => $userId,
             ],
-            $createSectionEnrollment->toArray()
+            $createSectionEnrollment->toArray(),
         );
     }
 }

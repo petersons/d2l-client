@@ -72,7 +72,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertTrue($user->isActive());
         $this->assertSame(
             CarbonImmutable::createFromFormat("Y-m-d\TH:i:s.v\Z", '2020-07-22T03:05:09.700Z')->toAtomString(),
-            $user->getLastAccessedAt()->toAtomString()
+            $user->getLastAccessedAt()->toAtomString(),
         );
     }
 
@@ -95,8 +95,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=FpMfkzXcBy3gqB2smJhHzyQv6m8JlMVURMpFbtn5j0U&x_d=kZdNU7pg3RQR7GQ319kNTDCMJfybaa5KtjbqziiR9SM&x_t=1615390200".',
-                404
-            )
+                404,
+            ),
         );
 
         $client->getUserById(3163);
@@ -133,7 +133,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertTrue($user->isActive());
         $this->assertSame(
             CarbonImmutable::createFromFormat("Y-m-d\TH:i:s.v\Z", '2020-10-09T20:07:47.017Z')->toAtomString(),
-            $user->getLastAccessedAt()->toAtomString()
+            $user->getLastAccessedAt()->toAtomString(),
         );
     }
 
@@ -156,8 +156,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&orgDefinedId=2.1296".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->getUserByOrgDefinedId('2.1296');
@@ -182,8 +182,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&orgDefinedId=2.1296".',
-                404
-            )
+                404,
+            ),
         );
 
         $client->getUserByOrgDefinedId('2.1296');
@@ -220,7 +220,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertTrue($user->isActive());
         $this->assertSame(
             CarbonImmutable::createFromFormat("Y-m-d\TH:i:s.v\Z", '2020-10-09T20:07:47.017Z')->toAtomString(),
-            $user->getLastAccessedAt()->toAtomString()
+            $user->getLastAccessedAt()->toAtomString(),
         );
     }
 
@@ -243,8 +243,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0@email.fake".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->getUserByEmail('petersons_1296_0@email.fake');
@@ -269,8 +269,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FGDZzyI8CiSOWa-c6hr_rcwj4fY58CFqzuvWiapEyQY&x_d=OjWXyQhHjYt2qgfJEDFezAIZfYpy9jyb3Jlzknywe7o&x_t=1615390200&externalEmail=petersons_1296_0@email.fake".',
-                404
-            )
+                404,
+            ),
         );
 
         $client->getUserByEmail('petersons_1296_0@email.fake');
@@ -289,7 +289,7 @@ final class SymfonyHttpClientTest extends TestCase
             'test 2.1296999',
             110,
             true,
-            false
+            false,
         );
 
         $userJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'user_create_response.json');
@@ -324,7 +324,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertTrue($user->isActive());
         $this->assertSame(
             CarbonImmutable::createFromFormat("Y-m-d\TH:i:s.v\Z", '2020-10-09T20:07:47.017Z')->toAtomString(),
-            $user->getLastAccessedAt()->toAtomString()
+            $user->getLastAccessedAt()->toAtomString(),
         );
     }
 
@@ -341,7 +341,7 @@ final class SymfonyHttpClientTest extends TestCase
             'test 2.1296999',
             110,
             true,
-            false
+            false,
         );
 
         $callback = function (string $method, string $url, array $options) use ($createUser): MockResponse {
@@ -364,8 +364,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FVYO1pXtlMB6EMp6RyD8YLEWcFDfdmP8Hqica0asezc&x_d=9Qj7gcU5BwW5-n-ppJNqidxzeKFd1a3fmzhGP5zJedA&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->createUser($createUser);
@@ -383,7 +383,7 @@ final class SymfonyHttpClientTest extends TestCase
             'test',
             'test1296999@gmail.com',
             'test 2.1296999',
-            true
+            true,
         );
 
         $userJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'user_create_response.json');
@@ -418,7 +418,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertTrue($user->isActive());
         $this->assertSame(
             CarbonImmutable::createFromFormat("Y-m-d\TH:i:s.v\Z", '2020-10-09T20:07:47.017Z')->toAtomString(),
-            $user->getLastAccessedAt()->toAtomString()
+            $user->getLastAccessedAt()->toAtomString(),
         );
     }
 
@@ -434,7 +434,7 @@ final class SymfonyHttpClientTest extends TestCase
             'test',
             'test1296999@gmail.com',
             'test 2.1296999',
-            true
+            true,
         );
 
         $callback = function (string $method, string $url, array $options) use ($updateUser): MockResponse {
@@ -457,8 +457,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/55?x_a=baz&x_b=foo&x_c=7zhY2erfZt2IfdIV6pApfUgu9FdpuSBSHjmT9qAYeco&x_d=JFkmnn4gC96D5cJCQ3_f5bv4QJmB5XE7LtsRumFTu9w&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->updateUser($updateUser);
@@ -471,7 +471,7 @@ final class SymfonyHttpClientTest extends TestCase
         $createEnrollment = new CreateEnrollment(
             12388,
             3163,
-            110
+            110,
         );
 
         $userJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'enrollment_create_response.json');
@@ -508,7 +508,7 @@ final class SymfonyHttpClientTest extends TestCase
         $createEnrollment = new CreateEnrollment(
             12388,
             3163,
-            110
+            110,
         );
 
         $callback = function (string $method, string $url, array $options) use ($createEnrollment): MockResponse {
@@ -531,8 +531,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/enrollments/?x_a=baz&x_b=foo&x_c=hIsndeo06aj1dSvhHN52io-9h3PkfGGRP5nwgD1KM4Q&x_d=g9ZoLJh27ZwBexHFmDRZyQgYr4GPyjEE-GQO9b8GbFk&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->enrollUser($createEnrollment);
@@ -545,7 +545,7 @@ final class SymfonyHttpClientTest extends TestCase
         $createSectionEnrollment = new CreateSectionEnrollment(
             12388,
             3163,
-            0
+            0,
         );
 
         $userJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'enrollment_create_response.json');
@@ -579,7 +579,7 @@ final class SymfonyHttpClientTest extends TestCase
         $createSectionEnrollment = new CreateSectionEnrollment(
             12388,
             3163,
-            0
+            0,
         );
 
         $callback = function (string $method, string $url, array $options) use ($createSectionEnrollment): MockResponse {
@@ -602,8 +602,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/lp/1.30/12388/sections/0/enrollments/?x_a=baz&x_b=foo&x_c=-HqVi_1dCey5Is_0t4inJdkZxcwnaO7x4XTEyzAXvik&x_d=6HzRkHoUuf6DtvrwaKVqahGo-X92O4VvvZbDRR_WpeQ&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->enrollUserInASection($createSectionEnrollment);
@@ -664,8 +664,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'Invalid response - "foobar" given',
-                0
-            )
+                0,
+            ),
         );
 
         $client->generateExpiringGuid('2.1296');
@@ -702,8 +702,8 @@ final class SymfonyHttpClientTest extends TestCase
 <root>
   <foo>bar</foo>
 </root>"',
-                0
-            )
+                0,
+            ),
         );
 
         $client->generateExpiringGuid('2.1296');
@@ -946,8 +946,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'Invalid response - "foobar" given',
-                0
-            )
+                0,
+            ),
         );
 
         $client->validateGuid(new Guid($guidValue), '2.1296');
@@ -1012,7 +1012,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/lp/1.30/dataexport/bds?page=2&pageSize=2',
-            $brightspaceDataExportItems->getNextPageUrl()
+            $brightspaceDataExportItems->getNextPageUrl(),
         );
         $this->assertNull($brightspaceDataExportItems->getPrevPageUrl());
         $this->assertCount(2, $brightspaceDataSets);
@@ -1186,7 +1186,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertFalse($quiz->shuffle());
         $this->assertSame(
             'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-77531',
-            $quiz->getActivityId()
+            $quiz->getActivityId(),
         );
         $this->assertFalse($quiz->allowOnlyUsersWithSpecialAccess());
         $this->assertFalse($quiz->isRetakeIncorrectOnly());
@@ -1213,7 +1213,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/le/1.53/513982/quizzes/?bookmark=41594_21',
-            $quizListPage->getNextUrl()
+            $quizListPage->getNextUrl(),
         );
 
         $quizzes = $quizListPage->getObjects();
@@ -1263,7 +1263,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertFalse($quizzes[0]->shuffle());
         $this->assertSame(
             'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14513',
-            $quizzes[0]->getActivityId()
+            $quizzes[0]->getActivityId(),
         );
         $this->assertFalse($quizzes[0]->allowOnlyUsersWithSpecialAccess());
         $this->assertFalse($quizzes[0]->isRetakeIncorrectOnly());
@@ -1311,7 +1311,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertFalse($quizzes[1]->shuffle());
         $this->assertSame(
             'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14514',
-            $quizzes[1]->getActivityId()
+            $quizzes[1]->getActivityId(),
         );
         $this->assertFalse($quizzes[1]->allowOnlyUsersWithSpecialAccess());
         $this->assertFalse($quizzes[1]->isRetakeIncorrectOnly());
@@ -1338,7 +1338,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/le/1.53/513982/quizzes/?bookmark=41594_21',
-            $quizListPage->getNextUrl()
+            $quizListPage->getNextUrl(),
         );
 
         $quizzes = $quizListPage->getObjects();
@@ -1388,7 +1388,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertFalse($quizzes[0]->shuffle());
         $this->assertSame(
             'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14513',
-            $quizzes[0]->getActivityId()
+            $quizzes[0]->getActivityId(),
         );
         $this->assertFalse($quizzes[0]->allowOnlyUsersWithSpecialAccess());
         $this->assertFalse($quizzes[0]->isRetakeIncorrectOnly());
@@ -1436,7 +1436,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertFalse($quizzes[1]->shuffle());
         $this->assertSame(
             'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-14514',
-            $quizzes[1]->getActivityId()
+            $quizzes[1]->getActivityId(),
         );
         $this->assertFalse($quizzes[1]->allowOnlyUsersWithSpecialAccess());
         $this->assertFalse($quizzes[1]->isRetakeIncorrectOnly());
@@ -1524,8 +1524,8 @@ final class SymfonyHttpClientTest extends TestCase
                             'ActivityId' => 'https://ids.brightspace.com/activities/quiz/34907245-882D-4965-B3D6-0708A1D560F9-77531',
                             'AllowOnlyUsersWithSpecialAccess' => false,
                             'IsRetakeIncorrectOnly' => false,
-                        ]
-                    ]
+                        ],
+                    ],
                 ]));
             }
 
@@ -1577,7 +1577,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/le/1.53/513982/quizzes/41575/questions/?bookmark=3077018',
-            $quizQuestionListPage->getNextUrl()
+            $quizQuestionListPage->getNextUrl(),
         );
 
         $questions = $quizQuestionListPage->getObjects();
@@ -1589,11 +1589,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('ASVAB-D1-AR-Q1', $questions[0]->getName());
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[0]->getText()->getText()
+            $questions[0]->getText()->getText(),
         );
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[0]->getText()->getHtml()
+            $questions[0]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[0]->getPoints());
         $this->assertSame(1, $questions[0]->getDifficulty());
@@ -1602,11 +1602,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[0]->getHint());
         $this->assertSame(
             'The correct answer is B. 50 shares x $30 = $1500. 6% payable stock => it means 6% of the total value of 50 shares => 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.',
-            $questions[0]->getFeedback()->getText()
+            $questions[0]->getFeedback()->getText(),
         );
         $this->assertSame(
             '<p><strong>The correct answer is B. </strong>50 shares x $30 = $1500. 6% payable stock =&gt; it means 6% of the total value of 50 shares =&gt; 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.</p>',
-            $questions[0]->getFeedback()->getHtml()
+            $questions[0]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-04-12T22:09:47+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[0]->getLastModifiedBy());
@@ -1657,11 +1657,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('ASVAB-D1-AR-Q21', $questions[1]->getName());
         $this->assertSame(
             'A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?',
-            $questions[1]->getText()->getText()
+            $questions[1]->getText()->getText(),
         );
         $this->assertSame(
             'A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?',
-            $questions[1]->getText()->getHtml()
+            $questions[1]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[1]->getPoints());
         $this->assertSame(1, $questions[1]->getDifficulty());
@@ -1670,11 +1670,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[1]->getHint());
         $this->assertSame(
             'The correct answer is D. $29.62 × 5 = $148.10 ',
-            $questions[1]->getFeedback()->getText()
+            $questions[1]->getFeedback()->getText(),
         );
         $this->assertSame(
             '<p><strong>The correct answer is D. $29.62 &#215; 5 = $148.10&#160;</strong></p>',
-            $questions[1]->getFeedback()->getHtml()
+            $questions[1]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-04-12T22:09:47+00:00', $questions[1]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[1]->getLastModifiedBy());
@@ -1751,11 +1751,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('CLEP-CollegeComposition-PT1-S2-Q1', $questions[0]->getName());
         $this->assertStringContainsString(
             'Directions: Write an essay',
-            $questions[0]->getText()->getText()
+            $questions[0]->getText()->getText(),
         );
         $this->assertStringContainsString(
             'Write an essay in which you discuss',
-            $questions[0]->getText()->getHtml()
+            $questions[0]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[0]->getPoints());
         $this->assertSame(1, $questions[0]->getDifficulty());
@@ -1764,11 +1764,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[0]->getHint());
         $this->assertStringContainsString(
             'Sample Essay A: This essay is scored a 6',
-            $questions[0]->getFeedback()->getText()
+            $questions[0]->getFeedback()->getText(),
         );
         $this->assertStringContainsString(
             '<p><strong>Sample Essay A:</strong> This essay is scored a 6',
-            $questions[0]->getFeedback()->getHtml()
+            $questions[0]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-03-30T22:42:46+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[0]->getLastModifiedBy());
@@ -1810,7 +1810,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/le/1.60/12408/quizzes/16532/questions/?bookmark=1492746',
-            $quizQuestionListPage->getNextUrl()
+            $quizQuestionListPage->getNextUrl(),
         );
 
         $questions = $quizQuestionListPage->getObjects();
@@ -1822,11 +1822,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('CLEP-PT1-S2-Q8', $questions[0]->getName());
         $this->assertStringContainsString(
             'A car starts at point A and drives 30 miles due east',
-            $questions[0]->getText()->getText()
+            $questions[0]->getText()->getText(),
         );
         $this->assertStringContainsString(
             '<p>A car starts at point A and drives 30 miles due east',
-            $questions[0]->getText()->getHtml()
+            $questions[0]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[0]->getPoints());
         $this->assertSame(1, $questions[0]->getDifficulty());
@@ -1835,11 +1835,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[0]->getHint());
         $this->assertStringContainsString(
             'The correct answer is 34.6.',
-            $questions[0]->getFeedback()->getText()
+            $questions[0]->getFeedback()->getText(),
         );
         $this->assertStringContainsString(
             '<p><strong>The correct answer is 34.6.',
-            $questions[0]->getFeedback()->getHtml()
+            $questions[0]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-06-07T18:11:28+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
         $this->assertSame(4966, $questions[0]->getLastModifiedBy());
@@ -1895,11 +1895,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('GRE PT1_S1_Q18', $questions[0]->getName());
         $this->assertStringContainsString(
             'Directions: For the following question, enter your answer in the box.',
-            $questions[0]->getText()->getText()
+            $questions[0]->getText()->getText(),
         );
         $this->assertStringContainsString(
             '<p><strong>Directions:</strong>&#160;<em>For the following question, enter your answer in the box</em>.</p>',
-            $questions[0]->getText()->getHtml()
+            $questions[0]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[0]->getPoints());
         $this->assertSame(1, $questions[0]->getDifficulty());
@@ -1908,11 +1908,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[0]->getHint());
         $this->assertStringContainsString(
             'The correct answer is 79.',
-            $questions[0]->getFeedback()->getText()
+            $questions[0]->getFeedback()->getText(),
         );
         $this->assertStringContainsString(
             '<p><strong>The correct answer is 79.</strong>',
-            $questions[0]->getFeedback()->getHtml()
+            $questions[0]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-10-12T19:53:46+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
         $this->assertSame(72488, $questions[0]->getLastModifiedBy());
@@ -1930,12 +1930,12 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertStringContainsString(
             'Directions: For the following question, enter your answer in the box.',
-            $texts[0]->getText()->getText()
+            $texts[0]->getText()->getText(),
         );
 
         $this->assertStringContainsString(
             '<p><strong>Directions:</strong>',
-            $texts[0]->getText()->getHtml()
+            $texts[0]->getText()->getHtml(),
         );
 
         $blanks = $questionInfo->getBlanks();
@@ -1974,7 +1974,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/le/1.60/12479/quizzes/17315/questions/?bookmark=3447017',
-            $quizQuestionListPage->getNextUrl()
+            $quizQuestionListPage->getNextUrl(),
         );
 
         $questions = $quizQuestionListPage->getObjects();
@@ -1986,13 +1986,13 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('GMAT-PT1-S2-Q12 ', $questions[0]->getName());
         $this->assertStringContainsString(
             'The following question is based on this passage:',
-            $questions[0]->getText()->getText()
+            $questions[0]->getText()->getText(),
         );
         $this->assertStringContainsString(
             '<div class="d-none">
 <div style="display: none;">
 <p>The following question is',
-            $questions[0]->getText()->getHtml()
+            $questions[0]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[0]->getPoints());
         $this->assertSame(1, $questions[0]->getDifficulty());
@@ -2001,11 +2001,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[0]->getHint());
         $this->assertStringContainsString(
             'The correct answer is True. Sort the table by',
-            $questions[0]->getFeedback()->getText()
+            $questions[0]->getFeedback()->getText(),
         );
         $this->assertStringContainsString(
             '<p><strong>The correct answer is True.</strong> Sort the table by',
-            $questions[0]->getFeedback()->getHtml()
+            $questions[0]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-11-11T17:10:08+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
         $this->assertSame(190, $questions[0]->getLastModifiedBy());
@@ -2049,7 +2049,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $this->assertSame(
             'https://learn.petersons.com/d2l/api/le/1.53/513982/quizzes/41575/questions/?bookmark=3077018',
-            $quizQuestionListPage->getNextUrl()
+            $quizQuestionListPage->getNextUrl(),
         );
 
         $questions = $quizQuestionListPage->getObjects();
@@ -2061,11 +2061,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('ASVAB-D1-AR-Q1', $questions[0]->getName());
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[0]->getText()->getText()
+            $questions[0]->getText()->getText(),
         );
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[0]->getText()->getHtml()
+            $questions[0]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[0]->getPoints());
         $this->assertSame(1, $questions[0]->getDifficulty());
@@ -2074,11 +2074,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[0]->getHint());
         $this->assertSame(
             'The correct answer is B. 50 shares x $30 = $1500. 6% payable stock => it means 6% of the total value of 50 shares => 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.',
-            $questions[0]->getFeedback()->getText()
+            $questions[0]->getFeedback()->getText(),
         );
         $this->assertSame(
             '<p><strong>The correct answer is B. </strong>50 shares x $30 = $1500. 6% payable stock =&gt; it means 6% of the total value of 50 shares =&gt; 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.</p>',
-            $questions[0]->getFeedback()->getHtml()
+            $questions[0]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-04-12T22:09:47+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[0]->getLastModifiedBy());
@@ -2129,11 +2129,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('ASVAB-D1-AR-Q21', $questions[1]->getName());
         $this->assertSame(
             'A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?',
-            $questions[1]->getText()->getText()
+            $questions[1]->getText()->getText(),
         );
         $this->assertSame(
             'A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?',
-            $questions[1]->getText()->getHtml()
+            $questions[1]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[1]->getPoints());
         $this->assertSame(1, $questions[1]->getDifficulty());
@@ -2142,11 +2142,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[1]->getHint());
         $this->assertSame(
             'The correct answer is D. $29.62 × 5 = $148.10 ',
-            $questions[1]->getFeedback()->getText()
+            $questions[1]->getFeedback()->getText(),
         );
         $this->assertSame(
             '<p><strong>The correct answer is D. $29.62 &#215; 5 = $148.10&#160;</strong></p>',
-            $questions[1]->getFeedback()->getHtml()
+            $questions[1]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-04-12T22:09:47+00:00', $questions[1]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[1]->getLastModifiedBy());
@@ -2224,11 +2224,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('ASVAB-D1-AR-Q1', $questions[0]->getName());
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[0]->getText()->getText()
+            $questions[0]->getText()->getText(),
         );
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[0]->getText()->getHtml()
+            $questions[0]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[0]->getPoints());
         $this->assertSame(1, $questions[0]->getDifficulty());
@@ -2237,11 +2237,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[0]->getHint());
         $this->assertSame(
             'The correct answer is B. 50 shares x $30 = $1500. 6% payable stock => it means 6% of the total value of 50 shares => 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.',
-            $questions[0]->getFeedback()->getText()
+            $questions[0]->getFeedback()->getText(),
         );
         $this->assertSame(
             '<p><strong>The correct answer is B. </strong>50 shares x $30 = $1500. 6% payable stock =&gt; it means 6% of the total value of 50 shares =&gt; 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.</p>',
-            $questions[0]->getFeedback()->getHtml()
+            $questions[0]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-04-12T22:09:47+00:00', $questions[0]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[0]->getLastModifiedBy());
@@ -2292,11 +2292,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('ASVAB-D1-AR-Q21', $questions[1]->getName());
         $this->assertSame(
             'A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?',
-            $questions[1]->getText()->getText()
+            $questions[1]->getText()->getText(),
         );
         $this->assertSame(
             'A man takes out a $5,000 life insurance policy at a yearly rate of $29.62 per $1,000. What is the yearly premium?',
-            $questions[1]->getText()->getHtml()
+            $questions[1]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[1]->getPoints());
         $this->assertSame(1, $questions[1]->getDifficulty());
@@ -2305,11 +2305,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[1]->getHint());
         $this->assertSame(
             'The correct answer is D. $29.62 × 5 = $148.10 ',
-            $questions[1]->getFeedback()->getText()
+            $questions[1]->getFeedback()->getText(),
         );
         $this->assertSame(
             '<p><strong>The correct answer is D. $29.62 &#215; 5 = $148.10&#160;</strong></p>',
-            $questions[1]->getFeedback()->getHtml()
+            $questions[1]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-04-12T22:09:47+00:00', $questions[1]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[1]->getLastModifiedBy());
@@ -2322,11 +2322,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('ASVAB-D1-AR-Q1', $questions[2]->getName());
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[2]->getText()->getText()
+            $questions[2]->getText()->getText(),
         );
         $this->assertSame(
             'A man owns 50 shares of stock worth $30 each. The corporation declared a dividend of 6% payable in stock. How many shares did he then own?',
-            $questions[2]->getText()->getHtml()
+            $questions[2]->getText()->getHtml(),
         );
         $this->assertSame(1.0, $questions[2]->getPoints());
         $this->assertSame(1, $questions[2]->getDifficulty());
@@ -2335,11 +2335,11 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertNull($questions[2]->getHint());
         $this->assertSame(
             'The correct answer is B. 50 shares x $30 = $1500. 6% payable stock => it means 6% of the total value of 50 shares => 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.',
-            $questions[2]->getFeedback()->getText()
+            $questions[2]->getFeedback()->getText(),
         );
         $this->assertSame(
             '<p><strong>The correct answer is B. </strong>50 shares x $30 = $1500. 6% payable stock =&gt; it means 6% of the total value of 50 shares =&gt; 1500 x 6% = 90. With $90, the man can buy 3 more shares, so the total he owns then are 53 shares.</p>',
-            $questions[2]->getFeedback()->getHtml()
+            $questions[2]->getFeedback()->getHtml(),
         );
         $this->assertSame('2021-04-12T22:09:47+00:00', $questions[2]->getLastModifiedAt()->toAtomString());
         $this->assertNull($questions[2]->getLastModifiedBy());
@@ -2498,8 +2498,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->updateGradeValueForUser($incomingGradeValue, 1, 2, 3, 'bar');
@@ -2742,8 +2742,8 @@ final class SymfonyHttpClientTest extends TestCase
                 [
                     ExportJobFilter::startDate(CarbonImmutable::createFromFormat('Y-m-d H:i:s', '2016-01-28 19:39:19')),
                     ExportJobFilter::endDate(CarbonImmutable::createFromFormat('Y-m-d H:i:s', '2016-01-29 19:39:19')),
-                ]
-            )
+                ],
+            ),
         );
 
         $this->assertSame('a35e9829-9788-43ed-962e-c8c8f361f76f', $exportJobData->getExportJobId());
@@ -2843,8 +2843,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/513982/content/root/?x_a=baz&x_b=foo&x_c=sd87uCDudUE851NdLXKGaBjMKdKDel70YRrPZnITszQ&x_d=5c20ppHATy57XledQl1-STfyAAz7gGCtEj8IUC7SJ3U&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->getRootModulesForAnOrganizationUnit(513982);
@@ -3010,8 +3010,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/515376/content/modules/321584/structure/?x_a=baz&x_b=foo&x_c=7qh2mzaXA2gumirmcPPV08yConZ5ixNi-C2ea8tLpz0&x_d=PpMymRZOYVgV7nkyS9EXlwH3i1NQ_Vbgcuiu8rDIkIA&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->getModuleStructureForAnOrganizationUnit(515376, 321584);
@@ -3075,8 +3075,8 @@ final class SymfonyHttpClientTest extends TestCase
         $this->expectExceptionObject(
             new ApiException(
                 'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200".',
-                403
-            )
+                403,
+            ),
         );
 
         $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);

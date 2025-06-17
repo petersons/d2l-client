@@ -19,7 +19,7 @@ final class ExportJobData implements Arrayable
         private string $name,
         private CarbonImmutable $submitDate,
         private ExportJobStatus $status,
-        private string $category
+        private string $category,
     ) {}
 
     public function getExportJobId(): string
@@ -60,7 +60,7 @@ final class ExportJobData implements Arrayable
             'Name' => $this->name,
             'SubmitDate' => $this->submitDate,
             'Status' => $this->status->getStatus(),
-            'Category' => $this->category
+            'Category' => $this->category,
         ];
     }
 }

@@ -87,7 +87,7 @@ final class GuidGeneratorTest extends TestCase
             $orgDefinedId,
             '',
             true,
-            null
+            null,
         );
     }
 }

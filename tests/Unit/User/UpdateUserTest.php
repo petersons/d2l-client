@@ -28,7 +28,7 @@ final class UpdateUserTest extends TestCase
             $lastName,
             $externalEmail,
             $username,
-            $isActive
+            $isActive,
         );
 
         $this->assertSame(
@@ -43,7 +43,7 @@ final class UpdateUserTest extends TestCase
                     'IsActive' => $isActive,
                 ],
             ],
-            $updateUser->toArray()
+            $updateUser->toArray(),
         );
     }
 }

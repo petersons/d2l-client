@@ -14,7 +14,7 @@ final class OrganizationUnitUser implements Arrayable
 {
     public function __construct(
         private User $user,
-        private RoleInfo $roleInfo
+        private RoleInfo $roleInfo,
     ) {}
 
     public function getUser(): User
@@ -31,7 +31,7 @@ final class OrganizationUnitUser implements Arrayable
     {
         return [
             'User' => $this->user->toArray(),
-            'Role' => $this->roleInfo->toArray()
+            'Role' => $this->roleInfo->toArray(),
         ];
     }
 }

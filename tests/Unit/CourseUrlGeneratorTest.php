@@ -29,7 +29,7 @@ final class CourseUrlGeneratorTest extends TestCase
             $d2lGuidLoginUri,
             $guid->getValue(),
             $lmsCourseId,
-            $orgDefinedId
+            $orgDefinedId,
         );
 
         $courseUrl = $courseUrlGenerator->generateCourseUrl($guid, $user, $lmsCourseId);
@@ -108,7 +108,7 @@ final class CourseUrlGeneratorTest extends TestCase
             $orgDefinedId,
             '',
             true,
-            null
+            null,
         );
     }
 }

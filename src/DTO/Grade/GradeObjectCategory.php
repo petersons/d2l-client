@@ -15,7 +15,7 @@ final class GradeObjectCategory implements Arrayable
     public function __construct(
         private int $id,
         private Collection $grades,
-        private GradeObjectCategoryData $gradeObjectCategoryData
+        private GradeObjectCategoryData $gradeObjectCategoryData,
     ) {}
 
     public function getId(): int

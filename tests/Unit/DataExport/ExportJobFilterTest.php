@@ -73,7 +73,7 @@ final class ExportJobFilterTest extends TestCase
                 'Name' => $filter->getName(),
                 'Value' => $filter->getValue(),
             ],
-            $filter->toArray()
+            $filter->toArray(),
         );
     }
 
@@ -85,7 +85,7 @@ final class ExportJobFilterTest extends TestCase
 
         $this->assertSame(
             '{"Name":"startDate","Value":"2021-05-21T16:47:08.000Z"}',
-            json_encode($filter)
+            json_encode($filter),
         );
     }
 }

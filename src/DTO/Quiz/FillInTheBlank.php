@@ -13,7 +13,7 @@ final class FillInTheBlank implements QuestionInfo
 {
     public function __construct(
         private Collection $texts,
-        private Collection $blanks
+        private Collection $blanks,
     ) {}
 
     /**

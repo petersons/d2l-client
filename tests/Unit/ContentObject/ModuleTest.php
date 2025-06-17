@@ -21,7 +21,7 @@ final class ModuleTest extends TestCase
             321606,
             Collection::make([
                 new Structure(321666, 'Suffix Elements 1-5', '', Type::make(1), CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-23T15:46:22.120Z')),
-                new Structure(321667, 'Suffix Elements 6-10', '', Type::make(1), CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-23T15:46:22.183Z'))
+                new Structure(321667, 'Suffix Elements 6-10', '', Type::make(1), CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-23T15:46:22.183Z')),
             ]),
             null,
             null,

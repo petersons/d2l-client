@@ -18,7 +18,7 @@ final class CreateUser
         private string $username,
         private int $roleId,
         private bool $isActive,
-        private bool $sendCreationEmail
+        private bool $sendCreationEmail,
     ) {}
 
     public function getOrgDefinedId(): string

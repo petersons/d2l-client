@@ -16,7 +16,7 @@ final class Structure implements Arrayable
         private string $title,
         private string $shortTitle,
         private Type $type,
-        private CarbonImmutable|null $lastModifiedDate
+        private CarbonImmutable|null $lastModifiedDate,
     ) {}
 
     public function getId(): int

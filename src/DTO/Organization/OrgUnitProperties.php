@@ -16,7 +16,7 @@ final class OrgUnitProperties implements Arrayable
         private string $name,
         private OrganizationUnitTypeInfo $organizationUnitTypeInfo,
         private string $path,
-        private string|null $code = null
+        private string|null $code = null,
     ) {}
 
     public function getIdentifier(): string
@@ -51,7 +51,7 @@ final class OrgUnitProperties implements Arrayable
             'Name' => $this->name,
             'Code' => $this->code,
             'Path' => $this->path,
-            'Type' => $this->organizationUnitTypeInfo->toArray()
+            'Type' => $this->organizationUnitTypeInfo->toArray(),
         ];
     }
 }

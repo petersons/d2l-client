@@ -13,7 +13,7 @@ final class AuthenticatedUriFactory
         private string $appId,
         private string $appKey,
         private string $lmsUserId,
-        private string $lmsUserKey
+        private string $lmsUserKey,
     ) {}
 
     public function createAuthenticatedUri(string $url, string $httpMethod): string
