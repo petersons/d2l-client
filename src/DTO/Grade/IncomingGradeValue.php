@@ -71,10 +71,8 @@ final class IncomingGradeValue implements Arrayable
 
         $isAllowedGradeObjectType = $gradeObjectType->isNumbers()
             || $gradeObjectType->isPassFail()
-            ||
-            $gradeObjectType->isSelectBox()
-            ||
-            $gradeObjectType->isText();
+            || $gradeObjectType->isSelectBox()
+            || $gradeObjectType->isText();
 
         if (!$isAllowedGradeObjectType) {
             throw new InvalidArgumentException(sprintf('The given grade object type ID %d is not supported', $data['GradeObjectType']));

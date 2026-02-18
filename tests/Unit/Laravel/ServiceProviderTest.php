@@ -19,7 +19,7 @@ final class ServiceProviderTest extends TestCase
     {
         $container = new Container();
         $repository = $this->createMock(Repository::class);
-        $repository->method('get')->with('d2l')->willReturn([
+        $repository->expects($this->exactly(2))->method('get')->with('d2l')->willReturn([
             'host' => 'https://petersonstest.brightspace.com',
             'app_id' => 'baz',
             'app_key' => 'qux',
@@ -46,7 +46,7 @@ final class ServiceProviderTest extends TestCase
     {
         $container = new Container();
         $repository = $this->createMock(Repository::class);
-        $repository->method('get')->with('d2l')->willReturn([
+        $repository->expects($this->once())->method('get')->with('d2l')->willReturn([
             'host' => 'https://petersonstest.brightspace.com',
             'app_id' => 'baz',
             'app_key' => 'qux',
@@ -73,7 +73,7 @@ final class ServiceProviderTest extends TestCase
     {
         $container = new Container();
         $repository = $this->createMock(Repository::class);
-        $repository->method('get')->with('d2l')->willReturn([
+        $repository->expects($this->once())->method('get')->with('d2l')->willReturn([
             'host' => 'https://petersonstest.brightspace.com',
             'app_id' => 'baz',
             'app_key' => 'qux',

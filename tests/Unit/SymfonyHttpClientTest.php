@@ -296,8 +296,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($userJsonResponse, $createUser): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FVYO1pXtlMB6EMp6RyD8YLEWcFDfdmP8Hqica0asezc&x_d=9Qj7gcU5BwW5-n-ppJNqidxzeKFd1a3fmzhGP5zJedA&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FVYO1pXtlMB6EMp6RyD8YLEWcFDfdmP8Hqica0asezc&x_d=9Qj7gcU5BwW5-n-ppJNqidxzeKFd1a3fmzhGP5zJedA&x_t=1615390200' === $url
                 && $options['body'] === json_encode($createUser->toArray())
             ) {
                 return new MockResponse($userJsonResponse);
@@ -347,8 +346,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($createUser): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FVYO1pXtlMB6EMp6RyD8YLEWcFDfdmP8Hqica0asezc&x_d=9Qj7gcU5BwW5-n-ppJNqidxzeKFd1a3fmzhGP5zJedA&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/?x_a=baz&x_b=foo&x_c=FVYO1pXtlMB6EMp6RyD8YLEWcFDfdmP8Hqica0asezc&x_d=9Qj7gcU5BwW5-n-ppJNqidxzeKFd1a3fmzhGP5zJedA&x_t=1615390200' === $url
                 && $options['body'] === json_encode($createUser->toArray())
             ) {
                 return new MockResponse('', ['http_code' => 403]);
@@ -390,8 +388,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($userJsonResponse, $updateUser): MockResponse {
             if (
                 'PUT' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/4?x_a=baz&x_b=foo&x_c=5Ex7iiPQRH3b4P_WtNuX7YPpI8__O4kWme8QmEaWApI&x_d=MKhR5KPF5YpER423SPeLWPVEY8dAsPP6V-j54hc-nhw&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/4?x_a=baz&x_b=foo&x_c=5Ex7iiPQRH3b4P_WtNuX7YPpI8__O4kWme8QmEaWApI&x_d=MKhR5KPF5YpER423SPeLWPVEY8dAsPP6V-j54hc-nhw&x_t=1615390200' === $url
                 && $options['body'] === json_encode($updateUser->toArray())
             ) {
                 return new MockResponse($userJsonResponse);
@@ -440,8 +437,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($updateUser): MockResponse {
             if (
                 'PUT' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/55?x_a=baz&x_b=foo&x_c=7zhY2erfZt2IfdIV6pApfUgu9FdpuSBSHjmT9qAYeco&x_d=JFkmnn4gC96D5cJCQ3_f5bv4QJmB5XE7LtsRumFTu9w&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/55?x_a=baz&x_b=foo&x_c=7zhY2erfZt2IfdIV6pApfUgu9FdpuSBSHjmT9qAYeco&x_d=JFkmnn4gC96D5cJCQ3_f5bv4QJmB5XE7LtsRumFTu9w&x_t=1615390200' === $url
                 && $options['body'] === json_encode($updateUser->toArray())
             ) {
                 return new MockResponse('', ['http_code' => 403]);
@@ -478,10 +474,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($createEnrollment, $userJsonResponse): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/enrollments/?x_a=baz&x_b=foo&x_c=hIsndeo06aj1dSvhHN52io-9h3PkfGGRP5nwgD1KM4Q&x_d=g9ZoLJh27ZwBexHFmDRZyQgYr4GPyjEE-GQO9b8GbFk&x_t=1615390200' === $url
-                &&
-                $options['body'] === json_encode($createEnrollment->toArray())
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/enrollments/?x_a=baz&x_b=foo&x_c=hIsndeo06aj1dSvhHN52io-9h3PkfGGRP5nwgD1KM4Q&x_d=g9ZoLJh27ZwBexHFmDRZyQgYr4GPyjEE-GQO9b8GbFk&x_t=1615390200' === $url
+                && $options['body'] === json_encode($createEnrollment->toArray())
             ) {
                 return new MockResponse($userJsonResponse);
             }
@@ -514,8 +508,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($createEnrollment): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/enrollments/?x_a=baz&x_b=foo&x_c=hIsndeo06aj1dSvhHN52io-9h3PkfGGRP5nwgD1KM4Q&x_d=g9ZoLJh27ZwBexHFmDRZyQgYr4GPyjEE-GQO9b8GbFk&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/enrollments/?x_a=baz&x_b=foo&x_c=hIsndeo06aj1dSvhHN52io-9h3PkfGGRP5nwgD1KM4Q&x_d=g9ZoLJh27ZwBexHFmDRZyQgYr4GPyjEE-GQO9b8GbFk&x_t=1615390200' === $url
                 && $options['body'] === json_encode($createEnrollment->toArray())
             ) {
                 return new MockResponse('', ['http_code' => 403]);
@@ -552,10 +545,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($createSectionEnrollment, $userJsonResponse): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/12388/sections/0/enrollments/?x_a=baz&x_b=foo&x_c=-HqVi_1dCey5Is_0t4inJdkZxcwnaO7x4XTEyzAXvik&x_d=6HzRkHoUuf6DtvrwaKVqahGo-X92O4VvvZbDRR_WpeQ&x_t=1615390200' === $url
-                &&
-                $options['body'] === json_encode($createSectionEnrollment->toArray())
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/12388/sections/0/enrollments/?x_a=baz&x_b=foo&x_c=-HqVi_1dCey5Is_0t4inJdkZxcwnaO7x4XTEyzAXvik&x_d=6HzRkHoUuf6DtvrwaKVqahGo-X92O4VvvZbDRR_WpeQ&x_t=1615390200' === $url
+                && $options['body'] === json_encode($createSectionEnrollment->toArray())
             ) {
                 return new MockResponse($userJsonResponse);
             }
@@ -585,8 +576,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($createSectionEnrollment): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/12388/sections/0/enrollments/?x_a=baz&x_b=foo&x_c=-HqVi_1dCey5Is_0t4inJdkZxcwnaO7x4XTEyzAXvik&x_d=6HzRkHoUuf6DtvrwaKVqahGo-X92O4VvvZbDRR_WpeQ&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/12388/sections/0/enrollments/?x_a=baz&x_b=foo&x_c=-HqVi_1dCey5Is_0t4inJdkZxcwnaO7x4XTEyzAXvik&x_d=6HzRkHoUuf6DtvrwaKVqahGo-X92O4VvvZbDRR_WpeQ&x_t=1615390200' === $url
                 && $options['body'] === json_encode($createSectionEnrollment->toArray())
             ) {
                 return new MockResponse('', ['http_code' => 403]);
@@ -618,10 +608,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/GenerateExpiringGuid' === $url
-                &&
-                $options['body'] === 'guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge'
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/GenerateExpiringGuid' === $url
+                && $options['body'] === 'guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge'
             ) {
                 return new MockResponse(sprintf('<?xml version="1.0" encoding="utf-8"?>
 <string xmlns="http://desire2learn.com/">%s</string>', $guidValue));
@@ -646,10 +634,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/GenerateExpiringGuid' === $url
-                &&
-                $options['body'] === 'guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge'
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/GenerateExpiringGuid' === $url
+                && $options['body'] === 'guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge'
             ) {
                 return new MockResponse('foobar');
             }
@@ -678,10 +664,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/GenerateExpiringGuid' === $url
-                &&
-                $options['body'] === 'guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge'
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/GenerateExpiringGuid' === $url
+                && $options['body'] === 'guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge'
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <root>
@@ -718,10 +702,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <ValidationReply xmlns="http://desire2learn.com/">OK</ValidationReply>');
@@ -748,10 +730,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <ValidationReply xmlns="http://desire2learn.com/">EXPIRED</ValidationReply>');
@@ -778,10 +758,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <ValidationReply xmlns="http://desire2learn.com/">INVALID_GUID</ValidationReply>');
@@ -808,10 +786,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <ValidationReply xmlns="http://desire2learn.com/">ERROR</ValidationReply>');
@@ -838,10 +814,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <ValidationReply xmlns="http://desire2learn.com/">UNKNOWN_VERSION</ValidationReply>');
@@ -868,10 +842,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <ValidationReply xmlns="http://desire2learn.com/">INVALID_DATA</ValidationReply>');
@@ -898,10 +870,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('<?xml version="1.0" encoding="utf-8"?>
 <ValidationReply xmlns="http://desire2learn.com/">NO_DB_CONNECTION</ValidationReply>');
@@ -928,10 +898,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($guidValue): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
-                &&
-                $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
+                && 'https://petersonstest.brightspace.com/d2l/guids/D2L.Guid.2.asmx/ValidateGuid' === $url
+                && $options['body'] === sprintf('guid=%s&guidType=SSO&orgId=quux&installCode=quuz&TTL=90&data=2.1296&key=corge', $guidValue)
             ) {
                 return new MockResponse('foobar');
             }
@@ -2443,12 +2411,9 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($incomingGradeValue): MockResponse {
             if (
                 'PUT' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
-                &&
-                $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
-                &&
-                $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer foo'
+                && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
+                && $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
+                && $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer foo'
             ) {
                 return new MockResponse('');
             }
@@ -2478,12 +2443,9 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($incomingGradeValue): MockResponse {
             if (
                 'PUT' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
-                &&
-                $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
-                &&
-                $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer bar'
+                && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
+                && $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
+                && $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer bar'
             ) {
                 return new MockResponse('', ['http_code' => 403]);
             }
@@ -2721,10 +2683,8 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($createDataExportJsonResponse): MockResponse {
             if (
                 'POST' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/lp/1.30/dataExport/create?x_a=baz&x_b=foo&x_c=kP3oy0jc1zruozBCtz7lUXz1kk-qRXhP_rlfN4Rep-k&x_d=jaw-ZQt4VfSz8Ao2cBgG7B5UCn_nJZOzSfLBqEclrkM&x_t=1615390200' === $url
-                &&
-                '{"DataSetId":"ff842aae-84d0-4e39-9db4-3ae51d36bb0e","Filters":[{"Name":"startDate","Value":"2016-01-28T19:39:19.000Z"},{"Name":"endDate","Value":"2016-01-29T19:39:19.000Z"}]}' === $options['body']
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/dataExport/create?x_a=baz&x_b=foo&x_c=kP3oy0jc1zruozBCtz7lUXz1kk-qRXhP_rlfN4Rep-k&x_d=jaw-ZQt4VfSz8Ao2cBgG7B5UCn_nJZOzSfLBqEclrkM&x_t=1615390200' === $url
+                && '{"DataSetId":"ff842aae-84d0-4e39-9db4-3ae51d36bb0e","Filters":[{"Name":"startDate","Value":"2016-01-28T19:39:19.000Z"},{"Name":"endDate","Value":"2016-01-29T19:39:19.000Z"}]}' === $options['body']
             ) {
                 return new MockResponse($createDataExportJsonResponse);
             }
@@ -3028,8 +2988,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate): MockResponse {
             if (
                 'PUT' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
                 && $options['body'] === json_encode($contentTopicCompletionUpdate->toArray())
             ) {
                 return new MockResponse('');
@@ -3058,8 +3017,7 @@ final class SymfonyHttpClientTest extends TestCase
         $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate): MockResponse {
             if (
                 'PUT' === $method
-                &&
-                'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
+                && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
                 && $options['body'] === json_encode($contentTopicCompletionUpdate->toArray())
             ) {
                 return new MockResponse('', ['http_code' => 403]);
