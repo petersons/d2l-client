@@ -13,19 +13,23 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "ext-curl": "*",
         "ext-simplexml": "*",
-        "illuminate/collections": "^10.0 || ^11.0 || ^12.0",
-        "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
-        "illuminate/support": "^10.0 || ^11.0 || ^12.0",
-        "nesbot/carbon": "^2.72 || ^3.0",
-        "symfony/http-client": "^6.4 || ^7.0"
+        "illuminate/collections": "^11.3 || ^12.0",
+        "illuminate/contracts": "^11.3 || ^12.0",
+        "illuminate/support": "^11.3 || ^12.0",
+        "nesbot/carbon": "^3.2",
+        "symfony/http-client": "^7.4 || ^8.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.75",
-        "illuminate/container": "^10.0 || ^11.0 || ^12.0",
-        "phpunit/phpunit": "^11.0"
+        "friendsofphp/php-cs-fixer": "^3.94",
+        "illuminate/container": "^11.3 || ^12.0",
+        "phpunit/phpunit": "^13.0"
+    },
+    "conflict": {
+        "illuminate/conditionable": "<11.3",
+        "symfony/polyfill-php83": "<1.30"
     },
     "autoload": {
         "psr-4": {
@@ -38,7 +42,7 @@
         }
     },
     "scripts": {
-        "lint": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
+        "lint": "php-cs-fixer fix",
         "test": "phpunit"
     },
     "config": {

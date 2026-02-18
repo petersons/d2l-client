@@ -11,6 +11,7 @@ $finder = PhpCsFixer\Finder::create()
 ;
 
 return (new PhpCsFixer\Config())
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setUsingCache(true)
     ->setRules([
         'psr_autoloading' => true,
@@ -55,7 +56,6 @@ return (new PhpCsFixer\Config())
         'switch_case_space' => true,
         'single_quote' => true,
         'strict_param' => true,
-        'visibility_required' => true,
         'encoding' => true,
         'full_opening_tag' => true,
         'phpdoc_align' => true,
