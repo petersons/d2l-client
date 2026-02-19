@@ -229,4 +229,11 @@ interface ClientInterface
      * @return Collection<Section>
      */
     public function getSectionsForOrganizationUnit(int $orgUnitId): Collection;
+
+    /**
+     * Retrieve the course image for a course offering.
+     * @link https://docs.valence.desire2learn.com/res/course.html#get--d2l-api-lp-(version)-courses-(orgUnitId)-image
+     * @throws ApiException
+     */
+    public function getCourseImage(int $orgUnitId, int|null $widthInPixels = null, int|null $heightInPixels = null): string;
 }
