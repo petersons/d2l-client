@@ -3080,6 +3080,50 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertCount(0, $sectionsForOrganizationUnit[1]->getEnrollments());
     }
 
+    public function testGetCourseImage(): void
+    {
+        $this->freezeTime();
+
+        $imageContent = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'HSbkgd1.jpg');
+        $callback = function (string $method, string $url, array $options) use ($imageContent): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/courses/510682/image?x_a=baz&x_b=foo&x_c=lk4qHRLS7OjJAwiblVo02fcl3Kqp6BkT6_1Bq6H0kiU&x_d=JoCpOapMOJOU4lCpIg1eR0BjUc3XqxlYm-7S1Sx22Pw&x_t=1615390200' === $url) {
+                return new MockResponse($imageContent);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $image = $client->getCourseImage(510682);
+
+        $this->assertSame($imageContent, $image);
+    }
+
+    public function testGetCourseImageWithWidthAndHeightQueryParameters(): void
+    {
+        $this->freezeTime();
+
+        $imageContent = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'HSbkgd1.jpg');
+        $callback = function (string $method, string $url, array $options) use ($imageContent): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/courses/510682/image?x_a=baz&x_b=foo&x_c=lk4qHRLS7OjJAwiblVo02fcl3Kqp6BkT6_1Bq6H0kiU&x_d=JoCpOapMOJOU4lCpIg1eR0BjUc3XqxlYm-7S1Sx22Pw&x_t=1615390200&width=1200&height=400' === $url) {
+                return new MockResponse($imageContent);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $image = $client->getCourseImage(510682, 1200, 400);
+
+        $this->assertSame($imageContent, $image);
+    }
+
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient
     {
         return new SymfonyHttpClient(

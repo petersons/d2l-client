@@ -1014,6 +1014,40 @@ final class SymfonyHttpClient implements ClientInterface
         return $collection;
     }
 
+    public function getCourseImage(int $orgUnitId, int|null $widthInPixels = null, int|null $heightInPixels = null): string
+    {
+        $method = 'GET';
+        $path = sprintf(
+            '/d2l/api/lp/%s/courses/%d/image',
+            $this->apiLpVersion,
+            $orgUnitId,
+        );
+
+        $query = $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path);
+
+        if (null !== $widthInPixels) {
+            $query['width'] = $widthInPixels;
+        }
+
+        if (null !== $heightInPixels) {
+            $query['height'] = $heightInPixels;
+        }
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $query,
+            ],
+        );
+
+        try {
+            return $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+    }
+
     public function generateExpiringGuid(string $orgDefinedId): Guid
     {
         $response = $this->httpClient->request(
