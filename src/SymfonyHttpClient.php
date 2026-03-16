@@ -56,6 +56,9 @@ use Petersons\D2L\DTO\Quiz\QuizListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestion;
 use Petersons\D2L\DTO\Quiz\QuizQuestionListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestionType;
+use Petersons\D2L\DTO\Quiz\QuizSpecialAccessAttemptsAllowed;
+use Petersons\D2L\DTO\Quiz\QuizSpecialAccessRule;
+use Petersons\D2L\DTO\Quiz\QuizSpecialAccessSubmissionTimeLimit;
 use Petersons\D2L\DTO\Quiz\RestrictIPAddressRange;
 use Petersons\D2L\DTO\Quiz\ShortAnswerBlank;
 use Petersons\D2L\DTO\Quiz\ShortAnswerBlankAnswer;
@@ -1043,6 +1046,75 @@ final class SymfonyHttpClient implements ClientInterface
 
         try {
             return $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+    }
+
+    public function getQuizSpecialAccessRule(int $orgUnitId, int $quizId, int $userId): QuizSpecialAccessRule
+    {
+        $method = 'GET';
+        $path = sprintf('/d2l/api/le/%s/%d/quizzes/%d/specialaccess/%d', $this->apiLeVersion, $orgUnitId, $quizId, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ],
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $submissionTimeLimit = null;
+
+        if (isset($decodedResponse['SubmissionTimeLimit'])) {
+            $submissionTimeLimit = new QuizSpecialAccessSubmissionTimeLimit(
+                $decodedResponse['SubmissionTimeLimit']['IsEnforced'],
+                $decodedResponse['SubmissionTimeLimit']['TimeLimitValue'],
+            );
+        }
+
+        $attemptsAllowed = null;
+
+        if (isset($decodedResponse['AttemptsAllowed'])) {
+            $attemptsAllowed = new QuizSpecialAccessAttemptsAllowed(
+                $decodedResponse['AttemptsAllowed']['IsUnlimited'],
+                $decodedResponse['AttemptsAllowed']['NumberOfAttemptsAllowed'],
+            );
+        }
+
+        return new QuizSpecialAccessRule(
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['StartDate']),
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['EndDate']),
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['DueDate']),
+            $submissionTimeLimit,
+            $attemptsAllowed,
+        );
+    }
+
+    public function updateQuizSpecialAccessRule(int $orgUnitId, int $quizId, int $userId, QuizSpecialAccessRule $quizSpecialAccess): void
+    {
+        $method = 'PUT';
+        $path = sprintf('/d2l/api/le/%s/%d/quizzes/%d/specialaccess/%d', $this->apiLeVersion, $orgUnitId, $quizId, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+                'json' => $quizSpecialAccess->toArray(),
+            ],
+        );
+
+        try {
+            $response->getContent();
         } catch (ExceptionInterface $exception) {
             throw ApiException::fromSymfonyHttpException($exception);
         }
