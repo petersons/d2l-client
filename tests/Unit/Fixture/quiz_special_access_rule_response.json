@@ -1,0 +1,13 @@
+{
+  "StartDate": "2026-01-01T10:46:22.000Z",
+  "EndDate": "2026-05-12T12:46:22.000Z",
+  "DueDate": "2026-02-20T15:46:22.000Z",
+  "SubmissionTimeLimit": {
+    "IsEnforced": false,
+    "TimeLimitValue": 0
+  },
+  "AttemptsAllowed": {
+    "IsUnlimited": false,
+    "NumberOfAttemptsAllowed": 5
+  }
+}

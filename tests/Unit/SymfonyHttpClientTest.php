@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use Carbon\CarbonImmutable;
 use Petersons\D2L\AuthenticatedUriFactory;
+use Petersons\D2L\Contracts\ClientInterface;
 use Petersons\D2L\DTO\ContentCompletions\ContentTopicCompletionUpdate;
 use Petersons\D2L\DTO\ContentObject\ContentObject;
 use Petersons\D2L\DTO\ContentObject\Module;
@@ -19,6 +20,9 @@ use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Quiz\FillInTheBlank;
 use Petersons\D2L\DTO\Quiz\LongAnswer;
 use Petersons\D2L\DTO\Quiz\MultipleChoiceAnswers;
+use Petersons\D2L\DTO\Quiz\QuizSpecialAccessAttemptsAllowed;
+use Petersons\D2L\DTO\Quiz\QuizSpecialAccessRule;
+use Petersons\D2L\DTO\Quiz\QuizSpecialAccessSubmissionTimeLimit;
 use Petersons\D2L\DTO\Quiz\ShortAnswers;
 use Petersons\D2L\DTO\Quiz\TrueFalse;
 use Petersons\D2L\DTO\RichTextInput;
@@ -32,6 +36,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\ScopingHttpClient;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 
 final class SymfonyHttpClientTest extends TestCase
 {
@@ -3122,6 +3127,111 @@ final class SymfonyHttpClientTest extends TestCase
         $image = $client->getCourseImage(510682, 1200, 400);
 
         $this->assertSame($imageContent, $image);
+    }
+
+    public function testGetQuizSpecialAccessRule(): void
+    {
+        $this->freezeTime();
+
+        $quizSpecialAccessRuleResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'quiz_special_access_rule_response.json');
+        $callback = function (string $method, string $url, array $options) use ($quizSpecialAccessRuleResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12400/quizzes/13250/specialaccess/9434?x_a=baz&x_b=foo&x_c=O18IT0snIteCEFzA_24hfV-O-_tB02VVw_-sChaAT2U&x_d=UB5JxlUlH_2zgTquJ-bqExZQfFEEmWqjfGN6qST6o9g&x_t=1615390200' === $url) {
+                return new MockResponse($quizSpecialAccessRuleResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizSpecialAccessRule = $client->getQuizSpecialAccessRule(12400, 13250, 9434);
+
+        $this->assertSame('2026-01-01 10:46:22', $quizSpecialAccessRule->startDate?->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-05-12 12:46:22', $quizSpecialAccessRule->endDate?->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-02-20 15:46:22', $quizSpecialAccessRule->dueDate?->format('Y-m-d H:i:s'));
+
+        $this->assertFalse($quizSpecialAccessRule->submissionTimeLimit?->isEnforced);
+        $this->assertSame(0, $quizSpecialAccessRule->submissionTimeLimit?->timeLimitValue);
+
+        $this->assertFalse($quizSpecialAccessRule->attemptsAllowed?->isUnlimited);
+        $this->assertSame(5, $quizSpecialAccessRule->attemptsAllowed?->numberOfAttemptsAllowed);
+    }
+
+    public function testUpdatingQuizSpecialAccessRule(): void
+    {
+        $this->freezeTime();
+        $this->expectNotToPerformAssertions();
+
+        $quizSpecialAccess = new QuizSpecialAccessRule(
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-23T10:46:22.183Z'),
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-28T12:46:22.183Z'),
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-25T15:46:22.183Z'),
+            new QuizSpecialAccessSubmissionTimeLimit(true, 9999),
+            new QuizSpecialAccessAttemptsAllowed(false, 10),
+        );
+
+        $callback = function (string $method, string $url, array $options) use ($quizSpecialAccess): MockResponse {
+            if (
+                'PUT' === $method
+                && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12400/quizzes/13250/specialaccess/9434?x_a=baz&x_b=foo&x_c=dCYOTRIsbelOQutR3z0mEUOlCu18lYrBdw0NsfNt2HQ&x_d=mOQxMhRUZsS4NrKjW-pwXGrwLM68Wq83-FNArt3lx78&x_t=1615390200' === $url
+                && $options['body'] === json_encode($quizSpecialAccess->toArray())
+            ) {
+                return new MockResponse('');
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $client->updateQuizSpecialAccessRule(12400, 13250, 9434, $quizSpecialAccess);
+    }
+
+    public function testItThrowsApiExceptionForBadRequestResponseWhenUpdatingQuizSpecialAccessRule(): void
+    {
+        $this->freezeTime();
+
+        $quizSpecialAccess = new QuizSpecialAccessRule(
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-23T10:46:22.183Z'),
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-28T12:46:22.183Z'),
+            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-25T15:46:22.183Z'),
+            new QuizSpecialAccessSubmissionTimeLimit(true, 9999),
+            new QuizSpecialAccessAttemptsAllowed(false, 10),
+        );
+
+        $callback = function (string $method, string $url, array $options) use ($quizSpecialAccess): MockResponse {
+            if (
+                'PUT' === $method
+                && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12400/quizzes/13250/specialaccess/9434?x_a=baz&x_b=foo&x_c=dCYOTRIsbelOQutR3z0mEUOlCu18lYrBdw0NsfNt2HQ&x_d=mOQxMhRUZsS4NrKjW-pwXGrwLM68Wq83-FNArt3lx78&x_t=1615390200' === $url
+                && $options['body'] === json_encode($quizSpecialAccess->toArray())
+            ) {
+                return new MockResponse('{"Errors":[{"Message":"DueDate must be before EndDate"}]}', ['http_code' => 400]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        try {
+            $client->updateQuizSpecialAccessRule(12400, 13250, 9434, $quizSpecialAccess);
+
+            $this->fail('ApiException should have been thrown');
+        } catch (ApiException $e) {
+            $previousException = $e->getPrevious();
+            $this->assertInstanceOf(ClientExceptionInterface::class, $previousException);
+
+            $response = $previousException->getResponse();
+
+            $this->assertSame(400, $response->getStatusCode());
+            $this->assertSame('{"Errors":[{"Message":"DueDate must be before EndDate"}]}', $response->getContent(false));
+        }
     }
 
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient

@@ -28,6 +28,7 @@ use Petersons\D2L\DTO\Quiz\Quiz;
 use Petersons\D2L\DTO\Quiz\QuizListPage;
 use Petersons\D2L\DTO\Quiz\QuizQuestion;
 use Petersons\D2L\DTO\Quiz\QuizQuestionListPage;
+use Petersons\D2L\DTO\Quiz\QuizSpecialAccessRule;
 use Petersons\D2L\DTO\Section\Section;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
@@ -36,15 +37,15 @@ use Petersons\D2L\Exceptions\ApiException;
 
 interface ClientInterface
 {
-    public const D2L_DATETIME_FORMAT = "Y-m-d\TH:i:s.v\Z";
+    public const string D2L_DATETIME_FORMAT = "Y-m-d\TH:i:s.v\Z";
 
-    public const GUID_OK = 'OK';
-    public const GUID_EXPIRED = 'EXPIRED';
-    public const GUID_INVALID = 'INVALID_GUID';
-    public const GUID_ERROR = 'ERROR';
-    public const GUID_UNKNOWN_VERSION = 'UNKNOWN_VERSION';
-    public const GUID_INVALID_DATA = 'INVALID_DATA';
-    public const GUID_NO_DB_CONNECTION = 'NO_DB_CONNECTION';
+    public const string GUID_OK = 'OK';
+    public const string GUID_EXPIRED = 'EXPIRED';
+    public const string GUID_INVALID = 'INVALID_GUID';
+    public const string GUID_ERROR = 'ERROR';
+    public const string GUID_UNKNOWN_VERSION = 'UNKNOWN_VERSION';
+    public const string GUID_INVALID_DATA = 'INVALID_DATA';
+    public const string GUID_NO_DB_CONNECTION = 'NO_DB_CONNECTION';
 
     /**
      * @link https://docs.valence.desire2learn.com/res/user.html#get--d2l-api-lp-(version)-users-(userId)
@@ -236,4 +237,18 @@ interface ClientInterface
      * @throws ApiException
      */
     public function getCourseImage(int $orgUnitId, int|null $widthInPixels = null, int|null $heightInPixels = null): string;
+
+    /**
+     * Retrieve a user's special access rule for a quiz.
+     * @link https://docs.valence.desire2learn.com/res/quiz.html#get--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)-specialaccess-(userId)
+     * @throws ApiException
+     */
+    public function getQuizSpecialAccessRule(int $orgUnitId, int $quizId, int $userId): QuizSpecialAccessRule;
+
+    /**
+     * Create or update a user's special access rule for a quiz.
+     * @link https://docs.valence.desire2learn.com/res/quiz.html#put--d2l-api-le-(version)-(orgUnitId)-quizzes-(quizId)-specialaccess-(userId)
+     * @throws ApiException
+     */
+    public function updateQuizSpecialAccessRule(int $orgUnitId, int $quizId, int $userId, QuizSpecialAccessRule $quizSpecialAccess): void;
 }
