@@ -65,7 +65,6 @@ return (new PhpCsFixer\Config())
         'phpdoc_order' => true,
         'php_unit_construct' => true,
         'php_unit_dedicate_assert_internal_type' => true,
-        'php_unit_strict' => true,
         'return_type_declaration' => true,
         'no_superfluous_phpdoc_tags' => true,
         'ordered_imports'            => [

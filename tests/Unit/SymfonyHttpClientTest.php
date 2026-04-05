@@ -29,6 +29,8 @@ use Petersons\D2L\DTO\RichTextInput;
 use Petersons\D2L\DTO\Section\Section;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
+use Petersons\D2L\DTO\User\UserAttribute;
+use Petersons\D2L\DTO\User\UserAttributes;
 use Petersons\D2L\Enum\RichTextInputType;
 use Petersons\D2L\Exceptions\ApiException;
 use Petersons\D2L\SymfonyHttpClient;
@@ -3232,6 +3234,65 @@ final class SymfonyHttpClientTest extends TestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame('{"Errors":[{"Message":"DueDate must be before EndDate"}]}', $response->getContent(false));
         }
+    }
+
+    public function testGetUserAttributes(): void
+    {
+        $this->freezeTime();
+
+        $userAttributesResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'user_attributes_response.json');
+        $callback = function (string $method, string $url, array $options) use ($userAttributesResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/attributes/users/851883?x_a=baz&x_b=foo&x_c=TjmEzd0sIsM6SBpZhotQ8HPPPdwV-isWpcZEcUeVOoU&x_d=zs7s6QbE-Z2FoeX9VxOmOBx_iw4pqeHgqfy476b46WY&x_t=1615390200' === $url) {
+                return new MockResponse($userAttributesResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $userAttributes = $client->getUserAttributes(851883);
+
+        $this->assertSame(851883, $userAttributes->userId);
+
+        $this->assertCount(2, $userAttributes->attributes);
+
+        $this->assertSame('_companyname', $userAttributes->attributes[0]->attributeId);
+        $this->assertSame(['Foo'], $userAttributes->attributes[0]->value);
+
+        $this->assertSame('_hireddate', $userAttributes->attributes[1]->attributeId);
+        $this->assertSame(['2020-05-01'], $userAttributes->attributes[1]->value);
+    }
+
+    public function testUpdatingUserAttributes(): void
+    {
+        $this->freezeTime();
+
+        $userAttributes = new UserAttributes(
+            851883,
+            [new UserAttribute('_companyname', ['Bar'])],
+        );
+
+        $callback = function (string $method, string $url, array $options) use ($userAttributes): MockResponse {
+            if (
+                'PUT' === $method
+                && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/attributes/users/851883?x_a=baz&x_b=foo&x_c=TDN3k060JT5i3S8FpGAX5KlsKVqy5i23utm3Uze4IyA&x_d=40oXlUYtfy1UqDOqj5Bn6lZFr6BAD84S0WS2YMhjKls&x_t=1615390200' === $url
+                && $options['body'] === json_encode($userAttributes->toArray())
+            ) {
+                return new MockResponse(json_encode($userAttributes->toArray()));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $updatedUserAttributes = $client->updateUserAttributes($userAttributes);
+        $this->assertEquals($userAttributes, $updatedUserAttributes);
     }
 
     private function getClient(MockHttpClient $mockHttpClient): SymfonyHttpClient

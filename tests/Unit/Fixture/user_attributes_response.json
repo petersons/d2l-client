@@ -1,0 +1,17 @@
+{
+  "UserId": 851883,
+  "Attributes": [
+    {
+      "AttributeId": "_companyname",
+      "Value": [
+        "Foo"
+      ]
+    },
+    {
+      "AttributeId": "_hireddate",
+      "Value": [
+        "2020-05-01"
+      ]
+    }
+  ]
+}

@@ -70,6 +70,8 @@ use Petersons\D2L\DTO\Section\Section;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
 use Petersons\D2L\DTO\User\User;
+use Petersons\D2L\DTO\User\UserAttribute;
+use Petersons\D2L\DTO\User\UserAttributes;
 use Petersons\D2L\DTO\User\UserData;
 use Petersons\D2L\Enum\ContentObject\ActivityType;
 use Petersons\D2L\Enum\ContentObject\TopicType;
@@ -1118,6 +1120,79 @@ final class SymfonyHttpClient implements ClientInterface
         } catch (ExceptionInterface $exception) {
             throw ApiException::fromSymfonyHttpException($exception);
         }
+    }
+
+    public function getUserAttributes(int $userId): UserAttributes
+    {
+        $method = 'GET';
+        $path = sprintf('/d2l/api/lp/%s/attributes/users/%d', $this->apiLpVersion, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ],
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $attributes = [];
+
+        foreach ($decodedResponse['Attributes'] as $attribute) {
+            $attributes[] = new UserAttribute(
+                $attribute['AttributeId'],
+                $attribute['Value'],
+            );
+        }
+
+        return new UserAttributes(
+            $decodedResponse['UserId'],
+            $attributes,
+        );
+    }
+
+    public function updateUserAttributes(UserAttributes $userAttributes): UserAttributes
+    {
+        $method = 'PUT';
+        $path = sprintf('/d2l/api/lp/%s/attributes/users/%s', $this->apiLpVersion, $userAttributes->userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+                'json' => $userAttributes->toArray(),
+            ],
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        $attributes = [];
+
+        foreach ($decodedResponse['Attributes'] as $attribute) {
+            $attributes[] = new UserAttribute(
+                $attribute['AttributeId'],
+                $attribute['Value'],
+            );
+        }
+
+        return new UserAttributes(
+            $decodedResponse['UserId'],
+            $attributes,
+        );
     }
 
     public function generateExpiringGuid(string $orgDefinedId): Guid

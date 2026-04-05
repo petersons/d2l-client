@@ -32,6 +32,7 @@ use Petersons\D2L\DTO\Quiz\QuizSpecialAccessRule;
 use Petersons\D2L\DTO\Section\Section;
 use Petersons\D2L\DTO\User\CreateUser;
 use Petersons\D2L\DTO\User\UpdateUser;
+use Petersons\D2L\DTO\User\UserAttributes;
 use Petersons\D2L\DTO\User\UserData;
 use Petersons\D2L\Exceptions\ApiException;
 
@@ -251,4 +252,18 @@ interface ClientInterface
      * @throws ApiException
      */
     public function updateQuizSpecialAccessRule(int $orgUnitId, int $quizId, int $userId, QuizSpecialAccessRule $quizSpecialAccess): void;
+
+    /**
+     * Retrieve the attributes for a single user.
+     * @link https://docs.valence.desire2learn.com/res/user.html#get--d2l-api-lp-(version)-attributes-users-(userId)
+     * @throws ApiException
+     */
+    public function getUserAttributes(int $userId): UserAttributes;
+
+    /**
+     * Update one or more attributes for a single user.
+     * @link https://docs.valence.desire2learn.com/res/user.html#put--d2l-api-lp-(version)-attributes-users-(userId)
+     * @throws ApiException
+     */
+    public function updateUserAttributes(UserAttributes $userAttributes): UserAttributes;
 }
