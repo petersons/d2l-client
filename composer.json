@@ -27,10 +27,6 @@
         "illuminate/container": "^12.0 || ^13.0",
         "phpunit/phpunit": "^13.0"
     },
-    "conflict": {
-        "illuminate/conditionable": "<11.3",
-        "symfony/polyfill-php83": "<1.30"
-    },
     "autoload": {
         "psr-4": {
             "Petersons\\D2L\\": "src"
