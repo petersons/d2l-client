@@ -16,15 +16,15 @@
         "php": "^8.4",
         "ext-curl": "*",
         "ext-simplexml": "*",
-        "illuminate/collections": "^11.3 || ^12.0",
-        "illuminate/contracts": "^11.3 || ^12.0",
-        "illuminate/support": "^11.3 || ^12.0",
+        "illuminate/collections": "^12.0 || ^13.0",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
         "nesbot/carbon": "^3.2",
         "symfony/http-client": "^7.4 || ^8.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.94",
-        "illuminate/container": "^11.3 || ^12.0",
+        "illuminate/container": "^12.0 || ^13.0",
         "phpunit/phpunit": "^13.0"
     },
     "conflict": {
