@@ -235,6 +235,26 @@ final class SymfonyHttpClient implements ClientInterface
         return $this->getUserDtoFromUserArrayResponse($decodedResponse);
     }
 
+    public function deleteUser(int $userId): void
+    {
+        $method = 'DELETE';
+        $path = sprintf('/d2l/api/lp/%s/users/%d', $this->apiLpVersion, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ],
+        );
+
+        try {
+            $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+    }
+
     public function enrollUser(CreateEnrollment $createEnrollment): Enrollment
     {
         $method = 'POST';

@@ -79,6 +79,12 @@ interface ClientInterface
     public function updateUser(UpdateUser $updateUser): UserData;
 
     /**
+     * @link https://docs.valence.desire2learn.com/res/user.html#delete--d2l-api-lp-(version)-users-(userId)
+     * @throws ApiException
+     */
+    public function deleteUser(int $userId): void;
+
+    /**
      * @link https://docs.valence.desire2learn.com/res/enroll.html#post--d2l-api-lp-(version)-enrollments-
      * @throws ApiException
      */

@@ -467,6 +467,31 @@ final class SymfonyHttpClientTest extends TestCase
         $client->updateUser($updateUser);
     }
 
+    public function testDeletingUser(): void
+    {
+        $this->freezeTime();
+
+        $wasCorrectApiCalled = false;
+
+        $callback = function (string $method, string $url, array $options) use (&$wasCorrectApiCalled): MockResponse {
+            if ('DELETE' === $method && 'https://petersonstest.brightspace.com/d2l/api/lp/1.30/users/3163?x_a=baz&x_b=foo&x_c=yklZeTnSifKkATPjgccFMO781w9UxVQfcbTXVs1692o&x_d=jtZxIkvOzfkKwy_Abg8bhfoBd0xXMo7fhDWTF7GUAQ8&x_t=1615390200' === $url) {
+                $wasCorrectApiCalled = true;
+
+                return new MockResponse('');
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $client->deleteUser(3163);
+
+        $this->assertTrue($wasCorrectApiCalled);
+    }
+
     public function testEnrollingTheUserInACourse(): void
     {
         $this->freezeTime();
@@ -2408,6 +2433,7 @@ final class SymfonyHttpClientTest extends TestCase
     public function testUpdateGradeValueForUserDoesNotThrowExceptionOnSuccessfulUpdate(): void
     {
         $this->freezeTime();
+        $wasCorrectApiCalled = false;
 
         $incomingGradeValue = IncomingGradeValue::numeric(
             new RichTextInput('', RichTextInputType::make('Text')),
@@ -2415,13 +2441,15 @@ final class SymfonyHttpClientTest extends TestCase
             3.0,
         );
 
-        $callback = function (string $method, string $url, array $options) use ($incomingGradeValue): MockResponse {
+        $callback = function (string $method, string $url, array $options) use ($incomingGradeValue, &$wasCorrectApiCalled): MockResponse {
             if (
                 'PUT' === $method
                 && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/grades/2/values/3?x_a=baz&x_b=foo&x_c=fAoL6WIxt7dDRDG1k7J_mVK5v4LCarnsgchZwO0rxUs&x_d=D5fh-y5F7zgnOeJU8rE0KNLpizKZPqLnPSWN5aOgrBU&x_t=1615390200' === $url
                 && $options['body'] === json_encode($incomingGradeValue->toArray(), \JSON_PRESERVE_ZERO_FRACTION)
                 && $options['normalized_headers']['authorization'][0] === 'Authorization: Bearer foo'
             ) {
+                $wasCorrectApiCalled = true;
+
                 return new MockResponse('');
             }
 
@@ -2434,7 +2462,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $client->updateGradeValueForUser($incomingGradeValue, 1, 2, 3, 'foo');
 
-        $this->addToAssertionCount(1);
+        $this->assertTrue($wasCorrectApiCalled);
     }
 
     public function testUpdateGradeValueForUserThrowsExceptionOnNonSuccessfulUpdate(): void
@@ -2987,17 +3015,20 @@ final class SymfonyHttpClientTest extends TestCase
     public function testUpdateContentTopicCompletionDoesNotThrowExceptionOnSuccessfulUpdate(): void
     {
         $this->freezeTime();
+        $wasCorrectApiCalled = false;
 
         $time = CarbonImmutable::now();
 
         $contentTopicCompletionUpdate = new ContentTopicCompletionUpdate($time);
 
-        $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate): MockResponse {
+        $callback = function (string $method, string $url, array $options) use ($contentTopicCompletionUpdate, &$wasCorrectApiCalled): MockResponse {
             if (
                 'PUT' === $method
                 && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/1/content/topics/2/completions/users/3?x_a=baz&x_b=foo&x_c=uT_agY5cX1AHy84RNtsesb1ht4r8jgEhEcyTybCuxTU&x_d=m0DtnYriG3dKoeaBQbVbSx-jFuw5vKnuhwgsEWEyRO0&x_t=1615390200' === $url
                 && $options['body'] === json_encode($contentTopicCompletionUpdate->toArray())
             ) {
+                $wasCorrectApiCalled = true;
+
                 return new MockResponse('');
             }
 
@@ -3010,7 +3041,7 @@ final class SymfonyHttpClientTest extends TestCase
 
         $client->updateContentTopicCompletion($contentTopicCompletionUpdate, 1, 2, 3);
 
-        $this->addToAssertionCount(1);
+        $this->assertTrue($wasCorrectApiCalled);
     }
 
     public function testUpdateContentTopicCompletionThrowsExceptionOnNonSuccessfulUpdate(): void
@@ -3164,7 +3195,7 @@ final class SymfonyHttpClientTest extends TestCase
     public function testUpdatingQuizSpecialAccessRule(): void
     {
         $this->freezeTime();
-        $this->expectNotToPerformAssertions();
+        $wasCorrectApiCalled = false;
 
         $quizSpecialAccess = new QuizSpecialAccessRule(
             CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, '2021-12-23T10:46:22.183Z'),
@@ -3174,12 +3205,14 @@ final class SymfonyHttpClientTest extends TestCase
             new QuizSpecialAccessAttemptsAllowed(false, 10),
         );
 
-        $callback = function (string $method, string $url, array $options) use ($quizSpecialAccess): MockResponse {
+        $callback = function (string $method, string $url, array $options) use ($quizSpecialAccess, &$wasCorrectApiCalled): MockResponse {
             if (
                 'PUT' === $method
                 && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12400/quizzes/13250/specialaccess/9434?x_a=baz&x_b=foo&x_c=dCYOTRIsbelOQutR3z0mEUOlCu18lYrBdw0NsfNt2HQ&x_d=mOQxMhRUZsS4NrKjW-pwXGrwLM68Wq83-FNArt3lx78&x_t=1615390200' === $url
                 && $options['body'] === json_encode($quizSpecialAccess->toArray())
             ) {
+                $wasCorrectApiCalled = true;
+
                 return new MockResponse('');
             }
 
@@ -3191,6 +3224,8 @@ final class SymfonyHttpClientTest extends TestCase
         $client = $this->getClient($mockClient);
 
         $client->updateQuizSpecialAccessRule(12400, 13250, 9434, $quizSpecialAccess);
+
+        $this->assertTrue($wasCorrectApiCalled);
     }
 
     public function testItThrowsApiExceptionForBadRequestResponseWhenUpdatingQuizSpecialAccessRule(): void
