@@ -3192,6 +3192,38 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame(5, $quizSpecialAccessRule->attemptsAllowed?->numberOfAttemptsAllowed);
     }
 
+    public function testGetQuizSpecialAccessRuleWithoutDateOverrides(): void
+    {
+        $this->freezeTime();
+
+        $quizSpecialAccessRuleResponse = json_encode([
+            'StartDate' => null,
+            'EndDate' => null,
+            'DueDate' => null,
+            'SubmissionTimeLimit' => null,
+            'AttemptsAllowed' => null,
+        ], JSON_THROW_ON_ERROR);
+        $callback = function (string $method, string $url, array $options) use ($quizSpecialAccessRuleResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/12400/quizzes/13250/specialaccess/9434?x_a=baz&x_b=foo&x_c=O18IT0snIteCEFzA_24hfV-O-_tB02VVw_-sChaAT2U&x_d=UB5JxlUlH_2zgTquJ-bqExZQfFEEmWqjfGN6qST6o9g&x_t=1615390200' === $url) {
+                return new MockResponse($quizSpecialAccessRuleResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $quizSpecialAccessRule = $client->getQuizSpecialAccessRule(12400, 13250, 9434);
+
+        $this->assertNull($quizSpecialAccessRule->startDate);
+        $this->assertNull($quizSpecialAccessRule->endDate);
+        $this->assertNull($quizSpecialAccessRule->dueDate);
+        $this->assertNull($quizSpecialAccessRule->submissionTimeLimit);
+        $this->assertNull($quizSpecialAccessRule->attemptsAllowed);
+    }
+
     public function testUpdatingQuizSpecialAccessRule(): void
     {
         $this->freezeTime();
