@@ -1113,9 +1113,9 @@ final class SymfonyHttpClient implements ClientInterface
         }
 
         return new QuizSpecialAccessRule(
-            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['StartDate']),
-            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['EndDate']),
-            CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['DueDate']),
+            null !== $decodedResponse['StartDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['StartDate']) : null,
+            null !== $decodedResponse['EndDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['EndDate']) : null,
+            null !== $decodedResponse['DueDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['DueDate']) : null,
             $submissionTimeLimit,
             $attemptsAllowed,
         );
