@@ -1,0 +1,22 @@
+{
+  "PointsNumerator": 1.000000000,
+  "PointsDenominator": 1.000000000,
+  "WeightedNumerator": null,
+  "WeightedDenominator": null,
+  "GradeObjectIdentifier": "7002",
+  "GradeObjectName": "Homework 1",
+  "GradeObjectType": 1,
+  "GradeObjectTypeName": "Numeric",
+  "DisplayedGrade": "100 %",
+  "Comments": {
+    "Text": "",
+    "Html": "<p>Good work</p>"
+  },
+  "PrivateComments": {
+    "Text": "",
+    "Html": ""
+  },
+  "LastModified": "2026-04-22T12:32:47.617Z",
+  "LastModifiedBy": 2001,
+  "ReleasedDate": null
+}

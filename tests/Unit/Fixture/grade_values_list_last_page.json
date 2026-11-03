@@ -1,0 +1,137 @@
+{
+  "Objects": [
+    {
+      "User": {
+        "Identifier": "1006",
+        "DisplayName": "Frank Foster",
+        "EmailAddress": null,
+        "OrgDefinedId": "S1006",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Lz4rD9sVb7",
+        "UserName": "frank.foster"
+      },
+      "GradeValue": {
+        "PointsNumerator": 27.520000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "86 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-08-10T15:07:52.297Z",
+        "LastModifiedBy": 2002,
+        "ReleasedDate": null
+      }
+    },
+    {
+      "User": {
+        "Identifier": "1007",
+        "DisplayName": "Grace Garcia",
+        "EmailAddress": "grace.garcia@email.fake",
+        "OrgDefinedId": "S1007",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Wn1tG5kPe2",
+        "UserName": "grace.garcia"
+      },
+      "GradeValue": {
+        "PointsNumerator": 32.000000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "100 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-09-11T11:51:14.320Z",
+        "LastModifiedBy": 1007,
+        "ReleasedDate": null
+      }
+    },
+    {
+      "User": {
+        "Identifier": "1008",
+        "DisplayName": "Hugo Harris",
+        "EmailAddress": "hugo.harris@email.fake",
+        "OrgDefinedId": "S1008",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Fb9xM3qJu8",
+        "UserName": "hugo.harris"
+      },
+      "GradeValue": {
+        "PointsNumerator": 5.000000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "16 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-09-16T07:21:52.527Z",
+        "LastModifiedBy": 1008,
+        "ReleasedDate": null
+      }
+    },
+    {
+      "User": {
+        "Identifier": "1009",
+        "DisplayName": "Iris Irwin",
+        "EmailAddress": "iris.irwin@email.fake",
+        "OrgDefinedId": "S1009",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Td7yC2wNo5",
+        "UserName": "iris.irwin"
+      },
+      "GradeValue": {
+        "PointsNumerator": 10.000000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "31 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-04-22T16:09:19.950Z",
+        "LastModifiedBy": 1009,
+        "ReleasedDate": null
+      }
+    }
+  ],
+  "Next": null
+}
