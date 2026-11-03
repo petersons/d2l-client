@@ -19,7 +19,9 @@ use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Enrollment\Enrollment;
 use Petersons\D2L\DTO\Enrollment\OrganizationUnitUser;
 use Petersons\D2L\DTO\Grade\GradeObjectCategory;
+use Petersons\D2L\DTO\Grade\GradeValue;
 use Petersons\D2L\DTO\Grade\IncomingGradeValue;
+use Petersons\D2L\DTO\Grade\UserGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Organization\OrganizationInfo;
 use Petersons\D2L\DTO\Organization\OrgUnit;
@@ -169,6 +171,35 @@ interface ClientInterface
      * @throws ApiException
      */
     public function updateGradeValueForUser(IncomingGradeValue $incomingGradeValue, int $orgUnitId, int $gradeObjectId, int $userId, string $bearerToken): void;
+
+    /**
+     * Retrieve every user's grade value for a grade object, following D2L's paging to the last page.
+     * Only Numeric, PassFail and SelectBox grade objects are supported; D2L answers 400 for any other type.
+     * @link https://docs.valence.desire2learn.com/res/grade.html#get--d2l-api-le-(version)-(orgUnitId)-grades-(gradeObjectId)-values-
+     * @param  bool|null                  $isGraded   true for graded users only, false for ungraded users only, null for all
+     * @param  string|null                $searchText only users whose first or last name contains this text
+     * @param  string|null                $sort       firstname, lastname, grade or lastmodified, prefixed with "-" for descending
+     * @param  int|null                   $pageSize   users fetched per request, up to 200 (D2L defaults to 20)
+     * @throws ApiException
+     * @return Collection<UserGradeValue>
+     */
+    public function getGradeValuesForAGradeObject(
+        int $orgUnitId,
+        int $gradeObjectId,
+        bool|null $isGraded = null,
+        string|null $searchText = null,
+        string|null $sort = null,
+        int|null $pageSize = null,
+    ): Collection;
+
+    /**
+     * Retrieve a user's grade value for a grade object.
+     * For a user who has not been graded, D2L answers 404 or, for a computable grade object, may return a
+     * default value whose points are null.
+     * @link https://docs.valence.desire2learn.com/res/grade.html#get--d2l-api-le-(version)-(orgUnitId)-grades-(gradeObjectId)-values-(userId)
+     * @throws ApiException
+     */
+    public function getGradeValueForUser(int $orgUnitId, int $gradeObjectId, int $userId): GradeValue;
 
     /**
      * @link https://docs.valence.desire2learn.com/res/orgunit.html#get--d2l-api-lp-(version)-organization-info

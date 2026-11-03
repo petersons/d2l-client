@@ -1,0 +1,149 @@
+{
+  "Objects": [
+    {
+      "User": {
+        "Identifier": "1001",
+        "DisplayName": "Alice Anderson",
+        "EmailAddress": "alice.anderson@email.fake",
+        "OrgDefinedId": "S1001",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Qx8pL2mVn4",
+        "UserName": "alice.anderson"
+      },
+      "GradeValue": null
+    },
+    {
+      "User": {
+        "Identifier": "1002",
+        "DisplayName": "Ben Brown",
+        "EmailAddress": null,
+        "OrgDefinedId": "S1002",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Rt5kW9cZa1",
+        "UserName": "ben.brown"
+      },
+      "GradeValue": {
+        "PointsNumerator": 31.680000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "99 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-08-10T14:52:06.957Z",
+        "LastModifiedBy": 2001,
+        "ReleasedDate": null
+      }
+    },
+    {
+      "User": {
+        "Identifier": "1003",
+        "DisplayName": "Carla Clark",
+        "EmailAddress": null,
+        "OrgDefinedId": "S1003",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Hy3nB7dXs6",
+        "UserName": "carla.clark"
+      },
+      "GradeValue": {
+        "PointsNumerator": 29.760000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "93 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-08-10T15:07:52.117Z",
+        "LastModifiedBy": 2002,
+        "ReleasedDate": null
+      }
+    },
+    {
+      "User": {
+        "Identifier": "1004",
+        "DisplayName": "Dan Davis",
+        "EmailAddress": null,
+        "OrgDefinedId": "S1004",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Mp2vF8gTq0",
+        "UserName": "dan.davis"
+      },
+      "GradeValue": {
+        "PointsNumerator": 24.960000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "78 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-08-10T15:07:52.140Z",
+        "LastModifiedBy": 2002,
+        "ReleasedDate": null
+      }
+    },
+    {
+      "User": {
+        "Identifier": "1005",
+        "DisplayName": "Eva Evans",
+        "EmailAddress": null,
+        "OrgDefinedId": "S1005",
+        "ProfileBadgeUrl": null,
+        "ProfileIdentifier": "Kc6jN1hYw3",
+        "UserName": "eva.evans"
+      },
+      "GradeValue": {
+        "PointsNumerator": 28.480000000,
+        "PointsDenominator": 32.000000000,
+        "WeightedNumerator": null,
+        "WeightedDenominator": null,
+        "GradeObjectIdentifier": "7001",
+        "GradeObjectName": "Unit 1 Test",
+        "GradeObjectType": 1,
+        "GradeObjectTypeName": "Numeric",
+        "DisplayedGrade": "89 %",
+        "Comments": {
+          "Text": "",
+          "Html": ""
+        },
+        "PrivateComments": {
+          "Text": "",
+          "Html": ""
+        },
+        "LastModified": "2026-08-10T15:07:52.123Z",
+        "LastModifiedBy": 2002,
+        "ReleasedDate": null
+      }
+    }
+  ],
+  "Next": "/d2l/api/le/1.53/4242/grades/7001/values/?sort=lastname&pageSize=5&bookmark=Evans&bookmarkUserId=1005"
+}

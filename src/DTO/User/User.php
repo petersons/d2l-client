@@ -18,6 +18,7 @@ final class User implements Arrayable
         private string|null $orgDefinedId = null,
         private string|null $profileBadgeUrl = null,
         private string|null $profileIdentifier = null,
+        private string|null $userName = null,
     ) {}
 
     public function getIdentifier(): string|null
@@ -50,6 +51,11 @@ final class User implements Arrayable
         return $this->profileIdentifier;
     }
 
+    public function getUserName(): string|null
+    {
+        return $this->userName;
+    }
+
     public function toArray(): array
     {
         return [
@@ -59,6 +65,7 @@ final class User implements Arrayable
             'OrgDefinedId' => $this->orgDefinedId,
             'ProfileBadgeUrl' => $this->profileBadgeUrl,
             'ProfileIdentifier' => $this->profileIdentifier,
+            'UserName' => $this->userName,
         ];
     }
 }

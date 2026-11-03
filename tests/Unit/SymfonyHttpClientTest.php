@@ -16,6 +16,7 @@ use Petersons\D2L\DTO\DataExport\ExportJobFilter;
 use Petersons\D2L\DTO\Enrollment\CreateEnrollment;
 use Petersons\D2L\DTO\Enrollment\CreateSectionEnrollment;
 use Petersons\D2L\DTO\Grade\IncomingGradeValue;
+use Petersons\D2L\DTO\Grade\UserGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Quiz\FillInTheBlank;
 use Petersons\D2L\DTO\Quiz\LongAnswer;
@@ -2413,6 +2414,7 @@ final class SymfonyHttpClientTest extends TestCase
         $this->assertSame('', $enrolledUsers[0]->getUser()->getOrgDefinedId());
         $this->assertNull($enrolledUsers[0]->getUser()->getProfileBadgeUrl());
         $this->assertSame('iC0BbxoH6e', $enrolledUsers[0]->getUser()->getProfileIdentifier());
+        $this->assertNull($enrolledUsers[0]->getUser()->getUserName());
 
         $this->assertSame(105, $enrolledUsers[0]->getRoleInfo()->getId());
         $this->assertNull($enrolledUsers[0]->getRoleInfo()->getCode());
@@ -2500,6 +2502,498 @@ final class SymfonyHttpClientTest extends TestCase
         );
 
         $client->updateGradeValueForUser($incomingGradeValue, 1, 2, 3, 'bar');
+    }
+
+    public function testGetGradeValuesForAGradeObjectFollowsNextUntilTheLastPage(): void
+    {
+        $this->freezeTime();
+
+        $firstPageJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'grade_values_list_first_page.json');
+        $lastPageJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'grade_values_list_last_page.json');
+        $callback = function (string $method, string $url, array $options) use ($firstPageJsonResponse, $lastPageJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&pageSize=5' === $url) {
+                return new MockResponse($firstPageJsonResponse);
+            }
+
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&pageSize=5&sort=lastname&bookmark=Evans&bookmarkUserId=1005' === $url) {
+                return new MockResponse($lastPageJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $userGradeValues = $client->getGradeValuesForAGradeObject(4242, 7001, pageSize: 5);
+
+        $this->assertSame(2, $mockClient->getRequestsCount());
+        $this->assertCount(9, $userGradeValues);
+
+        $this->assertSame('1001', $userGradeValues[0]->user->getIdentifier());
+        $this->assertSame('Alice Anderson', $userGradeValues[0]->user->getDisplayName());
+        $this->assertSame('alice.anderson@email.fake', $userGradeValues[0]->user->getEmailAddress());
+        $this->assertSame('S1001', $userGradeValues[0]->user->getOrgDefinedId());
+        $this->assertNull($userGradeValues[0]->user->getProfileBadgeUrl());
+        $this->assertSame('Qx8pL2mVn4', $userGradeValues[0]->user->getProfileIdentifier());
+        $this->assertSame('alice.anderson', $userGradeValues[0]->user->getUserName());
+        $this->assertNull($userGradeValues[0]->gradeValue);
+
+        $this->assertSame('1002', $userGradeValues[1]->user->getIdentifier());
+        $this->assertSame('Ben Brown', $userGradeValues[1]->user->getDisplayName());
+        $this->assertNull($userGradeValues[1]->user->getEmailAddress());
+        $this->assertSame('S1002', $userGradeValues[1]->user->getOrgDefinedId());
+        $this->assertNull($userGradeValues[1]->user->getProfileBadgeUrl());
+        $this->assertSame('Rt5kW9cZa1', $userGradeValues[1]->user->getProfileIdentifier());
+        $this->assertSame('ben.brown', $userGradeValues[1]->user->getUserName());
+
+        $gradeValue = $userGradeValues[1]->gradeValue;
+        $this->assertNotNull($gradeValue);
+        $this->assertSame('99 %', $gradeValue->displayedGrade);
+        $this->assertSame(7001, $gradeValue->gradeObjectIdentifier);
+        $this->assertSame('Unit 1 Test', $gradeValue->gradeObjectName);
+        $this->assertTrue($gradeValue->gradeObjectType->isNumbers());
+        $this->assertSame('Numeric', $gradeValue->gradeObjectTypeName);
+        $this->assertSame('', $gradeValue->comments->getText());
+        $this->assertSame('', $gradeValue->comments->getHtml());
+        $this->assertSame('', $gradeValue->privateComments->getText());
+        $this->assertSame('', $gradeValue->privateComments->getHtml());
+        $this->assertSame('2026-08-10T14:52:06.957Z', $gradeValue->lastModified->format(ClientInterface::D2L_DATETIME_FORMAT));
+        $this->assertSame(2001, $gradeValue->lastModifiedBy);
+        $this->assertNull($gradeValue->releasedDate);
+        $this->assertSame(31.68, $gradeValue->pointsNumerator);
+        $this->assertSame(32.0, $gradeValue->pointsDenominator);
+        $this->assertNull($gradeValue->weightedNumerator);
+        $this->assertNull($gradeValue->weightedDenominator);
+
+        $this->assertSame(
+            ['1001', '1002', '1003', '1004', '1005', '1006', '1007', '1008', '1009'],
+            $userGradeValues->map(fn (UserGradeValue $userGradeValue): string => $userGradeValue->user->getIdentifier())->all(),
+        );
+        $this->assertSame(
+            [null, 31.68, 29.76, 24.96, 28.48, 27.52, 32.0, 5.0, 10.0],
+            $userGradeValues->map(fn (UserGradeValue $userGradeValue): float|null => $userGradeValue->gradeValue?->pointsNumerator)->all(),
+        );
+
+        $lastUserGradeValue = $userGradeValues[8];
+        $this->assertSame('Iris Irwin', $lastUserGradeValue->user->getDisplayName());
+        $this->assertSame('31 %', $lastUserGradeValue->gradeValue->displayedGrade);
+        $this->assertSame('2026-04-22T16:09:19.950Z', $lastUserGradeValue->gradeValue->lastModified->format(ClientInterface::D2L_DATETIME_FORMAT));
+        $this->assertSame(1009, $lastUserGradeValue->gradeValue->lastModifiedBy);
+    }
+
+    public function testGetGradeValuesForAGradeObjectSendsTheFiltersOnEveryPage(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&sort=-grade&pageSize=1&isGraded=true&searchText=van%20der%20Berg' === $url) {
+                return new MockResponse(json_encode([
+                    'Objects' => [
+                        [
+                            'User' => [
+                                'Identifier' => '1003',
+                                'DisplayName' => 'Carla van der Berg',
+                                'EmailAddress' => null,
+                                'OrgDefinedId' => 'S1003',
+                                'ProfileBadgeUrl' => null,
+                                'ProfileIdentifier' => 'Hy3nB7dXs6',
+                                'UserName' => 'carla.vanderberg',
+                            ],
+                            'GradeValue' => [
+                                'PointsNumerator' => 29.76,
+                                'PointsDenominator' => 32.0,
+                                'WeightedNumerator' => 7.44,
+                                'WeightedDenominator' => 8.0,
+                                'GradeObjectIdentifier' => '7001',
+                                'GradeObjectName' => 'Unit 1 Test',
+                                'GradeObjectType' => 1,
+                                'GradeObjectTypeName' => 'Numeric',
+                                'DisplayedGrade' => '93 %',
+                                'Comments' => ['Text' => '', 'Html' => ''],
+                                'PrivateComments' => ['Text' => '', 'Html' => ''],
+                                'LastModified' => '2026-08-10T15:07:52.117Z',
+                                'LastModifiedBy' => 2002,
+                                'ReleasedDate' => null,
+                            ],
+                        ],
+                    ],
+                    'Next' => '/d2l/api/le/1.53/4242/grades/7001/values/?sort=-grade&pageSize=1&bookmark=29.760000000&bookmarkUserId=1003&isGraded=true&searchText=van+der+Berg',
+                ]));
+            }
+
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&sort=-grade&pageSize=1&isGraded=true&searchText=van%20der%20Berg&bookmark=29.760000000&bookmarkUserId=1003' === $url) {
+                return new MockResponse(json_encode(['Objects' => [], 'Next' => null]));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $userGradeValues = $client->getGradeValuesForAGradeObject(4242, 7001, true, 'van der Berg', '-grade', 1);
+
+        $this->assertSame(2, $mockClient->getRequestsCount());
+        $this->assertCount(1, $userGradeValues);
+        $this->assertSame('carla.vanderberg', $userGradeValues[0]->user->getUserName());
+        $this->assertSame(29.76, $userGradeValues[0]->gradeValue->pointsNumerator);
+        $this->assertSame(32.0, $userGradeValues[0]->gradeValue->pointsDenominator);
+        $this->assertSame(7.44, $userGradeValues[0]->gradeValue->weightedNumerator);
+        $this->assertSame(8.0, $userGradeValues[0]->gradeValue->weightedDenominator);
+    }
+
+    public function testGetGradeValuesForAGradeObjectKeepsTheFiltersWhenNextLeavesThemOut(): void
+    {
+        $this->freezeTime();
+
+        $user = [
+            'Identifier' => '1001',
+            'DisplayName' => 'Alice Anderson',
+            'EmailAddress' => null,
+            'OrgDefinedId' => 'S1001',
+            'ProfileBadgeUrl' => null,
+            'ProfileIdentifier' => 'Qx8pL2mVn4',
+            'UserName' => 'alice.anderson',
+        ];
+
+        $callback = function (string $method, string $url, array $options) use ($user): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&isGraded=false' === $url) {
+                return new MockResponse(json_encode([
+                    'Objects' => [['User' => $user, 'GradeValue' => null]],
+                    'Next' => '/d2l/api/le/1.53/4242/grades/7001/values/?bookmark=Anderson&bookmarkUserId=1001',
+                ]));
+            }
+
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&isGraded=false&bookmark=Anderson&bookmarkUserId=1001' === $url) {
+                return new MockResponse(json_encode(['Objects' => [], 'Next' => null]));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $userGradeValues = $client->getGradeValuesForAGradeObject(4242, 7001, false);
+
+        $this->assertSame(2, $mockClient->getRequestsCount());
+        $this->assertCount(1, $userGradeValues);
+        $this->assertNull($userGradeValues[0]->gradeValue);
+    }
+
+    public function testGetGradeValuesForAGradeObjectThrowsWhenNextPointsAtTheSamePage(): void
+    {
+        $this->freezeTime();
+
+        $requests = 0;
+        $callback = function (string $method, string $url, array $options) use (&$requests): MockResponse {
+            ++$requests;
+
+            if (1 === $requests && 'GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&pageSize=5' === $url) {
+                return new MockResponse(json_encode([
+                    'Objects' => [],
+                    'Next' => '/d2l/api/le/1.53/4242/grades/7001/values/?pageSize=5',
+                ]));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException('Invalid API response received. The next page URL "/d2l/api/le/1.53/4242/grades/7001/values/?pageSize=5" points at the page that was just fetched'),
+        );
+
+        $client->getGradeValuesForAGradeObject(4242, 7001, pageSize: 5);
+    }
+
+    public function testGetGradeValuesForAGradeObjectThrowsWhenNextHasNoQueryString(): void
+    {
+        $this->freezeTime();
+
+        $requests = 0;
+        $callback = function (string $method, string $url, array $options) use (&$requests): MockResponse {
+            ++$requests;
+
+            if (1 === $requests && 'GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200' === $url) {
+                return new MockResponse(json_encode([
+                    'Objects' => [],
+                    'Next' => '/d2l/api/le/1.53/4242/grades/7001/values/',
+                ]));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException('Invalid API response received. The next page URL "/d2l/api/le/1.53/4242/grades/7001/values/" has no query string'),
+        );
+
+        $client->getGradeValuesForAGradeObject(4242, 7001);
+    }
+
+    public function testGetGradeValuesForAGradeObjectWhenD2LLeavesOutUserProperties(): void
+    {
+        $this->freezeTime();
+
+        // D2L leaves out Identifier when the calling user may not see it, and the rest is then null.
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200' === $url) {
+                return new MockResponse(json_encode([
+                    'Objects' => [
+                        [
+                            'User' => [
+                                'DisplayName' => null,
+                                'EmailAddress' => null,
+                                'OrgDefinedId' => null,
+                                'ProfileBadgeUrl' => null,
+                                'ProfileIdentifier' => null,
+                            ],
+                            'GradeValue' => null,
+                        ],
+                    ],
+                    'Next' => null,
+                ]));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $userGradeValues = $client->getGradeValuesForAGradeObject(4242, 7001);
+
+        $this->assertCount(1, $userGradeValues);
+        $this->assertNull($userGradeValues[0]->user->getIdentifier());
+        $this->assertNull($userGradeValues[0]->user->getDisplayName());
+        $this->assertNull($userGradeValues[0]->user->getEmailAddress());
+        $this->assertNull($userGradeValues[0]->user->getOrgDefinedId());
+        $this->assertNull($userGradeValues[0]->user->getProfileBadgeUrl());
+        $this->assertNull($userGradeValues[0]->user->getProfileIdentifier());
+        $this->assertNull($userGradeValues[0]->user->getUserName());
+        $this->assertNull($userGradeValues[0]->gradeValue);
+    }
+
+    public function testGetGradeValuesForAGradeObjectWhenD2LReturnsBadRequestResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7004/values/?x_a=baz&x_b=foo&x_c=-3pZRtm00Oet5gFZsCKFuqSwtbFuuAOq0c92GWxhxIU&x_d=6ISIzeksIjiGPKLxKp68G-3cAJpqEPugzDwM6J4VBRA&x_t=1615390200' === $url) {
+                return new MockResponse('', ['http_code' => 400]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 400 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7004/values/?x_a=baz&x_b=foo&x_c=-3pZRtm00Oet5gFZsCKFuqSwtbFuuAOq0c92GWxhxIU&x_d=6ISIzeksIjiGPKLxKp68G-3cAJpqEPugzDwM6J4VBRA&x_t=1615390200".',
+                400,
+            ),
+        );
+
+        $client->getGradeValuesForAGradeObject(4242, 7004);
+    }
+
+    public function testGetGradeValuesForAGradeObjectThrowsWhenALaterPageFails(): void
+    {
+        $this->freezeTime();
+
+        $firstPageJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'grade_values_list_first_page.json');
+        $callback = function (string $method, string $url, array $options) use ($firstPageJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&pageSize=5' === $url) {
+                return new MockResponse($firstPageJsonResponse);
+            }
+
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&pageSize=5&sort=lastname&bookmark=Evans&bookmarkUserId=1005' === $url) {
+                return new MockResponse('', ['http_code' => 403]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 403 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7001/values/?x_a=baz&x_b=foo&x_c=JfBngoLT6q7eR6u4sjoCcpO3LCjpFvoLPr6tPZG4Fnw&x_d=BOZ5cRspki_0fmKC79jvgCnbdDj5XdMrbYkv8eDoQ-Y&x_t=1615390200&pageSize=5&sort=lastname&bookmark=Evans&bookmarkUserId=1005".',
+                403,
+            ),
+        );
+
+        $client->getGradeValuesForAGradeObject(4242, 7001, pageSize: 5);
+    }
+
+    public function testGetGradeValueForUser(): void
+    {
+        $this->freezeTime();
+
+        $gradeValueJsonResponse = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'grade_value_for_user.json');
+        $callback = function (string $method, string $url, array $options) use ($gradeValueJsonResponse): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7002/values/1009?x_a=baz&x_b=foo&x_c=HSjYTyU5xjTtWTISi8pauoRKkQnKttaCHAmtUyKwkuU&x_d=CFQiYmfYpISOpukIizIvrYirgRtzl2qvYwhgxVp9ea0&x_t=1615390200' === $url) {
+                return new MockResponse($gradeValueJsonResponse);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $gradeValue = $client->getGradeValueForUser(4242, 7002, 1009);
+
+        $this->assertSame('100 %', $gradeValue->displayedGrade);
+        $this->assertSame(7002, $gradeValue->gradeObjectIdentifier);
+        $this->assertSame('Homework 1', $gradeValue->gradeObjectName);
+        $this->assertTrue($gradeValue->gradeObjectType->isNumbers());
+        $this->assertSame('Numeric', $gradeValue->gradeObjectTypeName);
+        $this->assertSame('', $gradeValue->comments->getText());
+        $this->assertSame('<p>Good work</p>', $gradeValue->comments->getHtml());
+        $this->assertSame('', $gradeValue->privateComments->getText());
+        $this->assertSame('', $gradeValue->privateComments->getHtml());
+        $this->assertSame('2026-04-22T12:32:47.617Z', $gradeValue->lastModified->format(ClientInterface::D2L_DATETIME_FORMAT));
+        $this->assertSame(2001, $gradeValue->lastModifiedBy);
+        $this->assertNull($gradeValue->releasedDate);
+        $this->assertSame(1.0, $gradeValue->pointsNumerator);
+        $this->assertSame(1.0, $gradeValue->pointsDenominator);
+        $this->assertNull($gradeValue->weightedNumerator);
+        $this->assertNull($gradeValue->weightedDenominator);
+    }
+
+    public function testGetGradeValueForUserWhenD2LReturnsNotFoundResponse(): void
+    {
+        $this->freezeTime();
+
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7002/values/1001?x_a=baz&x_b=foo&x_c=fz1SdVvQZV33Qpm82mEjsNVPw4If_lyjguaGTiFz8vk&x_d=k91SnscOy4aEt1mHF_b_mdM8C5fIlkHBIZAR86pK4UI&x_t=1615390200' === $url) {
+                return new MockResponse('Not Found', ['http_code' => 404]);
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $this->expectExceptionObject(
+            new ApiException(
+                'HTTP 404 returned for "https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7002/values/1001?x_a=baz&x_b=foo&x_c=fz1SdVvQZV33Qpm82mEjsNVPw4If_lyjguaGTiFz8vk&x_d=k91SnscOy4aEt1mHF_b_mdM8C5fIlkHBIZAR86pK4UI&x_t=1615390200".',
+                404,
+            ),
+        );
+
+        $client->getGradeValueForUser(4242, 7002, 1001);
+    }
+
+    public function testGetGradeValueForUserReturnsTheDefaultValueOfAnUngradedUser(): void
+    {
+        $this->freezeTime();
+
+        // Instead of a 404, D2L may answer with a default value whose computable properties are null.
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7002/values/1002?x_a=baz&x_b=foo&x_c=pSit_7ScrsOVHyN2nP-WKPXPe9XX0bV8SnEG4nRgkWs&x_d=8Ej9muOmi69J-qzlw6Vji4Md-GADgr2nuXF_8vY5RGs&x_t=1615390200' === $url) {
+                return new MockResponse(json_encode([
+                    'PointsNumerator' => null,
+                    'PointsDenominator' => null,
+                    'WeightedNumerator' => null,
+                    'WeightedDenominator' => null,
+                    'GradeObjectIdentifier' => '7002',
+                    'GradeObjectName' => 'Homework 1',
+                    'GradeObjectType' => 1,
+                    'GradeObjectTypeName' => 'Numeric',
+                    'DisplayedGrade' => '',
+                    'Comments' => ['Text' => '', 'Html' => ''],
+                    'PrivateComments' => ['Text' => '', 'Html' => ''],
+                    'LastModified' => null,
+                    'LastModifiedBy' => null,
+                    'ReleasedDate' => null,
+                ]));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $gradeValue = $client->getGradeValueForUser(4242, 7002, 1002);
+
+        $this->assertSame('', $gradeValue->displayedGrade);
+        $this->assertSame(7002, $gradeValue->gradeObjectIdentifier);
+        $this->assertNull($gradeValue->lastModified);
+        $this->assertNull($gradeValue->lastModifiedBy);
+        $this->assertNull($gradeValue->pointsNumerator);
+        $this->assertNull($gradeValue->pointsDenominator);
+        $this->assertNull($gradeValue->weightedNumerator);
+        $this->assertNull($gradeValue->weightedDenominator);
+    }
+
+    public function testGetGradeValueForUserOfATextGradeObjectHasNoPoints(): void
+    {
+        $this->freezeTime();
+
+        // Text grade values are not computable, so D2L sends only the basic GradeValue properties.
+        $callback = function (string $method, string $url, array $options): MockResponse {
+            if ('GET' === $method && 'https://petersonstest.brightspace.com/d2l/api/le/1.53/4242/grades/7003/values/1009?x_a=baz&x_b=foo&x_c=1eU_MX08Am9GyDWp2GcfM6th228IgkN-FN2C32Ad42s&x_d=Fle6OmPZnAuu07YoPuHersiusaeLBA9K7FfmbzzxTAg&x_t=1615390200' === $url) {
+                return new MockResponse(json_encode([
+                    'GradeObjectIdentifier' => '7003',
+                    'GradeObjectName' => 'Reflection',
+                    'GradeObjectType' => 4,
+                    'GradeObjectTypeName' => 'Text',
+                    'DisplayedGrade' => 'Complete',
+                    'Comments' => ['Text' => 'Well done', 'Html' => null],
+                    'PrivateComments' => ['Text' => '', 'Html' => ''],
+                    'LastModified' => null,
+                    'LastModifiedBy' => null,
+                    'ReleasedDate' => '2026-05-01T08:00:00.000Z',
+                ]));
+            }
+
+            $this->fail('This should not have happened.');
+        };
+
+        $mockClient = new MockHttpClient($callback);
+
+        $client = $this->getClient($mockClient);
+
+        $gradeValue = $client->getGradeValueForUser(4242, 7003, 1009);
+
+        $this->assertSame('Complete', $gradeValue->displayedGrade);
+        $this->assertSame(7003, $gradeValue->gradeObjectIdentifier);
+        $this->assertTrue($gradeValue->gradeObjectType->isText());
+        $this->assertSame('Text', $gradeValue->gradeObjectTypeName);
+        $this->assertSame('Well done', $gradeValue->comments->getText());
+        $this->assertNull($gradeValue->comments->getHtml());
+        $this->assertNull($gradeValue->lastModified);
+        $this->assertNull($gradeValue->lastModifiedBy);
+        $this->assertSame('2026-05-01T08:00:00.000Z', $gradeValue->releasedDate->format(ClientInterface::D2L_DATETIME_FORMAT));
+        $this->assertNull($gradeValue->pointsNumerator);
+        $this->assertNull($gradeValue->pointsDenominator);
+        $this->assertNull($gradeValue->weightedNumerator);
+        $this->assertNull($gradeValue->weightedDenominator);
     }
 
     public function testGetOrganizationInfo(): void

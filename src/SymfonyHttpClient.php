@@ -26,7 +26,9 @@ use Petersons\D2L\DTO\Enrollment\RoleInfo;
 use Petersons\D2L\DTO\Grade\GradeObject;
 use Petersons\D2L\DTO\Grade\GradeObjectCategory;
 use Petersons\D2L\DTO\Grade\GradeObjectCategoryData;
+use Petersons\D2L\DTO\Grade\GradeValue;
 use Petersons\D2L\DTO\Grade\IncomingGradeValue;
+use Petersons\D2L\DTO\Grade\UserGradeValue;
 use Petersons\D2L\DTO\Guid;
 use Petersons\D2L\DTO\Organization\OrganizationInfo;
 use Petersons\D2L\DTO\Organization\OrganizationUnitTypeInfo;
@@ -78,6 +80,7 @@ use Petersons\D2L\Enum\ContentObject\TopicType;
 use Petersons\D2L\Enum\ContentObject\Type;
 use Petersons\D2L\Enum\DataExport\ExportFilterType;
 use Petersons\D2L\Enum\DataExport\ExportJobStatus;
+use Petersons\D2L\Enum\Grade\GradeObjectType;
 use Petersons\D2L\Enum\Quiz\EnumerationType;
 use Petersons\D2L\Enum\Quiz\EvaluationType;
 use Petersons\D2L\Enum\Quiz\LateSubmissionOption;
@@ -631,14 +634,7 @@ final class SymfonyHttpClient implements ClientInterface
         $collection = new Collection();
 
         foreach ($decodedResponse['Items'] as $item) {
-            $user = new User(
-                $item['User']['Identifier'],
-                $item['User']['DisplayName'],
-                $item['User']['EmailAddress'],
-                $item['User']['OrgDefinedId'],
-                $item['User']['ProfileBadgeUrl'],
-                $item['User']['ProfileIdentifier'],
-            );
+            $user = $this->getUserDtoFromUserCompositeArray($item['User']);
 
             $roleInfo = new RoleInfo($item['Role']['Id'], $item['Role']['Name'], $item['Role']['Code']);
             $collection->add(new OrganizationUnitUser($user, $roleInfo));
@@ -667,6 +663,116 @@ final class SymfonyHttpClient implements ClientInterface
         } catch (ExceptionInterface $exception) {
             throw ApiException::fromSymfonyHttpException($exception);
         }
+    }
+
+    public function getGradeValuesForAGradeObject(
+        int $orgUnitId,
+        int $gradeObjectId,
+        bool|null $isGraded = null,
+        string|null $searchText = null,
+        string|null $sort = null,
+        int|null $pageSize = null,
+    ): Collection {
+        $method = 'GET';
+        $path = sprintf('/d2l/api/le/%s/%d/grades/%d/values/', $this->apiLeVersion, $orgUnitId, $gradeObjectId);
+
+        $filters = [];
+
+        if (null !== $sort) {
+            $filters['sort'] = $sort;
+        }
+
+        if (null !== $pageSize) {
+            $filters['pageSize'] = (string) $pageSize;
+        }
+
+        if (null !== $isGraded) {
+            $filters['isGraded'] = $isGraded ? 'true' : 'false';
+        }
+
+        if (null !== $searchText) {
+            $filters['searchText'] = $searchText;
+        }
+
+        $query = $filters;
+        $userGradeValues = new Collection();
+
+        while (true) {
+            $response = $this->httpClient->request(
+                $method,
+                $path,
+                [
+                    'query' => array_merge(
+                        $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+                        $query,
+                    ),
+                ],
+            );
+
+            try {
+                $body = $response->getContent();
+            } catch (ExceptionInterface $exception) {
+                throw ApiException::fromSymfonyHttpException($exception);
+            }
+
+            $decodedResponse = json_decode($body, true);
+
+            foreach ($decodedResponse['Objects'] as $item) {
+                $userGradeValues->add(
+                    new UserGradeValue(
+                        $this->getUserDtoFromUserCompositeArray($item['User']),
+                        null !== $item['GradeValue'] ? $this->getGradeValueDtoFromGradeValueArrayResponse($item['GradeValue']) : null,
+                    ),
+                );
+            }
+
+            if (null === $decodedResponse['Next']) {
+                break;
+            }
+
+            // The next page is addressed by a bookmark plus a bookmarkUserId, so the whole query of
+            // Next is reused. D2L repeats the filters in it; they are kept underneath in case it does not.
+            $nextQueryString = parse_url($decodedResponse['Next'], PHP_URL_QUERY);
+
+            if (!is_string($nextQueryString) || '' === $nextQueryString) {
+                throw new ApiException(sprintf('Invalid API response received. The next page URL "%s" has no query string', $decodedResponse['Next']));
+            }
+
+            parse_str($nextQueryString, $nextQuery);
+            $nextQuery = array_merge($filters, $nextQuery);
+
+            if ($nextQuery === $query) {
+                throw new ApiException(sprintf('Invalid API response received. The next page URL "%s" points at the page that was just fetched', $decodedResponse['Next']));
+            }
+
+            $query = $nextQuery;
+        }
+
+        return $userGradeValues;
+    }
+
+    public function getGradeValueForUser(int $orgUnitId, int $gradeObjectId, int $userId): GradeValue
+    {
+        $method = 'GET';
+        $path = sprintf('/d2l/api/le/%s/%d/grades/%d/values/%d', $this->apiLeVersion, $orgUnitId, $gradeObjectId, $userId);
+
+        $response = $this->httpClient->request(
+            $method,
+            $path,
+            [
+                'query' => $this->authenticatedUriFactory->getQueryParametersAsArray($method, $path),
+            ],
+        );
+
+        try {
+            $body = $response->getContent();
+        } catch (ExceptionInterface $exception) {
+            throw ApiException::fromSymfonyHttpException($exception);
+        }
+
+        $decodedResponse = json_decode($body, true);
+
+        return $this->getGradeValueDtoFromGradeValueArrayResponse($decodedResponse);
     }
 
     public function getOrganizationInfo(): OrganizationInfo
@@ -1343,6 +1449,46 @@ final class SymfonyHttpClient implements ClientInterface
             $decodedResponse['UniqueIdentifier'],
             $decodedResponse['Activation']['IsActive'],
             null !== $decodedResponse['LastAccessedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $decodedResponse['LastAccessedDate']) : null,
+        );
+    }
+
+    private function getUserDtoFromUserCompositeArray(array $user): User
+    {
+        // D2L leaves out the properties the calling user is not permitted to see.
+        return new User(
+            $user['Identifier'] ?? null,
+            $user['DisplayName'] ?? null,
+            $user['EmailAddress'] ?? null,
+            $user['OrgDefinedId'] ?? null,
+            $user['ProfileBadgeUrl'] ?? null,
+            $user['ProfileIdentifier'] ?? null,
+            $user['UserName'] ?? null,
+        );
+    }
+
+    private function getGradeValueDtoFromGradeValueArrayResponse(array $gradeValue): GradeValue
+    {
+        // D2L only sends the points properties for computable grade objects, i.e. every type but Text.
+        $pointsNumerator = $gradeValue['PointsNumerator'] ?? null;
+        $pointsDenominator = $gradeValue['PointsDenominator'] ?? null;
+        $weightedNumerator = $gradeValue['WeightedNumerator'] ?? null;
+        $weightedDenominator = $gradeValue['WeightedDenominator'] ?? null;
+
+        return new GradeValue(
+            $gradeValue['DisplayedGrade'],
+            (int) $gradeValue['GradeObjectIdentifier'],
+            $gradeValue['GradeObjectName'],
+            GradeObjectType::make($gradeValue['GradeObjectType']),
+            $gradeValue['GradeObjectTypeName'],
+            new RichText($gradeValue['Comments']['Text'], $gradeValue['Comments']['Html']),
+            new RichText($gradeValue['PrivateComments']['Text'], $gradeValue['PrivateComments']['Html']),
+            null !== $gradeValue['LastModified'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $gradeValue['LastModified']) : null,
+            null !== $gradeValue['LastModifiedBy'] ? (int) $gradeValue['LastModifiedBy'] : null,
+            null !== $gradeValue['ReleasedDate'] ? CarbonImmutable::createFromFormat(ClientInterface::D2L_DATETIME_FORMAT, $gradeValue['ReleasedDate']) : null,
+            null !== $pointsNumerator ? (float) $pointsNumerator : null,
+            null !== $pointsDenominator ? (float) $pointsDenominator : null,
+            null !== $weightedNumerator ? (float) $weightedNumerator : null,
+            null !== $weightedDenominator ? (float) $weightedDenominator : null,
         );
     }
 
